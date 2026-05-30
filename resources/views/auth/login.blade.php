@@ -1,19 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container justify-content-center d-flex align-items-center min-vh-100" style="background-color: #fffefc;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100" style="background-color: #fffefc;">
+    
     <div class="col-12 col-md-10 col-lg-5">
-        <!-- Header -->
-        <div class="text-center mb-4">
-            <h1 class="h1 fw-bold " style="color: #0a2540;">Pin+81</h1>
-            <p class="text-muted">Welcome back! Please login to your account.</p>
-        </div>
 
         <!-- Login Card -->
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mx-auto">
             <div class="card-body p-4">
-                <h5 class="card-title fw-bold mb-1" style="color: #0a2540;">{{ __('Login') }}</h5>
-                <p class="text-muted small mb-4">Access your account to make reservations or  manage your restaurant</p>
+                <h3 class="card-title fw-bold mb-1 text-center mb-2" style="color: #0a2540;">{{ __('Login') }}</h3>
+                <p class="text-muted small mb-4 text-center">Access your account to make reservations or  manage your restaurant</p>
 
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
@@ -50,7 +46,7 @@
                             </label>
                         </div>
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-decoration-none" style="color: #0A2A5E;">
+                            <a href="{{ route('password.request') }}">
                                 {{ __('Forgot password?') }}
                             </a>
                         @endif
@@ -68,12 +64,12 @@
 
                     <!-- Sign Up Link -->
                     <p class="text-center text-muted small mb-3">
-                        {{ __("Don't have an account?") }} <a href="{{ route('register') }}" class="text-decoration-none fw-semibold" style="color: #0A2A5E;">{{ __('Sign up') }}</a>
+                        {{ __("Don't have an account?") }} <a href="{{ route('register') }}">{{ __('Sign up') }}</a>
                     </p>
 
                     <!-- Partner Link -->
                     <p class="text-center">
-                        <a href="#" class="text-decoration-none fw-semibold" style="color: #0A2A5E;">{{ __('Partner with us') }}</a>
+                        <a href="#">{{ __('Partner with us') }}</a>
                     </p>
                 </form>
             </div>
@@ -94,7 +90,11 @@
     }
 
     .card{
-        border: 1px solid #FCE7F3
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        border: 1px solid #FCE7F3;
+        border-radius: 10px;
     }
     
     .form-control:focus {
@@ -102,10 +102,6 @@
         box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
     }
     
-    .card {
-        border-radius: 10px;
-    }
-
     .custom-checkbox:checked {
         color: #0a2540;
         background-color: #8d4b75;
@@ -128,7 +124,7 @@
     /* mouse hover effect */
     .custom-btn-a:hover {
         background-color: #fdd6eb;
-        color: 0a2a5e;
+        color: #0a2a5e;
     }
 
     /* login as a guest button */
@@ -145,6 +141,17 @@
         background-color: #0a2540;
         color: white;
         border-color: #0a2540;
+    }
+
+    /* Link decorations */
+    a{
+        color: #0a2540;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
     }
 </style>
 @endsection
