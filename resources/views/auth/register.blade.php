@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Sign up')
+
 @section('content')
 <div class="container d-flex justify-content-center align-items-center min-vh-100" style="background-color: #fffefc;">
     
@@ -19,7 +21,14 @@
                                 <label for="first_name" class="form-label fw-semibold">{{ __('First Name') }}</label>
 
                                 <div class="col">
-                                    <input id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" placeholder="First Name" required autocomplete="first_name" autofocus>
+                                    <input 
+                                    id="first_name" 
+                                    type="text" 
+                                    class="form-control @error('first_name') is-invalid @enderror" name="first_name" 
+                                    value="{{ old('first_name') }}" 
+                                    placeholder="First Name" 
+                                    required autocomplete="first_name" 
+                                    autofocus>
 
                                     @error('first_name')
                                         <span class="invalid-feedback" role="alert">
@@ -33,7 +42,14 @@
                                 <label for="last_name" class="form-label fw-semibold">{{ __('Last Name') }}</label>
 
                                 <div class="col">
-                                    <input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" placeholder="Last Name" required autocomplete="last_name">
+                                    <input 
+                                    id="last_name" 
+                                    type="text" class="form-control @error('last_name') is-invalid @enderror" 
+                                    name="last_name" 
+                                    value="{{ old('last_name') }}" 
+                                    placeholder="Last Name" 
+                                    required 
+                                    autocomplete="last_name">
 
                                     @error('last_name')
                                         <span class="invalid-feedback" role="alert">
@@ -47,7 +63,15 @@
                         {{-- Email --}}
                         <label for="email" class="form-label fw-semibold">{{ __('Email') }}</label>
 
-                        <input id="email" type="email" class="form-control mb-3 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="your@email.com" required autocomplete="email">
+                        <input 
+                        id="email" 
+                        type="email" 
+                        class="form-control mb-3 @error('email') is-invalid @enderror" 
+                        name="email" 
+                        value="{{ old('email') }}" 
+                        placeholder="your@email.com" 
+                        required 
+                        autocomplete="email">
 
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -58,7 +82,14 @@
                         {{-- Passward --}}
                         <label for="password" class="form-label fw-semibold">{{ __('Password') }}</label>
 
-                        <input id="password" type="password" class="form-control mb-3 @error('password') is-invalid @enderror" name="password" placeholder="••••••••" required autocomplete="new-password">
+                        <input 
+                        id="password" 
+                        type="password" 
+                        class="form-control mb-3 @error('password') is-invalid @enderror" 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required 
+                        autocomplete="new-password">
 
                         @error('password')
                             <span class="invalid-feedback" role="alert">
@@ -68,7 +99,14 @@
                         
                         <label for="password-confirm" class="form-label fw-semibold">{{ __('Confirm Password') }}</label>
 
-                        <input id="password-confirm" type="password" class="form-control mb-3" name="password_confirmation" placeholder="••••••••" required autocomplete="new-password">
+                        <input 
+                        id="password-confirm" 
+                        type="password" 
+                        class="form-control mb-3" 
+                        name="password_confirmation" 
+                        placeholder="••••••••" 
+                        required 
+                        autocomplete="new-password">
                         
                         {{-- Agreement check box --}}
                         <div class="form-check mb-4">
@@ -174,6 +212,5 @@
         background-color: #fdd6eb;
         color: #0a2a5e;
     }
-
 </style>
 @endsection
