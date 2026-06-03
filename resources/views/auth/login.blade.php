@@ -1,73 +1,150 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+<div class="container justify-content-center d-flex align-items-center min-vh-100" style="background-color: #fffefc;">
+    <div class="col-12 col-md-10 col-lg-5">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="h1 fw-bold " style="color: #0a2540;">Pin+81</h1>
+            <p class="text-muted">Welcome back! Please login to your account.</p>
+        </div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
+        <!-- Login Card -->
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="card-title fw-bold mb-1" style="color: #0a2540;">{{ __('Login') }}</h5>
+                <p class="text-muted small mb-4">Access your account to make reservations or  manage your restaurant</p>
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold" style="color: #0a2540;">{{ __('Email') }}</label>
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="your@email.com" required autocomplete="email" autofocus>
+                            
+                        @error('email')
+                            <span class="invalid-feedback d-block" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-semibold" style="color: #0a2540;">{{ __('Password') }}</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="••••••••" required autocomplete="current-password">
+                        @error('password')
+                            <span class="invalid-feedback d-block" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Remember and Forgot Password -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input custom-checkbox" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="remember">
+                                {{ __('Remember me') }}
+                            </label>
                         </div>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-decoration-none" style="color: #0A2A5E;">
+                                {{ __('Forgot password?') }}
+                            </a>
+                        @endif
+                    </div>
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+                    <!-- Login Button -->
+                    <button type="submit" class="btn w-100 fw-semibold mb-3 custom-btn-a">
+                        {{ __('Login') }}
+                    </button>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                    <!-- Guest Login Button -->
+                    <button type="button" class="btn w-100 fw-semibold mb-3 custom-btn-b">
+                        {{ __('Login as a Guest') }}
+                    </button>
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+                    <!-- Sign Up Link -->
+                    <p class="text-center text-muted small mb-3">
+                        {{ __("Don't have an account?") }} <a href="{{ route('register') }}" class="text-decoration-none fw-semibold" style="color: #0A2A5E;">{{ __('Sign up') }}</a>
+                    </p>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Partner Link -->
+                    <p class="text-center">
+                        <a href="#" class="text-decoration-none fw-semibold" style="color: #0A2A5E;">{{ __('Partner with us') }}</a>
+                    </p>
+                </form>
             </div>
         </div>
+
+        <!-- Back to Home -->
+        {{-- <div class="text-center mt-4">
+            <a href="/" class="text-decoration-none text-muted small">
+                ← {{ __('Back to home') }}
+            </a>
+        </div> --}}
     </div>
 </div>
+
+<style>
+    .min-vh-100 {
+        min-height: 100vh;
+    }
+
+    .card{
+        border: 1px solid #FCE7F3
+    }
+    
+    .form-control:focus {
+        border-color: #cfb2c4;
+        box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
+    }
+    
+    .card {
+        border-radius: 10px;
+    }
+
+    .custom-checkbox:checked {
+        color: #0a2540;
+        background-color: #8d4b75;
+        border-color: #ca9cb9;
+    }
+
+    .custom-checkbox:focus {
+        box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
+        border-color: #ca9cb9
+    }
+
+    /* Login button */
+    .custom-btn-a {
+        background-color: #FCE7F3;
+        color: #0a2540; /* text color */
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    /* mouse hover effect */
+    .custom-btn-a:hover {
+        background-color: #fdd6eb;
+        color: 0a2a5e;
+    }
+
+    /* login as a guest button */
+    .custom-btn-b {
+        background-color: transparent;
+        color: #0a2540; /* text color */
+        border: 1px solid #0a2540;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    /* mouse hover effect */
+    .custom-btn-b:hover {
+        background-color: #0a2540;
+        color: white;
+        border-color: #0a2540;
+    }
+</style>
 @endsection
