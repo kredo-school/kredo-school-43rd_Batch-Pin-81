@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -9,5 +11,6 @@ use Illuminate\Support\Facades\Auth;
 Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function() {
 
     Route::get('/dashboard', [RestaurantController::class, 'index'])->name('dashboard');
+    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
 
 });

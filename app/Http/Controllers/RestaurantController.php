@@ -11,3 +11,5 @@ class RestaurantController extends Controller
         return view('restaurants.index');
     }
 }
+
+
