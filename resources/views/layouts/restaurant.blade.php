@@ -59,7 +59,7 @@
     </style>
 </head>
 
-<body>
+<body class="bg-light">
 
     <nav class="navbar navbar-dark bg-brand-navbar px-4 py-3">
         <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -93,7 +93,7 @@
                     <i class="fa-solid fa-table-cells-large me-3" style="width: 20px;"></i>Dashboard
                 </a>
 
-                <a href="#"
+                <a href="{{ route('restaurant.reservations')}}"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.reservations') ? '' : 'bg-transparent text-white-50' }}"
                     style="{{ request()->routeIs('restaurant.reservations') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-regular fa-calendar-check me-3" style="width: 20px;"></i>Reservations
