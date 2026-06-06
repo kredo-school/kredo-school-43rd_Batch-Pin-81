@@ -21,6 +21,13 @@ Route::post('/register', [App\Http\Controllers\UserController::class, 'register'
 // Register page for restaurant
 Route::get('/restaurant/register', [App\Http\Controllers\RestaurantSearchController::class, 'register'])->name('restaurant.register');
 
+#Customer
+Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function() {
+
+    Route::get('/search', [CustomerController::class, 'index'])->name('search');
+    Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
+    Route::post('/profile/update', [CustomerController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/destroy', [CustomerController::class, 'destroy'])->name('profile.destroy');
 // Page for disply restaurants after search
 Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
 

@@ -46,4 +46,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return asset('storage/' . $this->profile_image);
+        }
+        // return asset('images/default-avatar.png');
+
+        // 例2: UI Avatarsなどのサービスを使って名前からイニシャルを生成する場合（便利！）
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name) . '&color=7F9CF5&background=EBF4FF';
+    }
 }

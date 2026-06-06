@@ -196,7 +196,7 @@
     </style>
 </head>
 
-<body>
+<body class="bg-light">
     <div id="app">
         {{-- Web VER --}}
         {{-- Search Ber & 8 Buttons --}}
