@@ -1,11 +1,18 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationsController;
+use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+#RESTAURANT
+// middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restau rant'*/], function () {
+  Route::get('/dashboard', [RestaurantController::class, 'index'])->name('dashboard');
+  Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
+});
 
 // User
 Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('login');
@@ -16,3 +23,9 @@ Route::get('/restaurant/register', [App\Http\Controllers\RestaurantSearchControl
 
 // Page for disply restaurants after search
 Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
+
+
+Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function () {
+
+  Route::get('/search', [CustomerController::class, 'index'])->name('search');
+});
