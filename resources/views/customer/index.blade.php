@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pin+81 - Restaurant Search')
+@section('title', 'Restaurant Search')
 
 @section('content')
 
