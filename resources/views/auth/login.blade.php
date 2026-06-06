@@ -19,7 +19,7 @@
                     <!-- Email Field -->
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold" style="color: #0a2540;">{{ __('Email') }}</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="your@email.com" required autocomplete="email" autofocus>
+                            <input id="email" type="email" class="form-control input-box @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="your@email.com" required autocomplete="email" autofocus>
                             
                         @error('email')
                             <span class="invalid-feedback d-block" role="alert">
@@ -31,7 +31,7 @@
                     <!-- Password Field -->
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold" style="color: #0a2540;">{{ __('Password') }}</label>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="••••••••" required autocomplete="current-password">
+                            <input id="password" type="password" class="form-control input-box @error('password') is-invalid @enderror" name="password" placeholder="••••••••" required autocomplete="current-password">
                         @error('password')
                             <span class="invalid-feedback d-block" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -99,7 +99,7 @@
         border-radius: 10px;
     }
     
-    .form-control:focus {
+    .input-box:focus {
         border-color: #cfb2c4;
         box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
     }
@@ -112,7 +112,7 @@
 
     .custom-checkbox:focus {
         box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
-        border-color: #ca9cb9
+        border-color: #ca9cb9;
     }
 
     /* Login button */

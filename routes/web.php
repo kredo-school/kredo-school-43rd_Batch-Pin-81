@@ -9,15 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restau rant'*/], function() {
-
-    Route::get('/dashboard', [RestaurantController::class, 'index'])->name('dashboard');
-    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
-
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restau rant'*/], function () {
+  Route::get('/dashboard', [RestaurantController::class, 'index'])->name('dashboard');
+  Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
 });
 
-Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function() {
+// User
+Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('login');
+Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->name('register');
 
-    Route::get('/search', [CustomerController::class, 'index'])->name('search');
+// Register page for restaurant
+Route::get('/restaurant/register', [App\Http\Controllers\RestaurantSearchController::class, 'register'])->name('restaurant.register');
 
+// Page for disply restaurants after search
+Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
+
+
+Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function () {
+
+  Route::get('/search', [CustomerController::class, 'index'])->name('search');
 });
