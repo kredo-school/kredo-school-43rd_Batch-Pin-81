@@ -16,8 +16,12 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
 
 });
 
+#Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function() {
 
     Route::get('/search', [CustomerController::class, 'index'])->name('search');
+    Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
+    Route::post('/profile/update', [CustomerController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/destroy', [CustomerController::class, 'destroy'])->name('profile.destroy');
 
 });
