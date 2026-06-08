@@ -35,10 +35,10 @@
         }
     </style>
 
-    <div class="d-flex flex-column" style="min-height: calc(100vh - 70px); background-color: #ffffff;">
+    <div class="d-flex flex-column" style="min-height: calc(100vh - 70px); background-color: transparent; margin-top: -100px;">
 
-        <div class="d-flex flex-column d-md-none px-4 py-3 bg-white">
-            <h2 class="h4 mb-3 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
+        <div class="d-flex flex-column d-md-none px-4 pb-1 bg-white" style="padding-top: 95px; box-sizing: border-box;">
+            <h2 class="h4 mb-1 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
             <div class="d-flex align-items-center gap-2">
                 <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-left"></i></button>
                 <input type="text" class="form-control form-control-sm text-center fw-bold" value="2026/05/20"
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="d-none d-md-flex justify-content-between align-items-center px-4 py-3 bg-white">
+        <div class="d-none d-md-flex justify-content-between align-items-center px-4 pb-3 bg-white" style="padding-top: 100px;">
             <h2 class="h4 mb-0 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
             <div class="d-flex align-items-center gap-2">
                 <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-left"></i></button>
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div class="d-block d-md-none px-3 pb-5">
+        <div class="d-block d-md-none px-3 pt-0 pb-5">
             <div class="d-flex gap-2 overflow-x-auto pb-3 mb-3" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <style>
                     ::-webkit-scrollbar {
