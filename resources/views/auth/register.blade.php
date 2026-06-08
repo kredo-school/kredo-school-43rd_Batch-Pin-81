@@ -187,7 +187,7 @@
 
     .custom-checkbox:focus {
         box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
-        border-color: #ca9cb9
+        border-color: #ca9cb9;
     }
 
     a{
