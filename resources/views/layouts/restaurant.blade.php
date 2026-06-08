@@ -61,7 +61,7 @@
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-brand-navbar px-4 py-3">
+    <nav class="navbar navbar-dark bg-brand-navbar px-4 py-3 fixed-top">
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
             <a class="navbar-brand d-flex align-items-center" href="{{ route('restaurant.dashboard') }}">
@@ -111,7 +111,7 @@
                     <i class="fa-solid fa-circle-info me-3" style="width: 20px;"></i>Restaurant information
                 </a>
 
-                <a href="#"
+                <a href="{{ route('restaurant.menu')}}"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.menu') ? '' : 'bg-transparent text-white-50' }}"
                     style="{{ request()->routeIs('restaurant.menu') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-solid fa-bars me-3" style="width: 20px;"></i>Menu
@@ -164,7 +164,7 @@
         </div>
     </div>
 
-    <main>
+    <main style="margin-top: 100px;">
         @yield('content')
     </main>
 
