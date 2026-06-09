@@ -38,7 +38,9 @@
                                 <div id="avatar-placeholder"
                                     class="rounded-circle shadow-sm d-flex align-items-center justify-content-center"
                                     style="width: 130px; height: 130px; border: 3px solid #f8f9fa; background-color: #f1f5f9; color: #94a3b8;">
-                                    <i class="fa-solid fa-circle-user" style="font-size: 130px; line-height: 1;"></i>
+                                    <i class="fa-solid fa-circl
+                                    
+                                    e-user" style="font-size: 130px; line-height: 1;"></i>
                                 </div>
                                 {{-- JavaScriptのプレビュー用に、隠しタグとしてimgも置いておきます --}}
                                 <img id="avatar-preview" class="rounded-circle object-fit-cover shadow-sm d-none"

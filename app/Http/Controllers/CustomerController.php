@@ -24,20 +24,14 @@ class CustomerController extends Controller
             ['name' => 'Yakitori Tori', 'type' => 'Yakitori', 'rating' => '4.7', 'reviews' => '421', 'loc' => 'Shinjuku, Tokyo', 'tags' => ['Available Now', 'English Speaking']]
         ];
 
-        // views/customer/index.blade.php を呼び出し、データを渡す
         return view('customer.index', compact('chartData', 'restaurantData'));
     }
-
-     // 📄 ① プロフィール画面を表示
     public function profile()
     {
         return view('customer.profile');
     }
-
-    // 💾 ② データを更新する処理
     public function update(Request $request)
     {
-        // 1. ここで入力されたデータのバリデーション（チェック）をします
         $user = Auth::user();
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -49,18 +43,14 @@ class CustomerController extends Controller
         // $user = Auth::user();
         // $user->update($request->all());
 
-        // 3. 保存が終わったら、元の画面に「保存したよ！」というメッセージ付きで戻す
         return redirect()->route('customer.profile')->with('success', 'Profile updated successfully!');
     }
-
-    // 🗑️ ③ アカウントを削除する処理
     public function destroy()
     {
         // 1. 退会処理（データを消す、または無効化する）
         // $user = Auth::user();
         // $user->delete();
 
-        // 2. 削除したらトップページなどに強制移動させる
         return redirect('/')->with('success', 'Account deleted successfully.');
     }
 }
