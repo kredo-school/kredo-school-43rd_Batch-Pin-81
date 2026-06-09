@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
     Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [CustomerController::class, 'update'])->name('profile.update');
     Route::delete('/profile/destroy', [CustomerController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
+});
+
 // Page for disply restaurants after search
 Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
 
