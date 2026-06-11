@@ -16,7 +16,8 @@
                     @foreach($photos as $index => $photo)
                         <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                             <div class="d-flex justify-content-center align-items-center image-container">
-                                <img src="{{ $photo }}" class="restaurant-image" alt="Restaurant Photo">
+                                <img src="{{ $photo }}" class="restaurant-image"
+                                alt="Restaurant Photo">
                             </div>
                         </div>
                     @endforeach

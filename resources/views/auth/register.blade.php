@@ -3,12 +3,12 @@
 @section('title', 'Sign up')
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center min-vh-100" style="background-color: #fffefc;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
     
         <div class="col-12 col-md-10 col-lg-5">
 
             {{-- Sign up Card --}}
-            <div class="card shadow-sm">
+            <div class="card p-4 shadow-sm border-0 signup-card bg-white" style="max-width: 600px; width: 100%; border-radius: 16px;">
                 <div class="card-body p-4">
                     <h3 class="card-title fw-bold text-center mb-4" style="color: #0a2540;">{{ __('Create an Account') }}</h3>
 
@@ -159,13 +159,7 @@
         min-height: 100vh;
     }
 
-    .card{
-        width: 100%;
-        max-width: 500px;
-        margin: 0 auto;
-        border: 1px solid #FCE7F3;
-        border-radius: 10px;
-    }
+    
     
     .form-control:focus {
         border-color: #cfb2c4;
