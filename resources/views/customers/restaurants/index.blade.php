@@ -179,7 +179,7 @@ $restaurants = [
 ];
 @endphp
 
-<div class="container" style="background: #fffefc;"> 
+<div class="container bg-secondary"> 
     {{-- Desktop --}}
     <div class="mb-3 filter-bar d-none d-md-block">
 
