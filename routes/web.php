@@ -4,7 +4,6 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +17,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
     Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
 });
-    
+
 // User
 Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('login');
 Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->name('register');
