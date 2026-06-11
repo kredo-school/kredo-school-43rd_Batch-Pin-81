@@ -6,10 +6,6 @@ use Illuminate\Http\Request;
 
 class RestaurantSearchController extends Controller
 {
-    public function register()
-    {
-        return view('auth.restaurant-register');
-    }
 
     public function view()
     {
@@ -29,5 +25,10 @@ class RestaurantSearchController extends Controller
         shuffle($photos);
 
         return view('customers.restaurants.show', compact('photos'));
+    }
+
+    public function displayBookingPage()
+    {
+        return view('customers.restaurants.book');
     }
 }

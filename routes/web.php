@@ -7,6 +7,8 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RestaurantSearchController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,15 +21,15 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
 });
 
+
 // User
-Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('login');
-Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->name('register');
+Route::get('/login', [UserController::class, 'login'])->name('login');
+Route::get('/register', [UserController::class, 'register'])->name('register');
 
 // Register page for restaurant
-Route::get('/restaurant/register', [App\Http\Controllers\RestaurantSearchController::class, 'register'])->name('restaurant.register');
+Route::get('/restaurant/register', [UserController::class, 'registerRestaurant'])->name('register.restaurant');
 
-// Page for disply restaurants after search
-Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
+
 
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function () {
@@ -39,5 +41,11 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
 });
 
+
+// Page for disply restaurants after search
+Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
+
 // Restaurant Page for customer
-Route::get('/view/restaurant-page', [App\Http\Controllers\RestaurantSearchController::class, 'show'])->name('show.restaurant-page');
+Route::get('/restaurant-page', [RestaurantSearchController::class, 'show'])->name('restaurant-page.show');
+Route::get('/restaurant/booking-page', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
+Route::post('/restaurant/book', [RestaurantSearchController::class, 'book'])->name('restaurant.book');
