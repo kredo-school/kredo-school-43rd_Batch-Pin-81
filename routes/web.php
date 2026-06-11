@@ -3,12 +3,13 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -32,12 +33,11 @@ Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function() {
 
     Route::get('/search', [CustomerController::class, 'index'])->name('search');
-    Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
-    Route::post('/profile/update', [CustomerController::class, 'update'])->name('profile.update');
-    Route::delete('/profile/destroy', [CustomerController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
 });
 
 // Page for disply restaurants after search
 Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
-

@@ -14,14 +14,14 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    
-    {{-- Font awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/rikako-style.css') }}">
 
@@ -222,13 +222,16 @@
 
                 <div class="d-flex align-items-center gap-3 bg-transparent ms-4">
 
-                    <a href="#" class="nav-icon-link position-relative text-decoration-none"
+                    <a href="#" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" data-bs-title="Search">
-                        <div class="d-flex align-items-center justify-content-center rounded-3"
-                            style=" width: 38px; height: 38px;">
-                            <i class="bi bi-search fs-5" style="color: #0a2540;"></i>
-                        </div>
+                        data-bs-placement="bottom" data-bs-title="Admin">
+                        <i class="bi bi-shield-check fs-5"></i>
+                    </a>
+
+                    <a href="#" class="nav-icon-link text-decoration-none"
+                        style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom" data-bs-title="Home">
+                        <i class="bi bi-house fs-5"></i>
                     </a>
 
                     <a href="#" class="nav-icon-link text-decoration-none"
@@ -257,8 +260,8 @@
 
                     <a href="#" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" data-bs-title="Admin">
-                        <i class="bi bi-shield-check fs-5"></i>
+                        data-bs-placement="bottom" data-bs-title="Notifications">
+                        <i class="bi bi-bell fs-5"></i>
                     </a>
 
                     <a href="#" class="nav-link text-decoration-none"
@@ -272,9 +275,7 @@
                         data-bs-placement="bottom" data-bs-title="Settings">
                         <i class="bi bi-gear fs-5"></i>
                     </a>
-
                 </div>
-
             </div>
         </nav>
         {{-- Mobile VER --}}
@@ -329,10 +330,6 @@
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-danger fs-6">
                         <i class="bi bi-box-arrow-right fs-5 text-danger"></i> Log out
                     </a>
-                    <a href="#"
-                        class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-navy fs-6">
-                        <i class="bi bi-shield-check fs-5 text-navy"></i> Admin
-                    </a>
                 </div>
             </div>
         </div>
@@ -345,7 +342,7 @@
 
         <div class="mobile-bottom-nav d-md-none">
             <div class="nav-item"><a class="nav-link-item active" href="#"><i
-                        class="bi bi-search"></i><span>Search</span></a></div>
+                        class="bi bi-house"></i><span>Home</span></a></div>
             <div class="nav-item"><a class="nav-link-item" href="#"><i
                         class="bi bi-heart"></i><span>Favorites</span></a></div>
             <div class="nav-item"><a class="nav-link-item" href="#"><i
