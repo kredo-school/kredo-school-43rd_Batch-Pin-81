@@ -4,8 +4,10 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <div class="bg-light min-vh-100 py-5">
-        <div class="container" style="max-width: 850px;">
+        <div class="container" style="max-width: 740px;">
+            
             <div class="d-flex align-items-center mb-4" style="padding-left: 10px;">
                 <a href="/customer/my-page" class="text-decoration-none d-flex align-items-center justify-content-center me-3"
                     style="color: #051d3b; transition: transform 0.2s;">
@@ -19,12 +21,14 @@
             <form class="needs-validation" action="{{ route('customer.profile.update') }}" method="POST"
                 enctype="multipart/form-data" novalidate>
                 @csrf
-
-                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background-color: #ffffff;">
-                    <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #0a2540;">
-                        <i class="bi bi-person-circle me-2"></i>Profile Picture
+                
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4" style="background-color: #ffffff; border-radius: 16px !important;">
+                    
+                    <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #0a2540; font-size: 1.25rem;">
+                        <i class="fa-solid fa-address-card me-2"></i>Personal Information
                     </h5>
-                    <div class="text-center py-1">
+
+                    <div class="text-center my-4 pb-2">
                         <div class="position-relative d-inline-block">
 
                             {{-- ✨ ユーザーが画像をアップロードしているか、していないかで切り替え --}}
@@ -37,10 +41,8 @@
                                 {{-- 👤 画像をアップロードしていない場合（デフォルトのユーザーアイコン） --}}
                                 <div id="avatar-placeholder"
                                     class="rounded-circle shadow-sm d-flex align-items-center justify-content-center"
-                                    style="width: 130px; height: 130px; border: 3px solid #f8f9fa; background-color: #f1f5f9; color: #94a3b8;">
-                                    <i class="fa-solid fa-circl
-                                    
-                                    e-user" style="font-size: 130px; line-height: 1;"></i>
+                                    style="width: 130px; height: 130px; border: 3px solid #f8f9fa; background-color: #f1f5f9; color: #94a3b8; margin: 0 auto;">
+                                    <i class="fa-solid fa-circle-user" style="font-size: 130px; line-height: 1;"></i>
                                 </div>
                                 {{-- JavaScriptのプレビュー用に、隠しタグとしてimgも置いておきます --}}
                                 <img id="avatar-preview" class="rounded-circle object-fit-cover shadow-sm d-none"
@@ -49,7 +51,7 @@
 
                             <label for="avatar-input"
                                 class="btn position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm"
-                                style="width: 38px; height: 38px; background-color: #0a2540; color: white; cursor: pointer; border: 2px solid white;">
+                                style="width: 38px; height: 38px; background-color: #0a2540; color: white; cursor: pointer; border: 2px solid white; margin-bottom: 4px; margin-right: 4px;">
                                 <i class="bi bi-camera-fill" style="font-size: 0.9rem;"></i>
                             </label>
                             <input type="file" name="avatar" id="avatar-input" class="d-none" accept="image/*"
@@ -57,70 +59,26 @@
                         </div>
                         <p class="text-muted small mt-3 mb-0">Click the camera icon to upload a new photo</p>
                     </div>
-                </div>
 
-                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4" style="background-color: #ffffff;">
-                    <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #0a2540; font-size: 1.15rem;">
-                        <i class="fa-solid fa-address-card me-2"></i>Personal Information
-                    </h5>
-
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <label class="form-label fw-bold small mb-1" style="color: #0a2540;">First Name</label>
-                            <input type="text" name="first_name"
-                                class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="John"
-                                style="background-color: #f4f6f9;" required>
-                            <div class="invalid-feedback small">Required</div>
-                        </div>
-
-                        <div class="col-6">
-                            <label class="form-label fw-bold small mb-1" style="color: #0a2540;">Last Name</label>
-                            <input type="text" name="last_name"
-                                class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="Doe"
-                                style="background-color: #f4f6f9;" required>
-                            <div class="invalid-feedback small">Required</div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label fw-bold small mb-1" style="color: #0a2540;">Email</label>
-                            <input type="email" name="email"
-                                class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="john@example.com"
-                                style="background-color: #f4f6f9;" required>
-                            <div class="invalid-feedback small">Valid email required</div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label fw-bold small mb-1" style="color: #0a2540;">Phone</label>
-                            <input type="text" name="phone"
-                                class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="+1 234 567 8900"
-                                style="background-color: #f4f6f9;">
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small mb-1" style="color: #0a2540;">Country</label>
-                            <select name="country" class="form-select border-0 rounded-3 px-3 py-2 shadow-none"
-                                style="background-color: #f4f6f9; color: #334155;">
-                                <option value="United States" selected>United States</option>
-                                <option value="Japan">Japan</option>
-                            </select>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small mb-1" style="color: #0a2540;">Language
-                                Preference</label>
-                            <select name="language" class="form-select border-0 rounded-3 px-3 py-2 shadow-none"
-                                style="background-color: #f4f6f9; color: #334155;">
-                                <option value="English" selected>English</option>
-                                <option value="Japanese">日本語 (Japanese)</option>
-                            </select>
-                        </div>
+                    <div class="mb-4 mx-auto" style="max-width: 480px; width: 100%;">
+                        <label class="form-label fw-bold small mb-2" style="color: #0a2540; font-size: 0.85rem;">User Name</label>
+                        <input type="text" name="username"
+                            class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="John"
+                            value="{{ old('username', Auth::user()->username ?? '') }}"
+                            style="background-color: #f4f6f9; height: 44px; font-size: 0.95rem;" required>
+                        <div class="invalid-feedback small ps-1">Required</div>
+                        
+                        @error('username')
+                            <div class="text-danger small mt-1 ps-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn w-100 fw-bold text-navy py-2 rounded-3 custom-save-btn">
+                    <div class="pt-2 mx-auto" style="max-width: 480px; width: 100%;">
+                        <button type="submit" class="btn w-100 fw-bold text-navy py-2 rounded-3 custom-save-btn" style="height: 44px; font-size: 0.95rem;">
                             Save Changes
                         </button>
                     </div>
+
                 </div>
             </form>
         </div>
