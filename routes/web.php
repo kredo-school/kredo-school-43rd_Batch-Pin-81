@@ -46,6 +46,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
 Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
 
 // Restaurant Page for customer
-Route::get('/restaurant-page', [RestaurantSearchController::class, 'show'])->name('restaurant-page.show');
-Route::get('/restaurant/booking-page', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
-Route::post('/restaurant/book', [RestaurantSearchController::class, 'book'])->name('restaurant.book');
+Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
+Route::get('/booking', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
+Route::post('/booking-confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
+Route::get('/booking/confirmation', function () {
+  return view('customers.restaurants.booking-confirmation');
+})->name('booking.confirmation');
