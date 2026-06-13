@@ -12,7 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantSearchController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -36,13 +36,21 @@ Route::get('/restaurant/register', [UserController::class, 'registerRestaurant']
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function () {
 
-    Route::get('/search', [CustomerController::class, 'index'])->name('search');
-    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
+  Route::get('/search', [CustomerController::class, 'index'])->name('search');
+  Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+  Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+  Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
+  Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
 });
 
 
 // Page for disply restaurants after search
-Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
+Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
+
+// Restaurant Page for customer
+Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
+Route::get('/booking', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
+Route::post('/booking-confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
+Route::get('/booking/confirmation', function () {
+  return view('customers.restaurants.booking-confirmation');
+})->name('booking.confirmation');

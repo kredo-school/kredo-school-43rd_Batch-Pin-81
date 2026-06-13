@@ -31,4 +31,11 @@ class RestaurantSearchController extends Controller
     {
         return view('customers.restaurants.book');
     }
+
+    public function store(Request $request)
+    {
+        // Save booking to database
+
+        return redirect()->route('booking.confirmation');
+    }
 }
