@@ -1,7 +1,7 @@
  <a href="#"
     class="text-decoration-none">
 
-    <div class="card restaurant-card h-100" style="background: #fffefc;">
+    <div class="card restaurant-card h-100" style="background: #fff;">
       <div class="row g-0">
 
         <!-- Image -->
@@ -113,7 +113,7 @@
   </a>
 
 {{-- include  the modal here --}}
-@include('customers.restaurants.partials.modals.booking-options')
+@include('customers.restaurants.partials.modals.booking_options')
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -181,8 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-
-
 
   /* Design for both*/
   .location-icon{

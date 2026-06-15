@@ -13,11 +13,11 @@
         <p class="text-muted">Your booking has been confirmed successfully</p>
     </div>
 
-    <div class="card-custom bg-white">
-        <div class="card-custom-header">
-            <h4 class="mb-1 fw-bold" style="color: #0a2540;">Restaurant 1</h4>
-            <div class="confirmation-label" style="color: #0a2540;">
-                Reservation Code: <span class="confirmation-code" style="color: #0a2540;">{{ $reservation->reservastion_code ?? 'RMED8W7P05I' }}</span>
+    <div class="card-custom shadow-sm bg-white" >
+        <div class="card-custom-header" style="color: #fff;">
+            <h4 class="mb-1 fw-bold" >Restaurant 1</h4>
+            <div class="confirmation-label">
+                Reservation Code: <span class="confirmation-code" style="color: #fff;">{{ $reservation->reservastion_code ?? 'RMED8W7P05I' }}</span>
             </div>
         </div>
 
@@ -69,7 +69,7 @@
                     </a>
                 </div>
                 <div class="col-sm-6">
-                    <a href="#" class="btn custom-btn-a w-100 fw-semibold" style="color: #0a2540;">My Reservations</a>
+                    <a href="{{ route('my_reservations') }}" class="btn custom-btn-a w-100 fw-semibold" style="color: #0a2540;">My Reservations</a>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@
     }
 
     .card-custom-header {
-        background: linear-gradient(90deg, #ffecf7 0%, #faecf4 60%, #fcf5f9 100%);
+        background: #0a2540;
         padding: 1.25rem 1.75rem;
     }
 
@@ -114,7 +114,7 @@
     .confirmation-code {
         font-weight: 700;
         letter-spacing: 0.5px;
-        background-color: rgba(255, 255, 255, 0.15);
+        background-color: rgba(252, 252, 255, 0.15);
         padding: 2px 6px;
         border-radius: 4px;
     }

@@ -31,8 +31,6 @@ Route::get('/register', [UserController::class, 'register'])->name('register');
 // Register page for restaurant
 Route::get('/restaurant/register', [UserController::class, 'registerRestaurant'])->name('register.restaurant');
 
-
-
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function () {
 
@@ -50,7 +48,30 @@ Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->na
 // Restaurant Page for customer
 Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
 Route::get('/booking', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
-Route::post('/booking-confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
+Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
 Route::get('/booking/confirmation', function () {
-  return view('customers.restaurants.booking-confirmation');
+  return view('customers.restaurants.booking_confirmation');
 })->name('booking.confirmation');
+
+// 1. My Reservations Page (The list view)
+Route::get('/my_reservations', [RestaurantSearchController::class, 'index'])
+  ->name('my_reservations');
+
+// 2. Reservation Confirmation Success Page
+// Passing the reservation ID or confirmation code to display the specific confirmation card
+Route::get('/my_reservations/{reservation}/confirmed', [RestaurantSearchController::class, 'confirmed'])
+  ->name('my_reservations.confirmed');
+
+// 3. Edit / Change Booking Page
+Route::get('/my_reservations/{reservation}/edit', [RestaurantSearchController::class, 'edit'])
+  ->name('my_reservations.edit');
+Route::put('/my_reservations/{reservation}', [RestaurantSearchController::class, 'update'])
+  ->name('my_reservations.update');
+
+// 4. "I'll be late" Notification (Custom Action)
+Route::post('/my_reservations/{reservation}/notify-late', [RestaurantSearchController::class, 'notifyLate'])
+  ->name('my_reservations.notify-late');
+
+// 5. Cancel Booking (Destroys the resource or updates status)
+Route::delete('/my_reservations/{reservation}', [RestaurantSearchController::class, 'destroy'])
+  ->name('my_reservations.destroy');
