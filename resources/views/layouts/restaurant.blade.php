@@ -99,11 +99,7 @@
                     <i class="fa-regular fa-calendar-check me-3" style="width: 20px;"></i>Reservations
                 </a>
 
-                <a href="#"
-                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.tables') ? '' : 'bg-transparent text-white-50' }}"
-                    style="{{ request()->routeIs('restaurant.tables') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
-                    <i class="fa-regular fa-calendar me-3" style="width: 20px;"></i>Edit tables
-                </a>
+               
 
                 <a href="#"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.info') ? '' : 'bg-transparent text-white-50' }}"

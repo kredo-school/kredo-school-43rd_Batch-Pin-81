@@ -35,11 +35,22 @@
         }
     </style>
 
-    <div class="d-flex flex-column" style="min-height: calc(100vh - 70px); background-color: transparent; margin-top: -100px;">
+    <div class="d-flex flex-column"
+        style="min-height: calc(100vh - 70px); background-color: transparent; margin-top: -100px;">
 
-        <div class="d-flex flex-column d-md-none px-4 pb-1 bg-white" style="padding-top: 95px; box-sizing: border-box;">
-            <h2 class="h4 mb-1 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
-            <div class="d-flex align-items-center gap-2">
+        <div class="d-flex flex-column d-md-none px-4 bg-white" style="padding-top: 95px; box-sizing: border-box;">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 mb-0 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
+                <button class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center"
+    style="background-color: #FCE7F3; color: #0A2540; border-radius: 8px; height: 31px; border: none;" 
+    data-bs-toggle="modal"
+    data-bs-target="#addTableModal">
+    <i class="fa-solid fa-plus me-1"></i> Add Table
+</button>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 pb-2 mt-3">
                 <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-left"></i></button>
                 <input type="text" class="form-control form-control-sm text-center fw-bold" value="2026/05/20"
                     style="width: 100%; background-color: #f8f9fa;" readonly>
@@ -47,17 +58,24 @@
             </div>
         </div>
 
-        <div class="d-none d-md-flex justify-content-between align-items-center px-4 pb-3 bg-white" style="padding-top: 100px;">
+        <div class="d-none d-md-flex justify-content-between align-items-center px-4 pb-3 bg-white"
+            style="padding-top: 100px;">
             <h2 class="h4 mb-0 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
             <div class="d-flex align-items-center gap-2">
                 <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-left"></i></button>
                 <input type="text" class="form-control form-control-sm text-center fw-bold" value="2026/05/20"
                     style="width: 130px; background-color: #f8f9fa;" readonly>
                 <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-right"></i></button>
+                
+                <button class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center"
+                    style="background-color: #FCE7F3; color: #0A2540; border-radius: 8px; height: 31px; border: none;"
+                    data-bs-toggle="modal" data-bs-target="#addTableModal">
+                    <i class="fa-solid fa-plus me-1"></i> Add Table
+                </button>
             </div>
         </div>
 
-        <div class="d-block d-md-none px-3 pt-0 pb-5">
+        <div class="d-block d-md-none px-3 pt-3 pb-5">
             <div class="d-flex gap-2 overflow-x-auto pb-3 mb-3" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <style>
                     ::-webkit-scrollbar {
@@ -83,7 +101,8 @@
                                 style="font-size: 10px;">RM004</span>
                         </div>
                         <div class="text-secondary small d-flex flex-column gap-1" style="font-size: 12px;">
-                            <div><i class="fa-regular fa-clock me-1"></i> 19:00 <i class="fa-solid fa-user-group ms-3 me-1"></i> 6</div>
+                            <div><i class="fa-regular fa-clock me-1"></i> 19:00 <i
+                                    class="fa-solid fa-user-group ms-3 me-1"></i> 6</div>
                             <div class="mt-1 text-dark fw-medium">Table 4</div>
                         </div>
                     </div>
@@ -96,23 +115,27 @@
                                 style="font-size: 10px;">RM007</span>
                         </div>
                         <div class="text-secondary small d-flex flex-column gap-1" style="font-size: 12px;">
-                            <div><i class="fa-regular fa-clock me-1"></i> 20:15 <i class="fa-solid fa-user-group ms-3 me-1"></i> 2</div>
+                            <div><i class="fa-regular fa-clock me-1"></i> 20:15 <i
+                                    class="fa-solid fa-user-group ms-3 me-1"></i> 2</div>
                             <div class="mt-1 text-dark fw-medium">Table 1</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">Canceled</h6>
+                    <h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">Canceled
+                    </h6>
                     <div class="d-flex flex-column gap-3">
                         <div class="card p-3 border border-dashed rounded-4 bg-light opacity-75">
                             <div class="d-flex justify-content-between align-items-start mb-1">
                                 <div class="fw-bold text-secondary">Michael Chen</div>
                                 <span class="text-muted small" style="font-size: 11px;">RM005</span>
                             </div>
-                            <div class="text-danger small fw-medium mb-2" style="font-size: 13px;">Canceled by customer</div>
+                            <div class="text-danger small fw-medium mb-2" style="font-size: 13px;">Canceled by customer
+                            </div>
                             <div class="text-muted small" style="font-size: 13px;">
-                                <i class="fa-regular fa-clock me-1"></i> 17:30 <i class="fa-solid fa-user-group ms-3 me-1"></i> 3
+                                <i class="fa-regular fa-clock me-1"></i> 17:30 <i
+                                    class="fa-solid fa-user-group ms-3 me-1"></i> 3
                             </div>
                         </div>
 
@@ -123,7 +146,8 @@
                             </div>
                             <div class="text-danger small fw-medium mb-2" style="font-size: 13px;">Canceled by shop</div>
                             <div class="text-muted small" style="font-size: 13px;">
-                                <i class="fa-regular fa-clock me-1"></i> 19:30 <i class="fa-solid fa-user-group ms-3 me-1"></i> 2
+                                <i class="fa-regular fa-clock me-1"></i> 19:30 <i
+                                    class="fa-solid fa-user-group ms-3 me-1"></i> 2
                             </div>
                         </div>
                     </div>
@@ -132,14 +156,17 @@
         </div>
 
         <div class="d-none d-md-flex flex-grow-1" style="overflow-x: auto;">
-            
+
             <div class="bg-white p-3 d-flex flex-column gap-3" style="width: 320px; min-width: 320px; overflow-y: auto;">
                 <div>
                     <h6 class="fw-bold text-dark mb-3">Reservations (2)</h6>
                     <div class="d-flex flex-column gap-2">
-                        <div class="card p-3 border rounded-3 position-relative shadow-sm" style="background-color: #ffffff; cursor: pointer;"
+                        <div class="card p-3 border rounded-3 position-relative shadow-sm"
+                            style="background-color: #ffffff; cursor: pointer;"
                             onclick="openReservationModal('RM001', 'John Smith', '18:00', '2 hours', 2, 'Table 1', false)">
-                            <span class="badge text-secondary border position-absolute top-0 end-0 mt-2 me-2 small fw-normal bg-light" style="font-size: 10px;">RM001</span>
+                            <span
+                                class="badge text-secondary border position-absolute top-0 end-0 mt-2 me-2 small fw-normal bg-light"
+                                style="font-size: 10px;">RM001</span>
                             <div class="fw-bold text-dark mb-1">John Smith</div>
                             <div class="text-secondary small d-flex align-items-center gap-1">
                                 <i class="fa-regular fa-clock"></i> 18:00
@@ -148,9 +175,12 @@
                             <div class="text-secondary small mt-1">Table 1</div>
                         </div>
 
-                        <div class="card p-3 border rounded-3 position-relative shadow-sm" style="background-color: #ffffff; cursor: pointer;"
+                        <div class="card p-3 border rounded-3 position-relative shadow-sm"
+                            style="background-color: #ffffff; cursor: pointer;"
                             onclick="openReservationModal('RM002', 'Maria Garcia', '18:00', '2.5 hours', 4, 'Table 2', true)">
-                            <span class="badge text-secondary border position-absolute top-0 end-0 mt-2 me-2 small fw-normal bg-light" style="font-size: 10px;">RM002</span>
+                            <span
+                                class="badge text-secondary border position-absolute top-0 end-0 mt-2 me-2 small fw-normal bg-light"
+                                style="font-size: 10px;">RM002</span>
                             <div class="fw-bold text-dark mb-1">Maria Garcia</div>
                             <div class="text-secondary small d-flex align-items-center gap-1">
                                 <i class="fa-regular fa-clock"></i> 18:00
@@ -162,10 +192,12 @@
                 </div>
 
                 <div class="mt-2">
-                    <h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">Canceled</h6>
+                    <h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">Canceled
+                    </h6>
                     <div class="d-flex flex-column gap-2">
                         <div class="card p-3 border border-dashed rounded-3 position-relative bg-light opacity-75">
-                            <span class="text-muted position-absolute top-0 end-0 mt-2 me-2 small" style="font-size: 10px;">RM005</span>
+                            <span class="text-muted position-absolute top-0 end-0 mt-2 me-2 small"
+                                style="font-size: 10px;">RM005</span>
                             <div class="fw-bold text-secondary mb-1">Michael Chen</div>
                             <div class="text-danger small fw-medium">Canceled by customer</div>
                             <div class="text-muted small d-flex align-items-center gap-1 mt-1">
@@ -174,7 +206,8 @@
                             </div>
                         </div>
                         <div class="card p-3 border border-dashed rounded-3 position-relative bg-light opacity-75">
-                            <span class="text-muted position-absolute top-0 end-0 mt-2 me-2 small" style="font-size: 10px;">RM006</span>
+                            <span class="text-muted position-absolute top-0 end-0 mt-2 me-2 small"
+                                style="font-size: 10px;">RM006</span>
                             <div class="fw-bold text-secondary mb-1">Emma Wilson</div>
                             <div class="text-danger small fw-medium">Canceled by shop</div>
                             <div class="text-muted small d-flex align-items-center gap-1 mt-1">
@@ -188,13 +221,17 @@
 
             <div class="flex-grow-1 bg-white p-3 d-flex flex-column gap-3" style="overflow-y: auto;">
                 <div class="d-flex justify-content-between align-items-center px-1">
-                    <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-left"></i></button>
-                    <span class="fw-bold text-dark small" style="letter-spacing: 0.5px;">Showing 05/20 17:00 - 19:00</span>
-                    <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i
+                            class="fa-solid fa-chevron-left"></i></button>
+                    <span class="fw-bold text-dark small" style="letter-spacing: 0.5px;">Showing 05/20 17:00 -
+                        19:00</span>
+                    <button class="btn btn-chevron-custom btn-sm px-2 py-1"><i
+                            class="fa-solid fa-chevron-right"></i></button>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0" style="min-width: 800px; border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;">
+                    <table class="table align-middle mb-0"
+                        style="min-width: 800px; border-collapse: separate; border-spacing: 0 12px; margin-top: -12px;">
                         <thead class="text-secondary small text-start custom-table-head">
                             <tr>
                                 <th style="width: 150px;"></th>
@@ -255,21 +292,39 @@
                                     background-color: #f1f3f5 !important;
                                     opacity: 0.7;
                                 }
+
                                 .disabled-table .table-title-cell {
                                     background-color: #e9ecef !important;
                                     cursor: not-allowed !important;
                                     pointer-events: auto !important;
                                 }
+
                                 .disabled-timeline-cell {
                                     background-color: #f1f3f5 !important;
                                     pointer-events: none;
+                                }
+
+                                /* 💡 通常時：背景 #FCE7F3、文字色 ネイビー（#0A2540）を確実に固定 */
+                                .btn.btn-add-main-custom {
+                                    background-color: #FCE7F3 !important;
+                                    color: #0A2540 !important;
+                                    border: none !important;
+                                    padding: 0 16px;
+                                    transition: all 0.2s ease-in-out;
+                                }
+
+                                /* ホバー時：少しだけ濃いピンクオブジェクトにして、クリックできる感を出す */
+                                .btn.btn-add-main-custom:hover {
+                                    background-color: #fbcfe8 !important;
+                                    color: #0A2540 !important;
                                 }
                             </style>
                             <tr class="shadow-sm disabled-table" style="border-color: #cbd5e1;">
                                 <td class="text-start ps-3 border-top border-bottom border-start border-end rounded-start-3 table-clickable table-title-cell"
                                     onclick="openEditModal('Table 3', 2, true)">
                                     <div class="fw-bold text-secondary small text-decoration-line-through">Table 3</div>
-                                    <div class="text-danger fw-bold" style="font-size: 10px; letter-spacing: 0.5px;">DISABLED</div>
+                                    <div class="text-danger fw-bold" style="font-size: 10px; letter-spacing: 0.5px;">
+                                        DISABLED</div>
                                 </td>
                                 <td class="border-top border-bottom border-end disabled-timeline-cell"></td>
                                 <td class="border-top border-bottom border-end disabled-timeline-cell"></td>
@@ -312,82 +367,145 @@
     </div>
 
     @include('modals.edit_table')
+    @include('modals.add_table')
     @include('modals.reservation_details')
     @include('modals.new_reservation')
 
     <script>
         /**
-         * 1. テーブル編集モーダルを開く
+         * 1. テーブル編集モーダルを開く（トグル初期化 ＆ 通常画面へのリセット）
          */
         function openEditModal(name, capacity, isDisabled = false) {
-            hideConfirmView();
-
+            // モーダル内の入力フォームオブジェクトに値をセット
             document.getElementById('tableNameInput').value = name;
             document.getElementById('tableCapacityInput').value = capacity;
 
-            var disableBtn = document.getElementById('btnDisableTable');
-            var enableBtn = document.getElementById('btnEnableTable');
+            // トグルボタンの要素オブジェクトを取得
+            const enableBtn = document.getElementById('status-enable-btn');
+            const disableBtn = document.getElementById('status-disable-btn');
+            const statusInput = document.getElementById('table-status-input');
 
+            // 状態（isDisabled）に応じてトグルのアクティブクラスを制御
             if (isDisabled) {
-                disableBtn.classList.add('d-none');
-                enableBtn.classList.remove('d-none');
+                if (enableBtn) enableBtn.classList.remove('active-enable');
+                if (disableBtn) disableBtn.classList.add('active-disable');
+                if (statusInput) statusInput.value = 'disable';
             } else {
-                disableBtn.classList.remove('d-none');
-                enableBtn.classList.add('d-none');
+                if (enableBtn) enableBtn.classList.add('active-enable');
+                if (disableBtn) disableBtn.classList.remove('active-disable');
+                if (statusInput) statusInput.value = 'enable';
             }
 
+            // 💡 起動時は必ず「入力フォーム画面（通常ビュー）」にリセットする
+            hideConfirmView();
+
+            // 状態に応じて下部のアクションボタンオブジェクト（Delete / Enable）の表示を切り替え
+            if (name === 'Table 3' || isDisabled) {
+                if (document.getElementById('btnEnableTable')) document.getElementById('btnEnableTable').classList.remove(
+                    'd-none');
+                if (document.getElementById('btnDisableTable')) document.getElementById('btnDisableTable').classList.add(
+                    'd-none');
+            } else {
+                if (document.getElementById('btnDisableTable')) document.getElementById('btnDisableTable').classList.remove(
+                    'd-none');
+                if (document.getElementById('btnEnableTable')) document.getElementById('btnEnableTable').classList.add(
+                    'd-none');
+            }
+
+            // モーダルオブジェクトを起動
             var myModal = new bootstrap.Modal(document.getElementById('editTableModal'));
             myModal.show();
         }
 
         /**
-         * 2. モーダル内を「確認画面」に切り替える
+         * 2. 💡【アップデート】モーダル内を確認画面に切り替え ＋ トグルを非表示化
          */
         function showConfirmView(type) {
-            document.getElementById('modalMainFormView').classList.add('d-none');
-            document.getElementById('btnSaveChanges').classList.add('d-none');
-            document.getElementById('btnDisableTable').classList.add('d-none');
-            document.getElementById('btnEnableTable').classList.add('d-none');
+            // 💡 2段階確認中は右上のトグルオブジェクトを非表示にする
+            if (document.getElementById('modalHeaderToggle')) document.getElementById('modalHeaderToggle').classList.add(
+                'd-none');
 
-            document.getElementById('btnCancelConfirm').classList.remove('d-none');
+            // 通常のフォーム入力エリアと標準のボタンオブジェクト群を非表示にする
+            if (document.getElementById('modalMainFormView')) document.getElementById('modalMainFormView').classList.add(
+                'd-none');
+            if (document.getElementById('btnSaveChanges')) document.getElementById('btnSaveChanges').classList.add(
+                'd-none');
+            if (document.getElementById('btnDisableTable')) document.getElementById('btnDisableTable').classList.add(
+                'd-none');
+            if (document.getElementById('btnEnableTable')) document.getElementById('btnEnableTable').classList.add(
+                'd-none');
 
+            // ネイビーの戻る（Cancel）ボタンオブジェクトを表示
+            if (document.getElementById('btnCancelConfirm')) document.getElementById('btnCancelConfirm').classList.remove(
+                'd-none');
+
+            // タイプオブジェクト（disable または delete）に応じて確認画面を切り替え
             if (type === 'disable') {
-                document.getElementById('editTableModalLabel').innerText = 'Disable Table';
-                document.getElementById('editTableModalSub').innerText = 'Confirm table deactivation';
-                document.getElementById('modalDisableConfirmView').classList.remove('d-none');
-                document.getElementById('btnExecuteDisable').classList.remove('d-none');
-            } else if (type === 'enable') {
-                document.getElementById('editTableModalLabel').innerText = 'Enable Table';
-                document.getElementById('editTableModalSub').innerText = 'Confirm table activation';
-                document.getElementById('modalEnableConfirmView').classList.remove('d-none');
-                document.getElementById('btnExecuteEnable').classList.remove('d-none');
+                if (document.getElementById('editTableModalLabel')) document.getElementById('editTableModalLabel')
+                    .innerText = 'Disable Table';
+                if (document.getElementById('editTableModalSub')) document.getElementById('editTableModalSub').innerText =
+                    'Confirm table deactivation';
+                if (document.getElementById('modalDisableConfirmView')) document.getElementById('modalDisableConfirmView')
+                    .classList.remove('d-none');
+                if (document.getElementById('btnExecuteDisable')) document.getElementById('btnExecuteDisable').classList
+                    .remove('d-none');
+            } else if (type === 'delete') {
+                if (document.getElementById('editTableModalLabel')) document.getElementById('editTableModalLabel')
+                    .innerText = 'Delete Table';
+                if (document.getElementById('editTableModalSub')) document.getElementById('editTableModalSub').innerText =
+                    'Confirm table deletion';
+                if (document.getElementById('modalDeleteConfirmView')) document.getElementById('modalDeleteConfirmView')
+                    .classList.remove('d-none');
+                if (document.getElementById('btnExecuteDelete')) document.getElementById('btnExecuteDelete').classList
+                    .remove('d-none');
             }
         }
 
         /**
-         * 3. 確認画面から通常の「入力フォーム画面」に戻す
+         * 3. 💡【アップデート】通常画面に戻す ＋ トグルを再表示
          */
         function hideConfirmView() {
-            document.getElementById('editTableModalLabel').innerText = 'Edit Table';
-            document.getElementById('editTableModalSub').innerText = 'Update table information';
+            // 💡 通常画面に戻ったらトグルオブジェクトを再表示する
+            if (document.getElementById('modalHeaderToggle')) document.getElementById('modalHeaderToggle').classList.remove(
+                'd-none');
 
-            document.getElementById('modalDisableConfirmView').classList.add('d-none');
-            document.getElementById('modalEnableConfirmView').classList.add('d-none');
-            document.getElementById('btnCancelConfirm').classList.add('d-none');
-            document.getElementById('btnExecuteDisable').classList.add('d-none');
-            document.getElementById('btnExecuteEnable').classList.add('d-none');
+            // ヘッダーテキストオブジェクトの初期化
+            if (document.getElementById('editTableModalLabel')) document.getElementById('editTableModalLabel').innerText =
+                'Edit Table';
+            if (document.getElementById('editTableModalSub')) document.getElementById('editTableModalSub').innerText =
+                'Update table information';
 
-            document.getElementById('modalMainFormView').classList.remove('d-none');
-            document.getElementById('btnSaveChanges').classList.remove('d-none');
+            // 各種確認ビュー・確認ボタンオブジェクトを非表示にする
+            if (document.getElementById('modalDisableConfirmView')) document.getElementById('modalDisableConfirmView')
+                .classList.add('d-none');
+            if (document.getElementById('modalDeleteConfirmView')) document.getElementById('modalDeleteConfirmView')
+                .classList.add('d-none');
+            if (document.getElementById('btnCancelConfirm')) document.getElementById('btnCancelConfirm').classList.add(
+                'd-none');
+            if (document.getElementById('btnExecuteDisable')) document.getElementById('btnExecuteDisable').classList.add(
+                'd-none');
+            if (document.getElementById('btnExecuteDelete')) document.getElementById('btnExecuteDelete').classList.add(
+                'd-none');
 
-            var tableName = document.getElementById('tableNameInput').value;
+            // メインの入力フォームと保存ボタンオブジェクトを再表示
+            if (document.getElementById('modalMainFormView')) document.getElementById('modalMainFormView').classList.remove(
+                'd-none');
+            if (document.getElementById('btnSaveChanges')) document.getElementById('btnSaveChanges').classList.remove(
+                'd-none');
 
+            // テーブル名オブジェクトの状態に合わせてアクションボタンを復元
+            var tableName = document.getElementById('tableNameInput') ? document.getElementById('tableNameInput').value :
+                '';
             if (tableName === 'Table 3') {
-                document.getElementById('btnEnableTable').classList.remove('d-none');
-                document.getElementById('btnDisableTable').classList.add('d-none');
+                if (document.getElementById('btnEnableTable')) document.getElementById('btnEnableTable').classList.remove(
+                    'd-none');
+                if (document.getElementById('btnDisableTable')) document.getElementById('btnDisableTable').classList.add(
+                    'd-none');
             } else {
-                document.getElementById('btnDisableTable').classList.remove('d-none');
-                document.getElementById('btnEnableTable').classList.add('d-none');
+                if (document.getElementById('btnDisableTable')) document.getElementById('btnDisableTable').classList.remove(
+                    'd-none');
+                if (document.getElementById('btnEnableTable')) document.getElementById('btnEnableTable').classList.add(
+                    'd-none');
             }
         }
 
@@ -414,17 +532,17 @@
             myModal.show();
         }
 
-        //  5. 【追加】テーブル編集モーダルが閉じられたときに自動でフォーム表示へリセットする設定
+        // 5. モーダルが閉じられたときに自動でフォーム表示へリセットするイベントリスナーオブジェクト
         document.addEventListener("DOMContentLoaded", function() {
             var editTableModalElem = document.getElementById('editTableModal');
             if (editTableModalElem) {
-                editTableModalElem.addEventListener('hidden.bs.modal', function () {
+                editTableModalElem.addEventListener('hidden.bs.modal', function() {
                     hideConfirmView();
                 });
             }
         });
 
-        //  6. 画面の読み込みがすべて完了した瞬間に「即日予約モーダル」を自動表示
+        // 6. 画面読み込み完了時に「即日予約モーダル」を自動表示
         document.addEventListener("DOMContentLoaded", function() {
             var newResModalElem = document.getElementById('newReservationModal');
             if (newResModalElem) {
@@ -433,5 +551,4 @@
             }
         });
     </script>
-
 @endsection
