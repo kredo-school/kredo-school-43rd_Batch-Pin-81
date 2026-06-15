@@ -1,168 +1,131 @@
-<style>
-    /* 1つ目の確認画面：Backボタン（塗りつぶしネイビー） */
-    .btn-confirm-back {
-        background-color: #0A2540 !important;
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: 8px;
-        font-size: 15px;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn-confirm-back:hover {
-        opacity: 0.9 !important;
-    }
-
-    /*  赤枠系ボタン（初期は赤枠・背景透明 ➔ ホバーで赤塗りつぶし） */
-    .btn-outline-danger-custom {
-        background-color: transparent !important;
-        border: 1px solid #DC3545 !important;
-        color: #DC3545 !important;
-        border-radius: 8px;
-        font-size: 15px;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn-outline-danger-custom:hover {
-        background-color: #DC3545 !important;
-        color: #ffffff !important;
-    }
-
-    /*  緑枠系ボタン（初期は緑枠・背景透明 ➔ ホバーで緑塗りつぶし） */
-    .btn-outline-success-custom {
-        background-color: transparent !important;
-        border: 1px solid #198754 !important;
-        color: #198754 !important;
-        border-radius: 8px;
-        font-size: 15px;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn-outline-success-custom:hover {
-        background-color: #198754 !important;
-        color: #ffffff !important;
-    }
-</style>
-
-<!-- テーブル編集モーダル -->
 <div class="modal fade" id="editTableModal" tabindex="-1" aria-labelledby="editTableModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; background-color: #ffffff;">
-            
-            <!-- ヘッダーエリア -->
-            <div class="modal-header border-0 pb-0 px-4 pt-4 d-flex flex-column align-items-start">
-                <h4 class="modal-title fw-bold" id="editTableModalLabel" style="color: #0A2540;">Edit Table</h4>
-                <p class="text-secondary small mb-0" id="editTableModalSub">Update table information</p>
-            </div>
+        <div class="modal-content border-0 rounded-4 shadow">
 
-            <!-- 1️ 通常フォームビュー -->
-            <div id="modalMainFormView" class="modal-body px-4 pt-3 pb-2">
-                <div class="mb-3">
-                    <label for="tableNameInput" class="form-label text-secondary small fw-medium">Table Name</label>
-                    <input type="text" class="form-control" id="tableNameInput" style="border-radius: 8px; background-color: #f8f9fa;" readonly>
+            <div class="modal-header border-0 px-4 pt-4 pb-2 d-flex flex-column align-items-start position-relative">
+                <div class="d-flex align-items-center justify-content-between w-100 pe-5">
+                    <h5 class="modal-title fw-bold text-dark" id="editTableModalLabel" style="font-size: 20px; white-space: nowrap;">Edit Table</h5>
+
+                    <div id="modalHeaderToggle" class="btn-group border rounded-3 p-1 bg-white" style="height: 32px;">
+                        <button type="button" id="status-enable-btn" class="btn btn-sm fw-bold px-2 border-0 rounded-2 d-flex align-items-center"
+                            style="font-size: 11px; transition: all 0.2s; padding-top: 0; padding-bottom: 0;" onclick="toggleStatus('enable')">
+                            Active
+                        </button>
+                        <button type="button" id="status-disable-btn" class="btn btn-sm fw-bold px-2 border-0 rounded-2 d-flex align-items-center"
+                            style="font-size: 11px; transition: all 0.2s; padding-top: 0; padding-bottom: 0;" onclick="toggleStatus('disable')">
+                            Inactive
+                        </button>
+                    </div>
+                    <input type="hidden" id="table-status-input" name="status" value="enable">
                 </div>
-                <div class="mb-2">
-                    <label for="tableCapacityInput" class="form-label text-secondary small fw-medium">Seats (Capacity)</label>
-                    <input type="text" class="form-control" id="tableCapacityInput" style="border-radius: 8px; background-color: #f8f9fa;" readonly>
+                <p class="text-muted small mb-0 mt-1" id="editTableModalSub">Update table information</p>
+                <button type="button" class="btn-close position-absolute top-0 end-0 mt-4 me-3 shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="#" method="POST" id="editTableForm">
+                @csrf
+                @method('PUT')
+
+                <div id="modalMainFormView" class="modal-body px-4 py-2">
+                    <div class="mb-3 mt-2">
+                        <label for="tableNameInput" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 0.5px;">Table Name</label>
+                        <input type="text" class="form-control rounded-3" id="tableNameInput" name="name" required style="border-color: #cbd5e1; padding: 10px 12px;">
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="tableCapacityInput" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 0.5px;">Capacity (Seats)</label>
+                        <input type="number" class="form-control rounded-3" id="tableCapacityInput" name="capacity" min="1" max="20" required style="border-color: #cbd5e1; padding: 10px 12px;">
+                    </div>
                 </div>
-            </div>
 
-            <!-- 2️ 無効化確認ビュー -->
-            <div id="modalDisableConfirmView" class="modal-body px-4 pt-4 pb-3 text-center d-none">
-                <h5 class="fw-bold mb-2" style="font-size: 18px; color: #0A2540;">Are you sure you want to disable this table?</h5>
-                <p class="text-secondary small mb-0" style="font-size: 14px;">This table will hidden from the active schedule view immediately.</p>
-            </div>
+                <div id="modalDisableConfirmView" class="modal-body px-4 py-4 d-none">
+                    <div class="text-center">
+                        <p class="text-dark fw-bold mb-1" style="font-size: 16px;">Are you sure you want to deactivate this table?</p>
+                        <p class="text-secondary small mb-0">It will be hidden from the reservation timeline.</p>
+                    </div>
+                </div>
 
-            <!-- 3️ 有効化確認ビュー -->
-            <div id="modalEnableConfirmView" class="modal-body px-4 pt-4 pb-3 text-center d-none">
-                <h5 class="fw-bold mb-2" style="font-size: 18px; color: #0A2540;">Enable this table?</h5>
-                <p class="text-secondary small mb-0" style="font-size: 14px;">This table will appear back on the schedule layout.</p>
-            </div>
+                <div id="modalDeleteConfirmView" class="modal-body px-4 py-4 d-none">
+                    <div class="text-center">
+                        <p class="text-dark fw-bold mb-1" style="font-size: 16px;">Are you sure you want to delete this table?</p>
+                        <p class="text-danger small fw-medium mb-0">This action cannot be undone.</p>
+                    </div>
+                </div>
 
-            <!-- フッターボタンエリア -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-2 d-flex gap-2">
-                <!-- 【通常画面用ボタン】 -->
-                <button type="button" id="btnSaveChanges" class="btn flex-grow-1 text-white fw-bold py-2" style="background-color: #0A2540; border-radius: 8px; font-size: 15px;">Save Changes</button>
-                <button type="button" id="btnDisableTable" class="btn fw-bold py-2 px-3 btn-outline-danger-custom" onclick="showConfirmView('disable')">
-                    Disable Table
-                </button>
-                <button type="button" id="btnEnableTable" class="btn fw-bold py-2 px-3 btn-outline-success-custom d-none" onclick="showConfirmView('enable')">
-                    Enable Table
-                </button>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2 d-flex flex-column gap-2">
 
-                <!-- 【確認画面用ボタン】 -->
-                <button type="button" id="btnCancelConfirm" class="btn btn-confirm-back fw-bold py-2 px-4 d-none" onclick="hideConfirmView()">Back</button>
-                <button type="button" id="btnExecuteDisable" class="btn fw-bold py-2 flex-grow-1 btn-outline-danger-custom d-none">Yes, Disable Table</button>
-                <button type="button" id="btnExecuteEnable" class="btn fw-bold py-2 flex-grow-1 btn-outline-success-custom d-none">Yes, Enable Table</button>
-            </div>
+                    <div class="d-flex w-100 gap-2">
+                        <button type="button" id="btnDisableTable" class="btn btn-delete-custom rounded-3 flex-grow-1 fw-bold" style="height: 44px; font-size: 14px;" onclick="showConfirmView('delete')">
+                            Delete Table
+                        </button>
+                        <button type="button" id="btnEnableTable" class="btn btn-outline-success border rounded-3 flex-grow-1 fw-bold d-none" style="height: 44px; font-size: 14px;" onclick="toggleStatus('enable')">
+                            Enable Table
+                        </button>
+                        <button type="submit" id="btnSaveChanges" class="btn text-white rounded-3 flex-grow-1 fw-bold" style="background-color: #0A2540; height: 44px; font-size: 14px;">
+                            Save Changes
+                        </button>
+                    </div>
+
+                    <button type="button" id="btnCancelConfirm" class="btn text-white rounded-3 w-100 fw-bold d-none" style="background-color: #0A2540; height: 44px; font-size: 14px;" onclick="hideConfirmView()">
+                        Back to Edit
+                    </button>
+
+                    <button type="submit" id="btnExecuteDisable" class="btn btn-warning text-dark w-100 fw-bold rounded-3 d-none" style="height: 44px;">
+                        Confirm Deactivation
+                    </button>
+                    <button type="submit" id="btnExecuteDelete" class="btn btn-delete-custom w-100 fw-bold rounded-3 d-none" style="height: 44px;" >
+                        Delete Table
+                    </button>
+
+                </div>
+            </form>
 
         </div>
     </div>
 </div>
 
+<style>
+    .active-enable {
+        background-color: #22c55e !important;
+        color: white !important;
+        box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+    }
+
+    .active-disable {
+        background-color: #ef4444 !important;
+        color: white !important;
+        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    }
+
+    /* 通常時：白背景、赤文字、赤枠を確実に固定するオブジェクト */
+    .btn.btn-delete-custom {
+        color: #ef4444 !important;
+        background-color: #ffffff !important;
+        border: 1px solid #ef4444 !important;
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* ホバー時：赤背景、白文字へ確実に反転させるオブジェクト */
+    .btn.btn-delete-custom:hover {
+        background-color: #ef4444 !important;
+        color: #ffffff !important;
+    }
+</style>
+
 <script>
-    /**
-     *  確認ビューに切り替える関数オブジェクト
-     * @param {string} mode - 'disable' または 'enable'
-     */
-    function showConfirmView(mode) {
-        // 通常の入力フォームとボタンを隠す
-        document.getElementById('modalMainFormView').classList.add('d-none');
-        document.getElementById('btnSaveChanges').classList.add('d-none');
-        document.getElementById('btnDisableTable').classList.add('d-none');
-        document.getElementById('btnEnableTable').classList.add('d-none');
+    function toggleStatus(state) {
+        const enableBtn = document.getElementById('status-enable-btn');
+        const disableBtn = document.getElementById('status-disable-btn');
+        const statusInput = document.getElementById('table-status-input');
 
-        // 共通のBackボタンを表示
-        document.getElementById('btnCancelConfirm').classList.remove('d-none');
-
-        if (mode === 'disable') {
-            // ヘッダーテキストの切り替え
-            document.getElementById('editTableModalLabel').innerText = 'Disable Table';
-            document.getElementById('editTableModalSub').innerText = 'Confirm table deactivation';
-
-            // 無効化用の警告文と「Yes, Disable」ボタンを表示
-            document.getElementById('modalDisableConfirmView').classList.remove('d-none');
-            document.getElementById('btnExecuteDisable').classList.remove('d-none');
-        } else if (mode === 'enable') {
-            // ヘッダーテキストの切り替え
-            document.getElementById('editTableModalLabel').innerText = 'Enable Table';
-            document.getElementById('editTableModalSub').innerText = 'Confirm table activation';
-
-            // 有効化用の確認文と「Yes, Enable」ボタンを表示
-            document.getElementById('modalEnableConfirmView').classList.remove('d-none');
-            document.getElementById('btnExecuteEnable').classList.remove('d-none');
-        }
-    }
-
-    /**
-     *  通常のフォーム入力ビューに戻す関数オブジェクト
-     */
-    function hideConfirmView() {
-        // ヘッダーを元に戻す
-        document.getElementById('editTableModalLabel').innerText = 'Edit Table';
-        document.getElementById('editTableModalSub').innerText = 'Update table information';
-
-        // 確認用のテキストとボタンをすべて隠す
-        document.getElementById('modalDisableConfirmView').classList.add('d-none');
-        document.getElementById('modalEnableConfirmView').classList.add('d-none');
-        document.getElementById('btnCancelConfirm').classList.add('d-none');
-        document.getElementById('btnExecuteDisable').classList.add('d-none');
-        document.getElementById('btnExecuteEnable').classList.add('d-none');
-
-        // 通常フォームと通常のSaveボタンを再表示
-        document.getElementById('modalMainFormView').classList.remove('d-none');
-        document.getElementById('btnSaveChanges').classList.remove('d-none');
-
-        // 現在のテーブルの状態（無効化されているかどうか）を判定して、適切な通常ボタンを出す
-        // ※この判定は元のコードのロジック変数と連動させてください
-        var isCurrentlyDisabled = document.getElementById('btnEnableTable').classList.contains('active-state-check'); 
-        
-        if (isCurrentlyDisabled) {
-            document.getElementById('btnEnableTable').classList.remove('d-none');
+        if (state === 'enable') {
+            if (enableBtn) enableBtn.classList.add('active-enable');
+            if (disableBtn) disableBtn.classList.remove('active-disable');
+            if (statusInput) statusInput.value = 'enable';
         } else {
-            document.getElementById('btnDisableTable').classList.remove('d-none');
+            if (enableBtn) enableBtn.classList.remove('active-enable');
+            if (disableBtn) disableBtn.classList.add('active-disable');
+            if (statusInput) statusInput.value = 'disable';
         }
     }
-
-    // モーダルが完全に閉じられた時、自動で通常画面表示へリセットするイベントリスナー
-    document.getElementById('editTableModal').addEventListener('hidden.bs.modal', function () {
-        hideConfirmView();
-    });
 </script>
