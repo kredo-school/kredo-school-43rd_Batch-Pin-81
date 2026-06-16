@@ -10,9 +10,10 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantSearchController;
+use App\Http\Controllers\MyReservationController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -22,7 +23,6 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::get('/menu', [MenuController::class, 'index'])->name('menu');
   Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
 });
-
 
 // User
 Route::get('/login', [UserController::class, 'login'])->name('login');
@@ -41,7 +41,6 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
 });
 
-
 // Page for disply restaurants after search
 Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
 
@@ -53,25 +52,20 @@ Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
 })->name('booking.confirmation');
 
-// 1. My Reservations Page (The list view)
-Route::get('/my_reservations', [RestaurantSearchController::class, 'index'])
+// My Reservations Page
+Route::get('/my_reservations', [MyReservationController::class, 'index'])
   ->name('my_reservations');
-
-// 2. Reservation Confirmation Success Page
-// Passing the reservation ID or confirmation code to display the specific confirmation card
-Route::get('/my_reservations/{reservation}/confirmed', [RestaurantSearchController::class, 'confirmed'])
-  ->name('my_reservations.confirmed');
-
-// 3. Edit / Change Booking Page
-Route::get('/my_reservations/{reservation}/edit', [RestaurantSearchController::class, 'edit'])
+Route::get('/my_reservations/{reservation}/edit', [MyReservationController::class, 'edit'])
   ->name('my_reservations.edit');
-Route::put('/my_reservations/{reservation}', [RestaurantSearchController::class, 'update'])
+Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])
   ->name('my_reservations.update');
-
-// 4. "I'll be late" Notification (Custom Action)
-Route::post('/my_reservations/{reservation}/notify-late', [RestaurantSearchController::class, 'notifyLate'])
+Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])
   ->name('my_reservations.notify-late');
-
-// 5. Cancel Booking (Destroys the resource or updates status)
-Route::delete('/my_reservations/{reservation}', [RestaurantSearchController::class, 'destroy'])
+Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])
   ->name('my_reservations.destroy');
+
+// Favorites Page
+Route::get('/favorites', [FavoriteController::class, 'view'])
+  ->name('favorites.index');
+Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])
+  ->name('favorites.destroy');
