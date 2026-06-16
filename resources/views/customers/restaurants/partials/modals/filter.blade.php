@@ -1,6 +1,6 @@
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content" style="background-color: #fffefc">
+        <div class="modal-content" style="background-color: #fffefc; font-family: inter;">
 
             <button
                 type="button"
