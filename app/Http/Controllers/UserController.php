@@ -20,4 +20,9 @@ class UserController extends Controller
     {
         return view('auth.restaurant-register');
     }
+
+    public function settings()
+    {
+        return view('customer.settings');
+    }
 }
