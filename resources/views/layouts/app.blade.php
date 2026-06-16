@@ -270,7 +270,7 @@
                         <i class="bi bi-chat-left fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('customer.settings') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Settings">
                         <i class="bi bi-gear fs-5"></i>
