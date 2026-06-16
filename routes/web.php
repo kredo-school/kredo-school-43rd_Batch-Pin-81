@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
   Route::get('/menu', [MenuController::class, 'index'])->name('menu');
   Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
+  Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
 });
 
 

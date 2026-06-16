@@ -113,7 +113,7 @@
                     <i class="fa-solid fa-bars me-3" style="width: 20px;"></i>Menu
                 </a>
 
-                <a href="#"
+                <a href="{{ route('restaurant.photos')}}"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.photos') ? '' : 'bg-transparent text-white-50' }}"
                     style="{{ request()->routeIs('restaurant.photos') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-regular fa-image me-3" style="width: 20px;"></i>Photos
@@ -125,7 +125,7 @@
                     <i class="fa-regular fa-star me-3" style="width: 20px;"></i>Reviews
                 </a>
 
-                <a href="#"
+                <a href="{{ route('restaurant.notifications')}}"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.notifications') ? '' : 'bg-transparent text-white-50' }}"
                     style="{{ request()->routeIs('restaurant.notifications') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-regular fa-bell me-3" style="width: 20px;"></i>Notifications
