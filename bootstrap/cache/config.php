@@ -1,26 +1,4 @@
 <?php return array (
-  'hashing' => 
-  array (
-    'driver' => 'bcrypt',
-    'bcrypt' => 
-    array (
-      'rounds' => '12',
-      'verify' => true,
-      'limit' => NULL,
-    ),
-    'argon' => 
-    array (
-      'memory' => 65536,
-      'threads' => 1,
-      'time' => 4,
-      'verify' => true,
-    ),
-    'rehash_on_login' => true,
-  ),
-  'concurrency' => 
-  array (
-    'default' => 'process',
-  ),
   'broadcasting' => 
   array (
     'default' => 'log',
@@ -77,13 +55,9 @@
       ),
     ),
   ),
-  'view' => 
+  'concurrency' => 
   array (
-    'paths' => 
-    array (
-      0 => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/resources/views',
-    ),
-    'compiled' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/framework/views',
+    'default' => 'process',
   ),
   'cors' => 
   array (
@@ -113,6 +87,32 @@
     'max_age' => 0,
     'supports_credentials' => false,
   ),
+  'hashing' => 
+  array (
+    'driver' => 'bcrypt',
+    'bcrypt' => 
+    array (
+      'rounds' => '12',
+      'verify' => true,
+      'limit' => NULL,
+    ),
+    'argon' => 
+    array (
+      'memory' => 65536,
+      'threads' => 1,
+      'time' => 4,
+      'verify' => true,
+    ),
+    'rehash_on_login' => true,
+  ),
+  'view' => 
+  array (
+    'paths' => 
+    array (
+      0 => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\resources\\views',
+    ),
+    'compiled' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\framework\\views',
+  ),
   'app' => 
   array (
     'name' => 'Pin+81',
@@ -126,7 +126,7 @@
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
     'cipher' => 'AES-256-CBC',
-    'key' => 'base64:ylC33jbS9A24DJCKMqtpjTNnOGUHaEZfDH0vdhoCQ3c=',
+    'key' => 'base64:JeCY516ndHuwZSNsVf1eDsqIWsjLSFqRBa3IdRxHfA4=',
     'previous_keys' => 
     array (
     ),
@@ -273,8 +273,8 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/framework/cache/data',
-        'lock_path' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/framework/cache/data',
+        'path' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\framework/cache/data',
+        'lock_path' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -351,10 +351,10 @@
         'driver' => 'mysql',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
+        'port' => '3307',
         'database' => 'pin_81',
         'username' => 'root',
-        'password' => 'root',
+        'password' => '',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -371,10 +371,10 @@
         'driver' => 'mariadb',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
+        'port' => '3307',
         'database' => 'pin_81',
         'username' => 'root',
-        'password' => 'root',
+        'password' => '',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -391,10 +391,10 @@
         'driver' => 'pgsql',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
+        'port' => '3307',
         'database' => 'pin_81',
         'username' => 'root',
-        'password' => 'root',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -406,10 +406,10 @@
         'driver' => 'sqlsrv',
         'url' => NULL,
         'host' => '127.0.0.1',
-        'port' => '3306',
+        'port' => '3307',
         'database' => 'pin_81',
         'username' => 'root',
-        'password' => 'root',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -465,7 +465,7 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/app/private',
+        'root' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\app/private',
         'serve' => true,
         'throw' => false,
         'report' => false,
@@ -473,7 +473,7 @@
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/app/public',
+        'root' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
         'throw' => false,
@@ -495,7 +495,7 @@
     ),
     'links' => 
     array (
-      '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/public/storage' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/app/public',
+      'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\public\\storage' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\app/public',
     ),
   ),
   'logging' => 
@@ -520,14 +520,14 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/logs/laravel.log',
+        'path' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\logs/laravel.log',
         'level' => 'debug',
         'replace_placeholders' => true,
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/logs/laravel.log',
+        'path' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
         'replace_placeholders' => true,
@@ -592,7 +592,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/logs/laravel.log',
+        'path' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -670,7 +670,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/resources/views/vendor/mail',
+        0 => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\resources\\views/vendor/mail',
       ),
       'extensions' => 
       array (
@@ -785,7 +785,7 @@
     'lifetime' => 120,
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/Users/hikari/Desktop/kredo-school-43rd_Batch-Pin-81/storage/framework/sessions',
+    'files' => 'C:\\Users\\Rikako\\Documents\\Projects\\Kredo\\kredo-school-43rd_Batch-Pin-81\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
