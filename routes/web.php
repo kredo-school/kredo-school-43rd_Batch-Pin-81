@@ -12,7 +12,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantSearchController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -41,6 +40,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/user/{user}/follow', [ReviewController::class, 'toggleFollow'])->name('user.follow');
+    Route::get('/user/{user}/profile', [ReviewController::class, 'userProfile'])->name('user.profile');
 });
 
 
