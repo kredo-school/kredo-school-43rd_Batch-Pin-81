@@ -1,6 +1,6 @@
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content" style="background-color: #fffefc">
+        <div class="modal-content" style="background-color: #fffefc; font-family: inter;">
 
             <button
                 type="button"
@@ -12,7 +12,7 @@
             <form id="filterForm" 
                 class="d-flex justify-content-between"
                 method="GET"
-                action="{{ url('/view-restaurants') }}">
+                action="{{ url('/restaurants/view') }}">
 
                 <!-- Body -->
                 <div class="modal-body mt-5 mx-4 mb-2" style="color: #0a2540; font-family: inter">

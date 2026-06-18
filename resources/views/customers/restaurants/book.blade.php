@@ -13,7 +13,7 @@
                 <a class="text-navy fw-semibold text-decoration-none hover-underline" href="{{ route('register') }}">Create an account</a>
             </p>
 
-            <form action="#" method="POST">
+            <form action="{{ route('booking.store') }}" method="POST">
                 @csrf
 
                 <div class="row g-3 mb-3">

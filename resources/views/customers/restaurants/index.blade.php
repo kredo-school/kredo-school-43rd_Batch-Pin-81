@@ -179,19 +179,19 @@ $restaurants = [
 ];
 @endphp
 
-<div class="container bg-secondary"> 
+<div class="container bg-light"> 
     {{-- Desktop --}}
-    <div class="mb-3 filter-bar d-none d-md-block">
+    <div class="mb-3 filter-bar d-none d-md-block bg-white">
 
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="h4" style="color: #0a2540;">
+            <h5 class="h4 fw-bold" style="color: #0a2540;">
                 125 Restaurants Found
             </h5>
 
             <button class="btn filter-btn ms-3 flex-shrink-0"
                     data-bs-toggle="modal"
                     data-bs-target="#filterModal">
-                <i class="fa-solid fa-sliders"></i> Filters
+                    <i class="fa-solid fa-sliders"></i> Filters
             </button>
         </div>
 
@@ -227,7 +227,6 @@ $restaurants = [
 
     {{-- Mobile --}}
     <div class="d-flex justify-content-between align-items-center mb-3 d-md-none">
-
         <div>
             <h5 class="mb-0">125 Restaurants Found</h5>
         </div>
@@ -236,9 +235,8 @@ $restaurants = [
             class="btn filter-btn rounded-pill"
             data-bs-toggle="modal"
             data-bs-target="#filterModal">
-            <i class="fa-solid fa-sliders"></i>
+            <i class="bi bi-sliders"></i>
         </button>
-
     </div>
 
 
@@ -258,23 +256,25 @@ $restaurants = [
 <style>
     .filter-bar{
         position: sticky;
-        top: 0;
+        top: 50px;
         z-index: 100;
-
-        background-color: rgba(255, 254, 252, 0.90);
         padding: 12px 0;
+        --bs-bg-opacity: .9;
+        border-radius: 10px;
     }
 
     .filter-btn{
-        background-color: #FCE7F3;
+        background-color: transparent;
         color: #0a2540; /* text color */
+        border: 2px solid #0a2540;
+        font-weight: 600;
         cursor: pointer;
         transition: 0.3s;
     }
 
     .filter-btn:hover{
-        background-color: #fdd6eb;
-        color: #0a2a5e;
+        background-color: #0a2540;
+        color: #fff;
     }
 
 </style>

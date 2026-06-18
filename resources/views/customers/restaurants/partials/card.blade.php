@@ -1,36 +1,35 @@
  <a href="#"
     class="text-decoration-none">
 
-    <div class="card restaurant-card h-100" style="background: #fffefc;">
+    <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: #fff; color: #0a2540;">
       <div class="row g-0">
 
         <!-- Image -->
-        <div class="col-4 col-md-12">
+        <div class="col-4 restaurant-card col-md-12">
             <img
                 src="{{ /*$restaurant->image*/ $restaurant['image'] }}"
-                class="restaurant-image"
                 alt="{{ /*$restaurant->name*/ $restaurant['name'] }}"
             >
         </div>
 
         <!-- Content -->
         <div class="col-8 col-md-12">
-            <div class="card-body " style="color: #0a2540;">
+            <div class="card-body">
 
-                {{-- Rating --}}
+                {{-- Name & Rating --}}
                 <div class="d-flex justify-content-between align-items-start mb-0">
                     <h4 class="fw-bold">{{ /*$restaurant->name*/ $restaurant['name'] }}</h4>
-                    <span class="small text-nowrap">⭐ {{ /*$restaurant->rating*/ $restaurant['rating']}} ({{ $restaurant['review_count'] }})</span>
+                    <i class="fa-solid fa-star text-warning"></i><span class="small text-nowrap"> {{ /*$restaurant->rating*/ $restaurant['rating']}} ({{ $restaurant['review_count'] }})</span>
                 </div>
 
                 {{-- Category --}}
                 <div class="d-flex justify-content-start">
-                  <p class="mb-1 d-inline pe-4" style="color: #0a2540;">{{ /*$restaurant->category*/ $restaurant['category'] }}</p>
+                  <p class="mb-1 d-inline pe-4">{{ /*$restaurant->category*/ $restaurant['category'] }}</p>
                 </div>
 
-                {{-- Area --}}
+                {{-- Location --}}
                 <div class="d-flex justify-content-start">
-                  <p class="mb-1" style="color: #0a2540;">
+                  <p class="mb-1">
                     <i class="fa-solid fa-location-dot location-icon"></i>
                     {{ /*$restaurant->area*/ $restaurant['area'] }}
                   </p>
@@ -39,7 +38,7 @@
                 {{-- Avalable time --}}
                 <div class="mb-2">
 
-                  <p class="mb-1" style="color: #0a2540;">
+                  <p class="mb-1">
                     <i class="fa-regular fa-clock time-icon"></i>
                     Avalable Now
                   </p>
@@ -113,7 +112,7 @@
   </a>
 
 {{-- include  the modal here --}}
-@include('customers.restaurants.partials.modals.booking-options')
+@include('customers.restaurants.partials.modals.booking_options')
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -140,9 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <style>
   /* Desktop */
   .restaurant-card {
-    border: 1px solid rgb(238, 238, 238);
-    border-radius: 20px;
-    overflow: hidden;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     cursor: pointer;
   }
@@ -181,8 +177,6 @@ document.addEventListener('DOMContentLoaded', function () {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-
-
 
   /* Design for both*/
   .location-icon{

@@ -3,26 +3,27 @@
 use App\Http\Controllers\Customer\ContactController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\ReservationsController;
-use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantSearchController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\MyReservationController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
+// use Illuminate\Support\Facades\Auth;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restau rant'*/], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function () {
   Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
   Route::get('/menu', [MenuController::class, 'index'])->name('menu');
   Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
+  Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
 });
-
 
 // User
 Route::get('/login', [UserController::class, 'login'])->name('login');
@@ -31,10 +32,8 @@ Route::get('/register', [UserController::class, 'register'])->name('register');
 // Register page for restaurant
 Route::get('/restaurant/register', [UserController::class, 'registerRestaurant'])->name('register.restaurant');
 
-
-
 //Customer
-Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restau rant'*/], function () {
+Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {
 
     Route::get('/search', [CustomerController::class, 'index'])->name('search');
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
@@ -46,8 +45,34 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
     Route::get('/user/{user}/profile', [ReviewController::class, 'userProfile'])->name('user.profile');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
     Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
 });
 
-
 // Page for disply restaurants after search
-Route::get('/view/restaurants', [App\Http\Controllers\RestaurantSearchController::class, 'view'])->name('view.restaurants');
+Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
+
+// Restaurant Page for customer
+Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
+Route::get('/booking', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
+Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
+Route::get('/booking/confirmation', function () {
+  return view('customers.restaurants.booking_confirmation');
+})->name('booking.confirmation');
+
+// My Reservations Page
+Route::get('/my_reservations', [MyReservationController::class, 'index'])
+  ->name('my_reservations');
+Route::get('/my_reservations/{reservation}/edit', [MyReservationController::class, 'edit'])
+  ->name('my_reservations.edit');
+Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])
+  ->name('my_reservations.update');
+Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])
+  ->name('my_reservations.notify-late');
+Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])
+  ->name('my_reservations.destroy');
+
+// Favorites Page
+Route::get('/favorites', [FavoriteController::class, 'view'])
+  ->name('favorites.index');
+Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])
+  ->name('favorites.destroy');

@@ -95,7 +95,7 @@
         width: 100%;
         max-width: 500px;
         margin: 0 auto;
-        border: 1px solid #FCE7F3;
+        border: none;
         border-radius: 10px;
     }
     

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Reservation;
 
 class RestaurantSearchController extends Controller
 {
@@ -30,5 +31,12 @@ class RestaurantSearchController extends Controller
     public function displayBookingPage()
     {
         return view('customers.restaurants.book');
+    }
+
+    public function store(Request $request)
+    {
+        // Save booking to database
+
+        return redirect()->route('booking.confirmation');
     }
 }
