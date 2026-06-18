@@ -56,4 +56,18 @@ class User extends Authenticatable
         // 例2: UI Avatarsなどのサービスを使って名前からイニシャルを生成する場合（便利！）
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name) . '&color=7F9CF5&background=EBF4FF';
     }
+
+    #FOLLOW
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
+    }
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
+    }
+    public function isFollowing($userId)
+    {
+        return $this->followings()->where('following_id', $userId)->exists();
+    }
 }

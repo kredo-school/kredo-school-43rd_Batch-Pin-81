@@ -177,9 +177,9 @@
 </div>
 
 {{-- include  the modal here --}}
-@include('customers.restaurants.partials.modals.cancel')
-@include('customers.restaurants.partials.modals.notify_late')
-@include('customers.restaurants.partials.modals.edit')
+@include('customers.my_reservations.modals.cancel')
+@include('customers.my_reservations.modals.notify_late')
+@include('customers.my_reservations.modals.edit')
 
 <div class="chat-widget-btn">
     <i class="bi bi-chat-left-text-fill fs-4"></i>
