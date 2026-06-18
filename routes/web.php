@@ -16,6 +16,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -42,6 +43,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
   Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
+  Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 
 
 
