@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MyReservationController extends Controller
@@ -60,7 +61,7 @@ class MyReservationController extends Controller
             ]
         ];
 
-        return view('customers.restaurants.my_reservations', compact('upcomingReservations', 'pastReservations'));
+        return view('customers.my_reservations.index', compact('upcomingReservations', 'pastReservations'));
     }
 
     // Notify late
