@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Customer\ContactController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PhotoController;
@@ -7,11 +8,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\RestaurantSearchController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RestaurantSearchController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -43,6 +44,8 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::post('/user/{user}/follow', [ReviewController::class, 'toggleFollow'])->name('user.follow');
     Route::get('/user/{user}/profile', [ReviewController::class, 'userProfile'])->name('user.profile');
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+    Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 });
 
 
