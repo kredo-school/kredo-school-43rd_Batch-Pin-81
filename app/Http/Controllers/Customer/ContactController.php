@@ -18,6 +18,6 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        return back()->with('success', 'メッセージを送信しました！');
+        return back()->with('success', 'Your message was sent successfully！');
     }
 }

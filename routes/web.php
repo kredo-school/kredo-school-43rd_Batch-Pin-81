@@ -8,6 +8,7 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RestaurantSearchController;
+use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MyReservationController;
@@ -58,6 +59,7 @@ Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'
 Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
 })->name('booking.confirmation');
+Route::get('/restaurant/reviews', [RestaurantReviewController::class, 'index'])->name('restaurant.reviews.index');
 
 // My Reservations Page
 Route::get('/my_reservations', [MyReservationController::class, 'index'])
