@@ -107,14 +107,14 @@
                 <div class="review-card p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
-                            <h5 class="fw-bold text-navy mb-1">{{ $review['user_name'] }}</h5>
+                            <h5 class="fw-bold text-navy mb-1">USER</h5>
                             <div class="d-flex align-items-center gap-2">
                                 <div class="star-rating small">
                                     @for ($i = 1; $i <= 5; $i++)
-                                        <i class="bi {{ $i <= $review['rating'] ? 'bi-star-fill' : 'bi-star-muted' }}"></i>
+                                        <i class="bi {{ $i <= $review->rating ? 'bi-star-fill' : 'bi-star-muted' }}"></i>
                                     @endfor
                                 </div>
-                                <small class="text-muted">{{ $review['date'] }}</small>
+                                <small class="text-muted">2026/06/19</small>
                             </div>
                         </div>
                         <a href="#" class="btn-report d-flex align-items-center gap-1">
@@ -123,12 +123,12 @@
                     </div>
 
                     <p class="text-navy mb-3" style="line-height: 1.6;">
-                        {{ $review['comment'] }}
+                        {{ $review->comment }}
                     </p>
 
-                    @if (!empty($review['images']))
+                    @if (!empty($review->images))
                         <div class="d-flex gap-2">
-                            @foreach ($review['images'] as $imgUrl)
+                            @foreach ($review->images as $imgUrl)
                                 <img src="{{ $imgUrl }}" alt="Review Image" class="review-img">
                             @endforeach
                         </div>
