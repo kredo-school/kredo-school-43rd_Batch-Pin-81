@@ -1,6 +1,6 @@
 <div class="modal fade" id="bookingOptionsModal" tabindex="-1" aria-labelledby="guestModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow position-relative" style="background-color: #fffefc">
+        <div class="modal-content border-0 shadow position-relative" style="background-color: #fffefc; font-family: inter; color: #0a2540;">
 
             <button
                 type="button"
@@ -17,11 +17,11 @@
                     Create an account for faster bookings and to manage your reservations.
                 </p>
 
-                <a href="/register" class="btn custom-btn-a w-100 mb-3">
+                <a href="/register" class="btn custom-btn-a w-100 mb-3 fw-semibold">
                     Create Account
                 </a>
 
-                <a href="#" class="btn custom-btn-b w-100 mb-4">
+                <a href="#" class="btn custom-btn-b w-100 mb-4 fw-semibold">
                     Continue as Guest
                 </a>
 
