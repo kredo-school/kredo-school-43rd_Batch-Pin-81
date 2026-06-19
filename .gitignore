@@ -1,3 +1,14 @@
+/storage/framework/cache/data/*
+/storage/framework/views/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+
+# Prevent absolute paths and specific corrupted folders
+**/C\:*
+**/*kredo-school-43rd-batch*
+**/Users/*
+
+# Standard ignores
 *.log
 .DS_Store
 .env
