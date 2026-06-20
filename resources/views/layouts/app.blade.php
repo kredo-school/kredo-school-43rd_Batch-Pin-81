@@ -260,7 +260,7 @@
                         <i class="bi bi-person fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('customer.notifications') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Notifications">
                         <i class="bi bi-bell fs-5"></i>
