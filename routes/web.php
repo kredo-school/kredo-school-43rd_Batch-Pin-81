@@ -12,7 +12,9 @@ use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\UserController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
+use App\Http\Controllers\Restaurant\OwnerAccountController;
 use App\Http\Controllers\Restaurant\PhotoController;
+use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +28,15 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::get('/menu', [MenuController::class, 'index'])->name('menu');
   Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
+  Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit'); 
+  Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
+  Route::middleware(['auth'])->group(function () {
+    // 画面表示用のURLをブラウザのURLと完全一致させます
+    Route::get('/restaurant/settings/owner_account', [OwnerAccountController::class, 'edit'])->name('restaurant.settings.owner_account.edit');
+  Route::get('owner_account', [OwnerAccountController::class, 'edit'])->name('owner_account.edit');
+  Route::any('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
+  Route::post('owner_account/verify', [OwnerAccountController::class, 'verifyCode'])->name('owner_account.verify');
+  Route::put('owner_account', [OwnerAccountController::class, 'update'])->name('owner_account.update'); 
 });
 
 // User
@@ -82,3 +93,4 @@ Route::get('/favorites', [FavoriteController::class, 'view'])
   ->name('favorites.index');
 Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])
   ->name('favorites.destroy');
+});
