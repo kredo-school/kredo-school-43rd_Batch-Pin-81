@@ -1,25 +1,22 @@
 <?php
 
 #Restaurant
-use App\Http\Controllers\Restaurant\ReservationController;
-use App\Http\Controllers\Restaurant\MenuController;
-use App\Http\Controllers\Restaurant\PhotoController;
-use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
-use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
-
-
-#Customer
-use App\Http\Controllers\Customer\UserController;
-use App\Http\Controllers\Customer\CustomerController;
-use App\Http\Controllers\Customer\ProfileController;
-use App\Http\Controllers\Customer\ReviewController; 
-use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Customer\ContactController;
-use App\Http\Controllers\Customer\RestaurantSearchController; 
-use App\Http\Controllers\Customer\MyReservationController;
+use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\FavoriteController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Customer\MyReservationController;
+use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
+use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\RestaurantSearchController; 
+use App\Http\Controllers\Customer\ReviewController; 
+use App\Http\Controllers\Customer\UserController;
+use App\Http\Controllers\Restaurant\MenuController;
+use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
+use App\Http\Controllers\Restaurant\PhotoController;
+use App\Http\Controllers\Restaurant\ReservationController;
+use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
