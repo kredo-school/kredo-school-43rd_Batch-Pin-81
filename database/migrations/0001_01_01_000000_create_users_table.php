@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->longText('avatar')->nullable();
+            $table->string('avatar')->nullable();
             $table->unsignedTinyInteger('role_id')->default(1)->comment('1:user, 2:restaurant, 3:admin');
             $table->rememberToken();
             $table->timestamps();
