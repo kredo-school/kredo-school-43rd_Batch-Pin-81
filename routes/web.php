@@ -15,6 +15,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Customer\ReviewController; 
 
 
 Auth::routes();
@@ -82,3 +83,7 @@ Route::get('/favorites', [FavoriteController::class, 'view'])
     ->name('favorites.index');
 Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])
     ->name('favorites.destroy');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
