@@ -9,7 +9,7 @@
         <div class="container" style="max-width: 740px;">
             
             <div class="d-flex align-items-center mb-4" style="padding-left: 10px;">
-                <a href="/customer/my-page" class="text-decoration-none d-flex align-items-center justify-content-center me-3"
+                <a href="/customer/my_page" class="text-decoration-none d-flex align-items-center justify-content-center me-3"
                     style="color: #051d3b; transition: transform 0.2s;">
                     <i class="fa-solid fa-chevron-left" style="font-size: 1.2rem;"></i>
                 </a>
