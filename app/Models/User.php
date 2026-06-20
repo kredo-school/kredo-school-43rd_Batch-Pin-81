@@ -5,13 +5,28 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
+
+    const ROLE_USER = 1;
+    const ROLE_RESTAURANT = 2;
+    const ROLE_ADMIN = 3;
+
+    public function isAdmin()
+    {
+        return $this->role_id == self::ROLE_ADMIN;
+    }
+
+    public function isRestaurant()
+    {
+        return $this->role_id == self::ROLE_RESTAURANT;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -19,9 +34,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
+        'avatar',
+        'role_id',
     ];
 
     /**
@@ -46,14 +64,18 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim(sprintf('%s %s', $this->first_name ?? '', $this->last_name ?? ''));
+    }
+
     public function getAvatarUrlAttribute()
     {
-        if ($this->profile_image) {
-            return asset('storage/' . $this->profile_image);
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
         }
-        // return asset('images/default-avatar.png');
 
-        // 例2: UI Avatarsなどのサービスを使って名前からイニシャルを生成する場合（便利！）
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name) . '&color=7F9CF5&background=EBF4FF';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name ?: 'User') . '&color=7F9CF5&background=EBF4FF';
     }
 }
