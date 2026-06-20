@@ -3,12 +3,12 @@
 @section('title', 'Register Restaurant')
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center min-vh-100" style="background-color: #fffefc;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100" style="font-family: inter;">
     
         <div class="col-12 col-md-10 col-lg-5">
 
             {{-- Application Card --}}
-            <div class="card shadow-sm">
+            <div class="card shadow-sm bg-white border-0" style="max-width: 600px; width: 100%; border-radius: 16px;">
                 <div class="card-body p-4">
                     <h3 
                       class="card-title fw-bold text-center mb-4" 
@@ -38,24 +38,6 @@
                             </span>
                         @enderror
                      
-                        {{-- Owner Name --}}
-                        <label for="owner_name" class="form-label fw-semibold">{{ __('Owner Name') }}</label>
-
-                        <input 
-                        id="owner_name" 
-                        type="text" 
-                        class="form-control mb-3 @error('owner_name') is-invalid @enderror" 
-                        name="owner_name" 
-                        value="{{ old('owner_name') }}" 
-                        placeholder="Full Name" 
-                        required 
-                        autocomplete="owner_name">
-
-                        @error('last_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
                         
                         {{-- Phone Number --}}
                         <label for="phone" class="form-label fw-semibold">Phone Number *</label>
@@ -239,7 +221,6 @@
         width: 100%;
         max-width: 500px;
         margin: 0 auto;
-        border: 1px solid #FCE7F3;
         border-radius: 10px;
     }
     
@@ -248,10 +229,6 @@
         box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25);
     }
 
-    /* Label decoration */
-    label{
-        color: #0a2540;
-    }
 
 
     /* Check box */

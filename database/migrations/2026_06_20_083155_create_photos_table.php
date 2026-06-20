@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('photos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('restaurant_id');
-            $table->decimal('price', 8, 2);
-            $table->enum('menu_category', ['food', 'drink']);
-            $table->text('description')->nullable();
-            $table->string('menu_image')->nullable();
+            // food, drink以外の写真の際はnullだからnullable
+            $table->unsignedBigInteger('menu_id')->nullable();
+            $table->string('photo_path');
+            $table->enum('photo_category', ['food', 'drink', 'exterior', 'interior', 'other']);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+
+            $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('photos');
     }
 };
