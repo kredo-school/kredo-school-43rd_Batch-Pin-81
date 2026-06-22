@@ -140,6 +140,23 @@
         .btn-back:hover {
             color: #0f2d4a;
         }
+
+        .btn-followup {
+            background-color: #8596a6;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-followup:not(:disabled) {
+            background-color: #0b2238;
+            cursor: pointer;
+        }
+
+        .btn-followup:not(:disabled):hover {
+            background-color: #143554;
+        }
     </style>
 
     <div class="container py-5" style="max-width: 800px;">
@@ -174,13 +191,13 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed fw-semibold text-navy" type="button"
                             data-bs-toggle="collapse" data-bs-target="#faq1">
-                            How do I cancel a reservation?
+                            How do I change my restaurant's operating hours?
                         </button>
                     </h2>
                     <div id="faq1" class="accordion-collapse collapse">
                         <div class="accordion-body text-muted">
-                            Go to My Bookings, find your reservation, and click 'Cancel'. You must cancel at least 24 hours
-                            before your reservation time to avoid a cancellation fee.
+                            Go to Restaurant Information and scroll to the Operating Hours section. You can set different
+                            hours for each day of the week and mark days as closed.
                         </div>
                     </div>
                 </div>
@@ -189,13 +206,13 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed fw-semibold text-navy" type="button"
                             data-bs-toggle="collapse" data-bs-target="#faq2">
-                            How do I leave a review?
+                            What payment methods are accepted?
                         </button>
                     </h2>
                     <div id="faq2" class="accordion-collapse collapse">
                         <div class="accordion-body text-muted">
-                            You can leave a review by going to the restaurant's page after your reservation is completed.
-                            You can also add photos to your review.
+                            Pin+81 accepts credit cards, debit cards, and bank transfers. All payments are processed
+                            securely through our payment gateway.
                         </div>
                     </div>
                 </div>
@@ -204,13 +221,13 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed fw-semibold text-navy" type="button"
                             data-bs-toggle="collapse" data-bs-target="#faq3">
-                            What if the restaurant cancels my reservation?
+                            How do I cancel my subscription?
                         </button>
                     </h2>
                     <div id="faq3" class="accordion-collapse collapse">
                         <div class="accordion-body text-muted">
-                            If a restaurant cancels your reservation, you will receive an email notification and a full
-                            refund immediately if any payment was made. We apologize for the inconvenience.
+                            You can cancel your subscription anytime from the Owner Account > Subscription section. Your
+                            service will continue until the end of your current billing period.
                         </div>
                     </div>
                 </div>
@@ -219,12 +236,13 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed fw-semibold text-navy" type="button"
                             data-bs-toggle="collapse" data-bs-target="#faq4">
-                            How do I change my account information?
+                            How long does it take to receive payments?
                         </button>
                     </h2>
                     <div id="faq4" class="accordion-collapse collapse">
                         <div class="accordion-body text-muted">
-                            Go to Settings from the navigation bar to update your profile, email, or password.
+                            Payments are typically deposited to your bank account within 3-5 business days after the
+                            reservation is completed.
                         </div>
                     </div>
                 </div>
@@ -233,13 +251,13 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed fw-semibold text-navy" type="button"
                             data-bs-toggle="collapse" data-bs-target="#faq5">
-                            Is there a fee to use Pin+81?
+                            Can I export my reservation data?
                         </button>
                     </h2>
                     <div id="faq5" class="accordion-collapse collapse">
                         <div class="accordion-body text-muted">
-                            Pin+81 is completely free for customers. You only pay the restaurant for your reservation (if
-                            required).
+                            Yes, you can export your reservation data as CSV from the Reservations page using the Export
+                            button.
                         </div>
                     </div>
                 </div>
@@ -253,7 +271,8 @@
                 <div class="support-card p-4">
                     <h5 class="fw-bold mb-3">Send us a message</h5>
 
-                    <form action="{{ route('customer.contact.send') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('restaurant.settings.contact.send') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-3">
@@ -267,12 +286,13 @@
 
                         <div class="mb-3">
                             <label class="form-label d-block fw-semibold">Attach Files (optional)</label>
-                            <input type="file" id="attachments" name="attachments[]" class="d-none" multiple>
-                            <button type="button" id="btn-upload-trigger"
+                            <input type="file" id="restaurant-attachments" name="attachments[]" class="d-none"
+                                multiple>
+                            <button type="button" id="btn-restaurant-upload"
                                 class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-bold">
                                 <i class="bi bi-paperclip"></i> Add images or files
                             </button>
-                            <div id="file-list-preview" class="form-text mt-2 text-primary fw-semibold"></div>
+                            <div id="restaurant-file-preview" class="form-text mt-2 text-primary fw-semibold"></div>
                         </div>
 
                         <div class="form-check mb-4 bg-light p-3 rounded border">
@@ -301,15 +321,19 @@
 
                         <a href="#"
                             class="history-item list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between px-3 border rounded-3 text-decoration-none shadow-sm mb-1 bg-white"
-                            data-id="1">
+                            data-title="Subscription inquiry"
+                            data-messages='[
+                                {"sender": "user", "text": "I would like to know more about upgrading our plan.", "time": "2026-05-10 09:30"},
+                                {"sender": "support", "text": "Thank you for reaching out! We offer premium plans starting at ¥9,800/month. Please check your email for the full pricing breakdown.", "time": "2026-05-10 14:20"}
+                            ]'>
                             <div class="d-flex align-items-center">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                                     style="width: 40px; height: 40px; background-color: #e8f7f0;">
                                     <i class="bi bi-chat-left-text text-success" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Reservation
-                                        cancellation question</div>
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Subscription inquiry
+                                    </div>
                                     <div class="d-flex align-items-center gap-2 small text-muted">
                                         <span><i class="bi bi-clock me-1"></i>2026-05-10 09:30</span>
                                         <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill"
@@ -322,15 +346,19 @@
 
                         <a href="#"
                             class="history-item list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between px-3 border rounded-3 text-decoration-none shadow-sm bg-white"
-                            data-id="2">
+                            data-title="Dashboard access issue"
+                            data-messages='[
+                                {"sender": "user", "text": "We are unable to access our dashboard since this morning.", "time": "2026-05-08 11:15"},
+                                {"sender": "support", "text": "Our team has resolved the access issue. Please try logging in again and let us know if the problem persists.", "time": "2026-05-08 12:00"}
+                            ]'>
                             <div class="d-flex align-items-center">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                                     style="width: 40px; height: 40px; background-color: #e8f7f0;">
                                     <i class="bi bi-chat-left-text text-success" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Review photo upload
-                                        issue</div>
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Dashboard access issue
+                                    </div>
                                     <div class="d-flex align-items-center gap-2 small text-muted">
                                         <span><i class="bi bi-clock me-1"></i>2026-05-08 11:15</span>
                                         <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill"
@@ -346,73 +374,27 @@
 
                 <div id="history-detail-view" class="support-card p-4 d-none">
                     <div class="d-flex align-items-center mb-4">
-                        <button type="button" id="btn-back-to-list" class="btn btn-back p-0 fw-bold me-2">
-                            <i class="bi bi-arrow-left me-1"></i>Back
+                        <button type="button" id="btn-back-to-list" class="btn btn-back p-0 fw-normal me-2">
+                            <span style="font-size: 0.95rem; font-family: sans-serif; margin-right: 4px;">←</span>Back
                         </button>
-                        <h5 id="detail-view-title" class="fw-bold mb-0" style="color: #0f2d4a;">Subject</h5>
+                        <h5 id="detail-view-title" class="fw-bold mb-0 ms-2" style="color: #0f2d4a; font-size: 1.15rem;">
+                        </h5>
                     </div>
 
-                    <div class="chat-log mb-4 d-flex flex-column gap-3">
-                        <div class="chat-thread" id="thread-1">
-                            <div class="d-flex flex-column gap-3">
-                                <div class="align-self-end text-end" style="max-width: 80%;">
-                                    <div class="p-3 text-start rounded-3 text-white shadow-sm"
-                                        style="background-color: #0b2238; font-size: 0.95rem;">
-                                        I need to cancel my reservation for tonight due to a sudden change of plans. Will I
-                                        be charged a fee?
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-10
-                                        09:30</small>
-                                </div>
-
-                                <div class="align-self-start" style="max-width: 80%;">
-                                    <div class="p-3 rounded-3 text-dark shadow-sm bg-light border"
-                                        style="font-size: 0.95rem;">
-                                        Thank you for contacting us. According to our policy, cancellations made within 24
-                                        hours of the reservation time may incur a fee. However, we have waived it this time.
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-10
-                                        14:20</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="chat-thread d-none" id="thread-2">
-                            <div class="d-flex flex-column gap-3">
-                                <div class="align-self-end text-end" style="max-width: 80%;">
-                                    <div class="p-3 text-start rounded-3 text-white shadow-sm"
-                                        style="background-color: #0b2238; font-size: 0.95rem;">
-                                        I am trying to upload photos along with my review of the restaurant, but it keeps
-                                        giving me an error saying the file format is not supported. The photos are JPEGs.
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-08
-                                        11:15</small>
-                                </div>
-
-                                <div class="align-self-start" style="max-width: 80%;">
-                                    <div class="p-3 rounded-3 text-dark shadow-sm bg-light border"
-                                        style="font-size: 0.95rem;">
-                                        We apologize for the inconvenience. There was a temporary server issue affecting
-                                        file uploads, but it has now been resolved. Please try uploading your photos again.
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-08
-                                        12:00</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="chat-log-container" class="chat-log mb-4 d-flex flex-column gap-3"></div>
 
                     <div class="border-top pt-4">
-                        <h6 class="fw-bold mb-2 text-dark">Add a follow-up message</h6>
+                        <h6 class="fw-bold mb-2 text-dark" style="font-size: 0.95rem;">Add a follow-up message</h6>
                         <div class="mb-3">
-                            <textarea class="form-control" rows="3" placeholder="Type your follow-up question..."></textarea>
+                            <textarea id="follow-up-textarea" class="form-control" rows="3" placeholder="Type your follow-up question..."></textarea>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-bold">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-semibold"
+                                style="border-color: #dee2e6; color: #6c757d;">
                                 <i class="bi bi-paperclip"></i> Attach files
                             </button>
-                            <button type="button" class="btn fw-bold px-4 py-2"
-                                style="background-color: #8596a6; color: #fff; border: none; border-radius: 8px;">
+                            <button type="button" id="btn-send-followup" class="btn btn-followup fw-semibold px-4 py-2"
+                                disabled>
                                 <i class="bi bi-send me-2"></i>Send Follow-up
                             </button>
                         </div>
@@ -423,7 +405,6 @@
 
         </div>
     </div>
-
     <script>
         document.querySelectorAll('.accordion-button').forEach(button => {
             button.removeAttribute('data-bs-toggle');
@@ -435,23 +416,23 @@
             });
         });
 
-        const uploadTrigger = document.getElementById('btn-upload-trigger');
-        const realFileInput = document.getElementById('attachments');
-        const fileListPreview = document.getElementById('file-list-preview');
+        const restUploadBtn = document.getElementById('btn-restaurant-upload');
+        const restFileInput = document.getElementById('restaurant-attachments');
+        const restPreviewArea = document.getElementById('restaurant-file-preview');
 
-        uploadTrigger.addEventListener('click', () => {
-            realFileInput.click();
+        restUploadBtn.addEventListener('click', () => {
+            restFileInput.click();
         });
 
-        realFileInput.addEventListener('change', function() {
+        restFileInput.addEventListener('change', function() {
             if (this.files.length > 0) {
                 let fileNames = [];
                 for (let i = 0; i < this.files.length; i++) {
                     fileNames.push(`<i class="bi bi-file-earmark-check me-1"></i>${this.files[i].name}`);
                 }
-                fileListPreview.innerHTML = `Selected: ${fileNames.join(', ')}`;
+                restPreviewArea.innerHTML = `Selected: ${fileNames.join(', ')}`;
             } else {
-                fileListPreview.innerHTML = '';
+                restPreviewArea.innerHTML = '';
             }
         });
 
@@ -462,29 +443,53 @@
             submitBtn.disabled = !this.checked;
         });
 
-        // 一覧と詳細メッセージの画面切り替え・連動ロジック
+        // ーーー 一覧と個別詳細メッセージの動的切り替えロジック ーーー
         const historyListView = document.getElementById('history-list-view');
         const historyDetailView = document.getElementById('history-detail-view');
         const detailViewTitle = document.getElementById('detail-view-title');
         const btnBackToList = document.getElementById('btn-back-to-list');
+        const chatLogContainer = document.getElementById('chat-log-container');
 
-        // 各履歴アイテムをクリックした時
         document.querySelectorAll('.history-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                // クリックした要素内のタイトルテキストを取得
-                const title = this.querySelector('.fw-bold').textContent.trim();
+                // 件名を動的に設定
+                const title = this.getAttribute('data-title');
                 detailViewTitle.textContent = title;
 
-                // data-id に応じて表示するスレッド（チャットログ）を切り替える
-                const id = this.getAttribute('data-id');
-                document.querySelectorAll('.chat-thread').forEach(thread => {
-                    thread.classList.add('d-none');
+                // メッセージ配列データをパースしてチャット欄をクリア＆再構築
+                const messages = JSON.parse(this.getAttribute('data-messages'));
+                chatLogContainer.innerHTML = '';
+
+                messages.forEach(msg => {
+                    const bubble = document.createElement('div');
+                    if (msg.sender === 'user') {
+                        bubble.className = 'align-self-end text-end';
+                        bubble.style.maxWidth = '80%';
+                        bubble.innerHTML = `
+                            <div class="p-3 text-start rounded-3 text-white shadow-sm" style="background-color: #0b2238; font-size: 0.95rem;">
+                                ${escapeHTML(msg.text)}
+                            </div>
+                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">${msg.time}</small>
+                        `;
+                    } else {
+                        bubble.className = 'align-self-start';
+                        bubble.style.maxWidth = '80%';
+                        bubble.innerHTML = `
+                            <div class="p-3 rounded-3 text-dark shadow-sm bg-light border" style="font-size: 0.95rem;">
+                                ${escapeHTML(msg.text)}
+                            </div>
+                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">${msg.time}</small>
+                        `;
+                    }
+                    chatLogContainer.appendChild(bubble);
                 });
-                document.getElementById(`thread-${id}`).classList.remove('d-none');
+
+                // 表示の切り替え
                 historyListView.classList.add('d-none');
                 historyDetailView.classList.remove('d-none');
+                chatLogContainer.scrollTop = chatLogContainer.scrollHeight;
             });
         });
 
@@ -492,5 +497,64 @@
             historyDetailView.classList.add('d-none');
             historyListView.classList.remove('d-none');
         });
+
+        const followUpTextarea = document.getElementById('follow-up-textarea');
+        const btnSendFollowup = document.getElementById('btn-send-followup');
+
+        // テキスト入力の有無を検知してボタン色と状態を切り替える
+        followUpTextarea.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                btnSendFollowup.disabled = false;
+            } else {
+                btnSendFollowup.disabled = true;
+            }
+        });
+
+        // 送信ボタン押下時の送信処理
+        btnSendFollowup.addEventListener('click', function() {
+            const messageText = followUpTextarea.value.trim();
+            if (messageText === '') return;
+
+            // 現在日時（2026年システム時間想定フォーマット）を作成
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+            // 新しいチャットバブル（ユーザー側）を現在開いているスレッドの最下部へ動的に生成
+            const newBubble = document.createElement('div');
+            newBubble.className = 'align-self-end text-end';
+            newBubble.style.maxWidth = '80%';
+            newBubble.innerHTML = `
+                <div class="p-3 text-start rounded-3 text-white shadow-sm" style="background-color: #0b2238; font-size: 0.95rem;">
+                    ${escapeHTML(messageText)}
+                </div>
+                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">${formattedTime}</small>
+            `;
+
+            // チャットログに追加して下部へ自動スクロール
+            chatLogContainer.appendChild(newBubble);
+            chatLogContainer.scrollTop = chatLogContainer.scrollHeight;
+
+            // 入力欄をクリアしてボタンを再び初期化（グレー無効化）
+            followUpTextarea.value = '';
+            btnSendFollowup.disabled = true;
+        });
+
+        // XSS防止用のエスケープ関数
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                } [tag] || tag)
+            );
+        }
     </script>
 @endsection

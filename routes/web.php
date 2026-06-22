@@ -17,6 +17,7 @@ use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
+use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,13 +31,17 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit'); 
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
-  Route::middleware(['auth'])->group(function () {
-    // 画面表示用のURLをブラウザのURLと完全一致させます
-    Route::get('/restaurant/settings/owner_account', [OwnerAccountController::class, 'edit'])->name('restaurant.settings.owner_account.edit');
+});
+
+Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
   Route::get('owner_account', [OwnerAccountController::class, 'edit'])->name('owner_account.edit');
   Route::any('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
   Route::post('owner_account/verify', [OwnerAccountController::class, 'verifyCode'])->name('owner_account.verify');
-  Route::put('owner_account', [OwnerAccountController::class, 'update'])->name('owner_account.update'); 
+  Route::put('owner_account', [OwnerAccountController::class, 'update'])->name('owner_account.update');
+  Route::get('/contact', [RestaurantContactController::class, 'index'])->name('contact.index');
+  Route::post('/contact', [RestaurantContactController::class, 'send'])->name('contact.send');
+  Route::get('/contact/{id}', [RestaurantContactController::class, 'show'])->name('contact.show');
+  Route::post('/contact/{id}/reply', [ContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
 
 // User
@@ -93,4 +98,3 @@ Route::get('/favorites', [FavoriteController::class, 'view'])
   ->name('favorites.index');
 Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])
   ->name('favorites.destroy');
-});
