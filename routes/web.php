@@ -1,14 +1,16 @@
 <?php
 
 #Restaurant
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Customer\ContactController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\FavoriteController;
 use App\Http\Controllers\Customer\MyReservationController;
 use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Customer\ProfileController;
-use App\Http\Controllers\Customer\RestaurantSearchController; 
-use App\Http\Controllers\Customer\ReviewController; 
+use App\Http\Controllers\Customer\RestaurantSearchController;
+use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\UserController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
@@ -21,6 +23,23 @@ use App\Http\Controllers\Restaurant\ContactController as RestaurantContactContro
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware('guest')->group(function () {
+
+  Route::get('/register', [RegisterController::class, 'create'])
+    ->name('register');
+  Route::post('/register', [RegisterController::class, 'store']);
+
+  Route::get('/login', [LoginController::class, 'create'])
+    ->name('login');
+  Route::post('/login', [LoginController::class, 'store']);
+});
+
+Route::middleware('auth')->group(function () {
+
+  Route::post('/logout', [LoginController::class, 'destroy'])
+    ->name('logout');
+});
+
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
 Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function () {
@@ -29,7 +48,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::get('/menu', [MenuController::class, 'index'])->name('menu');
   Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
-  Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit'); 
+  Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
 });
 
@@ -43,10 +62,6 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::get('/contact/{id}', [RestaurantContactController::class, 'show'])->name('contact.show');
   Route::post('/contact/{id}/reply', [ContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
-
-// User
-Route::get('/login', [UserController::class, 'login'])->name('login');
-Route::get('/register', [UserController::class, 'register'])->name('register');
 
 // Register page for restaurant
 Route::get('/restaurant/register', [UserController::class, 'registerRestaurant'])->name('register.restaurant');
@@ -66,7 +81,6 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
   Route::get('/settings', [UserController::class, 'settings'])->name('settings');
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
-
 });
 
 // Page for display restaurants after search
@@ -96,5 +110,4 @@ Route::delete('/my_reservations/{reservation}', [MyReservationController::class,
 // Favorites Page
 Route::get('/favorites', [FavoriteController::class, 'view'])
   ->name('favorites.index');
-Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])
-  ->name('favorites.destroy');
+Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
