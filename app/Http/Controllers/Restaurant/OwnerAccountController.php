@@ -11,18 +11,36 @@ use Illuminate\Support\Str;
 class OwnerAccountController extends Controller
 {
     /**
-     * オーナーアカウント編集画面の表示
+     * オーナーアカウント編集画面の表示(仮)
      */
     public function edit(Request $request)
     {
-        // ログイン中のユーザー（レストランオーナー）の情報を取得
-        $restaurant = Auth::user(); 
+        // ログイン中のユーザー情報を取得（ログインしていなくても動くようにダミー付き）
+        $restaurant = Auth::user() ?? (object)[
+            'last_name' => 'Last Name',
+            'first_name' => 'First Name',
+            'email' => 'owner@restaurant.jp',
+            'phone' => '+81-90-1234-5678'
+        ]; 
 
-        // セッションに「認証済みフラグ」が立っているかを確認
         $isVerified = session('owner_verified', false);
 
-        return view('restaurant.owner_account', compact('restaurant', 'isVerified'));
+        // 🔒 restaurants.settings.owner_account にしっかり指定します
+        return view('restaurants.settings.owner_account', compact('restaurant', 'isVerified'));
     }
+    /**
+     * オーナーアカウント編集画面の表示 (本番Back code)
+     */
+    // public function edit(Request $request)
+    // {
+    //     // ログイン中のユーザー（レストランオーナー）の情報を取得
+    //     $restaurant = Auth::user(); 
+
+    //     // セッションに「認証済みフラグ」が立っているかを確認
+    //     $isVerified = session('owner_verified', false);
+
+    //     return view('restaurant.owner_account', compact('restaurant', 'isVerified'));
+    // }
 
     /**
      * 2段階認証コードのメール送信
@@ -74,34 +92,36 @@ class OwnerAccountController extends Controller
         return response()->json(['success' => false, 'message' => 'Invalid or expired verification code.'], 422);
     }
     public function update(Request $request)
-    {
-        // 事前に二段階認証が済んでいるかバックエンド側でも防衛バリデーション
-        if (!session('owner_verified', false)) {
-            return redirect()->route('restaurant.settings.owner_account.edit')
-                ->with('error', 'Unauthorized access. Please verify your identity first.');
-        }
+{
+    // 事前に二段階認証が済んでいるかバックエンド側でも防衛バリデーション
+    if (!session('owner_verified', false)) {
+        return redirect()->route('restaurant.owner_account.edit')
+            ->with('error', 'Unauthorized access. Please verify your identity first.');
+    }
 
-        $restaurant = Auth::user();
+    $restaurant = Auth::user();
 
-        $request->validate([
-            'owner_name' => 'required|string|max:255',
-            'manager_name' => 'nullable|string|max:255',
-            'phone' => 'required|string|max:20',
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
+    $request->validate([
+        'last_name'    => 'required|string|max:255',
+        'first_name'   => 'required|string|max:255',
+        'phone'        => 'required|string|max:20',
+        'password'     => 'nullable|string|min:8|confirmed',
+    ]);
 
-        // データの更新処理
-        $restaurant->owner_name = $request->owner_name;
-        $restaurant->manager_name = $request->manager_name;
+    // ※ テスト環境等でAuth::user()がnullの場合は、保存処理をスキップするガードを入れています
+    if ($restaurant) {
+        $restaurant->last_name = $request->last_name;
+        $restaurant->first_name = $request->first_name;
         $restaurant->phone = $request->phone;
         
         if ($request->filled('password')) {
             $restaurant->password = bcrypt($request->password);
         }
         
-        // $restaurant->save(); // データベースに保存
-
-        return redirect()->route('restaurant.settings.owner_account.edit')
-            ->with('success', 'Account information updated successfully.');
+        // $restaurant->save(); // 本番時はここのコメントアウトを外してデータベースに保存
     }
+
+    return redirect()->route('restaurant.owner_account.edit')
+        ->with('success', 'Account information updated successfully.');
+}
 }

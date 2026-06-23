@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -28,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/customer/search';
 
     /**
      * Create a new controller instance.
@@ -71,5 +72,14 @@ class RegisterController extends Controller
             'introduction' => null,
             'role_id' => 1,
         ]);
+
+        # Send an email to the user
+        // Mail::send('users.emails.welcome', $details, function ($message) use ($user) {
+        //     $message->from(config('mail.from.address'), config('app.name'))
+        //         ->to($user->email, $user->name)
+        //         ->subject('Welcome to Pin+81!');
+        // });
+
+        return redirect()->route('login');
     }
 }

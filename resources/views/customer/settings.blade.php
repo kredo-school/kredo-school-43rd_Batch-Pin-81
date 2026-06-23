@@ -145,7 +145,7 @@
                         Cancel
                     </button>
                     
-                    <form action="#" method="POST" class="d-inline mb-0">
+                    <form action="{{ route('logout')}}" method="POST" class="d-inline mb-0">
                         @csrf
                         <button type="submit" class="btn btn-danger">
                             Log Out
