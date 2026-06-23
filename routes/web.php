@@ -12,6 +12,8 @@ use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\RestaurantSearchController;
 use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\UserController;
+
+use  App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
 use App\Http\Controllers\Restaurant\OwnerAccountController;
@@ -20,6 +22,7 @@ use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileContro
 use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +41,14 @@ Route::middleware('auth')->group(function () {
 
   Route::post('/logout', [LoginController::class, 'destroy'])
     ->name('logout');
+
+  // Register page for restaurant
+  Route::get('/restaurant/register', [RestaurantController::class, 'registerRestaurant'])->name('register.restaurant');
+  Route::post('/restaurant/register', [RestaurantController::class, 'register'])
+    ->name('restaurant.store');
 });
+
+
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -63,8 +73,6 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::post('/contact/{id}/reply', [ContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
 
-// Register page for restaurant
-Route::get('/restaurant/register', [UserController::class, 'registerRestaurant'])->name('register.restaurant');
 
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {

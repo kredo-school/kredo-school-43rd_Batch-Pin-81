@@ -15,11 +15,11 @@
                       style="color: #0a2540;">{{ __('Register Your Restaurant on Pin+81') }}
                     </h3>
 
-                    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('register.restaurant') }}" enctype="multipart/form-data">
                         @csrf
 
                         {{-- Restarant Name --}}
-                        <label for="restaurant_name" class="form-label fw-semibold">Restaurant Name</label>
+                        <label for="restaurant_name" class="form-label fw-semibold">Restaurant Name *</label>
 
                         <input 
                         id="restaurant_name" 
@@ -43,15 +43,14 @@
                         <label for="phone" class="form-label fw-semibold">Phone Number *</label>
 
                         <input  
-                        id="phone" 
+                        id="phone_number" 
                         type="tel" 
-                        class="form-control mb-3 @error('phone') is-invalid @enderror" name="phone" 
-                        value="{{ old('phone') }}" 
+                        class="form-control mb-3 @error('phone_number') is-invalid @enderror" name="phone_number" 
+                        value="{{ old('phone_number') }}" 
                         placeholder="090-1234-5678" 
-                        required 
                         autocomplete="tel">
 
-                        @error('phone')
+                        @error('phone_number')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
