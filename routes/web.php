@@ -70,7 +70,7 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::get('/contact', [RestaurantContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [RestaurantContactController::class, 'send'])->name('contact.send');
   Route::get('/contact/{id}', [RestaurantContactController::class, 'show'])->name('contact.show');
-  Route::post('/contact/{id}/reply', [ContactController::class, 'sendFollowUp'])->name('contact.reply');
+  Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
 
 
@@ -89,6 +89,10 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
   Route::get('/settings', [UserController::class, 'settings'])->name('settings');
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/customer/my_page', [ReviewController::class, 'show'])->name('customer.mypage');
 });
 
 // Page for display restaurants after search
