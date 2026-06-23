@@ -101,6 +101,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/customer/my_page', [ReviewController::class, 'show'])->name('customer.mypage');
+    Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
 });
 
 // Page for display restaurants after search
