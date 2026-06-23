@@ -168,12 +168,18 @@
                         {{-- Agreement check box --}}
                         <div class="form-check mb-4">
                             <input 
-                            class="form-check-input custom-checkbox" 
+                            class="form-check-input custom-checkbox @error('agreement') is-invalid @enderror" 
                             type="checkbox" 
                             name="agreement" 
                             id="agreement" 
+                            required
                             {{ old('agreement') ? 'checked' : '' }}>
 
+                            @error('agreement')
+                                <div class="text-danger">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                             {{-- <label class="form-check-label" for="agreement">
                                 I agree to the
                                 <a href="{{ route('terms') }}" target="_blank">
