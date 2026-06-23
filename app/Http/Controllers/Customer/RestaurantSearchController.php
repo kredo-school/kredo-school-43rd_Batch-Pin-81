@@ -29,7 +29,8 @@ class RestaurantSearchController extends Controller
         return view('customers.restaurants.show', compact('photos'));
     }
 
-    public function displayBookingPage()
+    // Display booking page
+    public function create()
     {
         return view('customers.restaurants.book');
     }

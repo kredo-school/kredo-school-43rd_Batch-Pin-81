@@ -42,12 +42,13 @@
 
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2 class="h4 mb-0 fw-bold" style="color: #0A2540 !important;">Table Schedule</h2>
-                <button class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center"
-    style="background-color: #FCE7F3; color: #0A2540; border-radius: 8px; height: 31px; border: none;" 
-    data-bs-toggle="modal"
-    data-bs-target="#addTableModal">
-    <i class="fa-solid fa-plus me-1"></i> Add Table
-</button>
+                <button 
+                    class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center            justify-content-center"
+                    style="background-color: #FCE7F3; color: #0A2540; border-radius: 8px; height: 31px; border: none;" 
+                    data-bs-toggle="modal"
+                    data-bs-target="#addTableModal">
+                    <i class="fa-solid fa-plus me-1"></i> Add Table
+                </button>
             </div>
 
             <div class="d-flex align-items-center gap-2 pb-2 mt-3">

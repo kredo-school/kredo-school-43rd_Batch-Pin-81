@@ -108,7 +108,7 @@ Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->na
 
 // Restaurant Page for customer
 Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
-Route::get('/booking', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
+Route::get('/booking', [RestaurantSearchController::class, 'create'])->name('booking.create');
 Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
 Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
