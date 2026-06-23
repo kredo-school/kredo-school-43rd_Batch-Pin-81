@@ -25,8 +25,16 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function () {
   Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
-  Route::get('/menu', [MenuController::class, 'index'])->name('menu');
-  Route::get('/photo', [PhotoController::class, 'index'])->name('photos');
+
+  // Menu
+  Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+  Route::post('/menu/store', [MenuController::class, 'store'])->name('menu.store');
+  Route::get('/menu/{id}/edit', [MenuController::class, 'edit'])->name('menu.edit');
+  Route::patch('/menu/{id}/update', [MenuController::class, 'update'])->name('menu.update');
+  Route::delete('menu/{id}/destroy', [MenuController::class, 'destroy'])->name('menu.destroy');
+
+
+  Route::get('/photos', [PhotoController::class, 'index'])->name('photos');
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit'); 
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
