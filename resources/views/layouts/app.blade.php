@@ -230,7 +230,7 @@
                         <i class="bi bi-shield-check fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-icon-link text-decoration-none"
+                    <a href="{{ route('customer.search') }}" class="nav-icon-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Home">
                         <i class="bi bi-house fs-5"></i>

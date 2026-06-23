@@ -27,4 +27,9 @@ class CustomerController extends Controller
 
         return view('customer.index', compact('chartData', 'restaurantData'));
     }
+
+    public function search()
+    {
+        return view('customer.search');
+    }
 }
