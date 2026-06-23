@@ -31,7 +31,7 @@
 
                     <div class="d-none d-md-flex align-items-center" style="gap: 40px;">
                         <div>
-                            <span class="fw-bold" style="font-size: 1.15rem; color: #051d3b;">6</span>
+                            <span class="fw-bold" style="font-size: 1.15rem; color: #051d3b;">{{ $posts->count() }}</span>
                             <span class="text-secondary ms-1">reviews</span>
                         </div>
                         <div>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="row d-flex d-md-none text-center pt-3" style="border-color: #efefef !important;">
-                <div class="col-4"><span class="fw-bold d-block" style="font-size: 1.1rem; color: #051d3b;">6</span><span
+                <div class="col-4"><span class="fw-bold d-block" style="font-size: 1.1rem; color: #051d3b;">{{ $posts->count() }}</span><span
                         class="text-muted" style="font-size: 0.8rem; color: #8e8e8e !important;">reviews</span></div>
                 <div class="col-4"><span class="fw-bold d-block" style="font-size: 1.1rem; color: #051d3b;">142</span><span
                         class="text-muted" style="font-size: 0.8rem; color: #8e8e8e !important;">followers</span></div>
@@ -62,155 +62,230 @@
         <div class="container px-2 px-md-0" style="max-width: 935px;">
             <div class="row g-1 g-md-4">
 
-                <div class="col-4">
-                    <div class="ratio ratio-1x1 overflow-hidden bg-light review-item review-hover-box"
-                        style="cursor: pointer; position: relative;">
+                @foreach($posts as $post)
+                    <div class="col-4">
+                        <div class="ratio ratio-1x1 overflow-hidden bg-light review-item review-hover-box"
+                            style="cursor: pointer; position: relative;" 
+                            onclick="openPostModal('post-modal-{{ $post->id }}')">
 
-                        <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop"
-                            class="object-fit-cover w-100 h-100" alt="Sushi">
+                            <img src="{{ $post->image }}" class="object-fit-cover w-100 h-100" alt="Sushi">
 
-                        <div class="hover-mask">
-                            <span class="hover-likes-text">
-                                <i class="fa-solid fa-heart me-2"></i>24
-                            </span>
+                            <div class="hover-mask">
+                                <span class="hover-likes-text">
+                                    <i class="fa-solid fa-heart me-2"></i>24
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-4">
-                    <div class="ratio ratio-1x1 overflow-hidden bg-light review-item review-hover-box"
-                        style="cursor: pointer; position: relative;">
+                    <div id="post-modal-{{ $post->id }}" class="custom-post-modal-wrapper" style="display: none;">
+                        <div class="custom-modal-backdrop" onclick="closePostModal('post-modal-{{ $post->id }}')"></div>
+                        
+                        <div class="custom-modal-content-box">
+                            <button onclick="closePostModal('post-modal-{{ $post->id }}')" class="custom-modal-close-btn">&times;</button>
 
-                        <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&auto=format&fit=crop"
-                            class="object-fit-cover w-100 h-100" alt="Sushi Combo">
+                            <div class="custom-modal-body d-flex flex-column flex-md-row">
+                                <div class="custom-modal-img-container">
+                                    <img src="{{ $post->image }}" alt="拡大画像">
+                                </div>
 
-                        <div class="hover-mask">
-                            <span class="hover-likes-text">
-                                <i class="fa-solid fa-heart me-2"></i>18
-                            </span>
+                                <div class="custom-modal-info-container d-flex flex-column">
+                                    <div class="p-3 border-bottom bg-white d-flex align-items-center gap-3">
+                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" alt="User Icon" class="rounded-circle object-fit-cover" style="width: 38px; height: 38px;">
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.9rem;">john_doe</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">{{ $post->created_at->format('Y-m-d') }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-grow-1 overflow-auto p-3 bg-light" style="max-height: 400px;">
+                                        <div class="pb-3 border-bottom mb-3">
+                                            <p class="text-secondary my-0" style="font-size: 0.85rem; whitespace: pre-wrap;">{{ $post->description }}</p>
+                                        </div>
+
+                                        <div class="d-flex flex-column gap-3">
+                                            @forelse($post->comments as $comment)
+                                                <div class="d-flex align-items-start gap-2">
+                                                    <img src="/images/default-avatar.png" class="rounded-circle object-fit-cover" style="width: 28px; height: 28px;">
+                                                    <div class="p-2 rounded-3 flex-grow-1" style="background-color: #eaeaea; max-width: 85%;">
+                                                        <span class="fw-bold d-block text-dark" style="font-size: 0.75rem;">{{ $comment->user->name ?? 'User' }}</span>
+                                                        <p class="text-dark my-0 mt-1" style="font-size: 0.8rem; line-height: 1.3;">{{ $comment->body }}</p>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-center text-muted py-4 my-0" style="font-size: 0.8rem;">まだコメントはありません。</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
+
+                                    <div class="p-3 border-top bg-white">
+                                        <form action="{{ route('comments.store') }}" method="POST" class="my-0">
+                                            @csrf
+                                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                            
+                                            <div class="d-flex gap-2">
+                                                <textarea 
+                                                    name="body" 
+                                                    rows="1" 
+                                                    placeholder="コメントを追加..." 
+                                                    required
+                                                    style="font-size: 0.85rem; resize: none;"
+                                                    class="form-control form-control-sm rounded-3 py-2 px-3 focus-none"
+                                                ></textarea>
+                                                <button type="submit" class="btn btn-sm btn-primary px-3 fw-bold rounded-3" style="background-color: #051d3b; border: none; font-size: 0.8rem;">
+                                                    投稿
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="ratio ratio-1x1 overflow-hidden bg-light review-item review-hover-box"
-                        style="cursor: pointer; position: relative;">
-
-                        <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop"
-                            class="object-fit-cover w-100 h-100" alt="Ramen">
-
-                        <div class="hover-mask">
-                            <span class="hover-likes-text">
-                                <i class="fa-solid fa-heart me-2"></i>42
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
 
             </div>
         </div>
+
         <style>
-            @media (max-width: 767.98px) {
-                .avatar-responsive {
-                    width: 77px !important;
-                    height: 77px !important;
-                }
-
-                .custom-tab-active {
-                    position: relative;
-                }
-
-                .custom-tab-active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    height: 1.5px;
-                    background-color: #051d3b;
-                }
+            /* モーダル全体を覆うラッパー */
+            .custom-post-modal-wrapper {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 2000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
             }
 
-            @media (min-width: 768px) {
-                .avatar-responsive {
-                    width: 150px !important;
-                    height: 150px !important;
-                }
-
-                .custom-tab-active {
-                    border-top: 1.5px solid #051d3b;
-                    margin-top: -1px;
-                    padding-top: 18px !important;
-                }
-            }
-
-            .custom-edit-btn {
-                background-color: #fffaf4 !important;
-                border: none;
-                color: #0a2540;
-                cursor: pointer;
-            }
-
-            .custom-edit-btn:hover {
-                background-color: #0a2540 !important;
-                color: #ffffff !important;
-                transform: translateY(-2px);
-                box-shadow: 0 8px 5px rgba(5, 29, 59, 0.15);
-            }
-
-            .text-navy {
-                color: #0a2540;
-            }
-
-            .img-fade-in {
-                transition: opacity 0.2s;
-            }
-
-            .img-fade-in:hover {
-                opacity: 0.85;
-            }
-
-            /* 📦 写真の親ボックス（重なりの基準を作る） */
-            .review-hover-box {
-                position: relative;
-            }
-
-            /* 🖤 初期状態：黒幕レイヤーを完全に不透明度ゼロ（隠し状態）にする */
-            .hover-mask {
+            /* 黒い背景のレイヤー */
+            .custom-modal-backdrop {
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(0, 0, 0, 0.45);
+                background-color: rgba(0, 0, 0, 0.7);
+            }
+
+            /* 白いコンテンツボックス本体 */
+            .custom-modal-content-box {
+                position: relative;
+                background-color: #fff;
+                width: 100%;
+                max-width: 935px;
+                height: 85vh;
+                border-radius: 12px;
+                overflow: hidden;
+                z-index: 2001;
+                animation: fadeInModal 0.25s ease-out;
+            }
+
+            @keyframes fadeInModal {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
+            }
+
+            /* モーダルのインナースケール構造 */
+            .custom-modal-body {
+                width: 100%;
+                height: 100%;
+            }
+
+            /* 左側：拡大画像スペース */
+            .custom-modal-img-container {
+                width: 60%;
+                height: 100%;
+                background-color: #000;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                opacity: 0;
-                /* 最初は完全に透明で見えないようにする */
-                visibility: hidden;
-                /* 完全に存在を隠す */
-                transition: opacity 0.2s ease, visibility 0.2s ease;
-                /* 滑らかに切り替える */
-                z-index: 3;
+            }
+            .custom-modal-img-container img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
             }
 
-            /* 🤍 中央に表示するいいねテキストの装飾 */
-            .hover-likes-text {
-                color: #ffffff !important;
-                font-size: 1.3rem;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
-                letter-spacing: 0.5px;
+            /* 右側：情報＆コメントスペース */
+            .custom-modal-info-container {
+                width: 40%;
+                height: 100%;
             }
 
-            /* 🖱️ 【超重要】カーソルが当たった（hover）写真のマスクだけを表示状態にする */
-            .review-hover-box:hover .hover-mask {
-                opacity: 1;
-                /* カーソルが乗ったら不透明度を1にして表示 */
-                visibility: visible;
-                /* 隠し状態を解除 */
+            /* モバイル環境（768px以下）でのレスポンシブ調整 */
+            @media (max-width: 767.98px) {
+                .custom-modal-content-box {
+                    height: 90vh;
+                }
+                .custom-modal-img-container {
+                    width: 100%;
+                    height: 45%;
+                }
+                .custom-modal-info-container {
+                    width: 100%;
+                    height: 55%;
+                }
             }
+
+            /* × 閉じるボタン */
+            .custom-modal-close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                background: none;
+                border: none;
+                font-size: 2rem;
+                font-weight: bold;
+                color: #8e8e8e;
+                z-index: 2100;
+                cursor: pointer;
+                line-height: 1;
+            }
+            .custom-modal-close-btn:hover {
+                color: #000;
+            }
+
+            /* フォーム入力欄の青枠を消す微調整 */
+            .focus-none:focus {
+                box-shadow: none !important;
+                border-color: #ced4da !important;
+            }
+
+            /* 既存マイページスタイル群保持 */
+            @media (max-width: 767.98px) {
+                .avatar-responsive { width: 77px !important; height: 77px !important; }
+            }
+            @media (min-width: 768px) {
+                .avatar-responsive { width: 150px !important; height: 150px !important; }
+            }
+            .custom-edit-btn { background-color: #fffaf4 !important; border: none; color: #0a2540; cursor: pointer; }
+            .custom-edit-btn:hover { background-color: #0a2540 !important; color: #ffffff !important; transform: translateY(-2px); box-shadow: 0 8px 5px rgba(5, 29, 59, 0.15); }
+            .text-navy { color: #0a2540; }
+            .review-hover-box { position: relative; }
+            .hover-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.45); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; z-index: 3; }
+            .hover-likes-text { color: #ffffff !important; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; letter-spacing: 0.5px; }
+            .review-hover-box:hover .hover-mask { opacity: 1; visibility: visible; }
         </style>
-    @endsection
+
+    </div>
+
+    <script>
+        // モーダルを開く
+        function openPostModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // 背後のマイページをスクロール不可に固定
+        }
+
+        // モーダルを閉じる
+        function closePostModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = ''; // スクロール固定を解除
+        }
+    </script>
+
+@endsection
