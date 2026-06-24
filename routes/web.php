@@ -98,6 +98,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 
+//Navber
 Route::middleware(['auth'])->group(function () {
     Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
     Route::get('/favorites', [FavoriteController::class, 'view'])->name('favorites.index');
@@ -105,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my_page', [ReviewController::class, 'myPage'])->name('customer.mypage');
     Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
 });
 
 // Page for display restaurants after search
