@@ -86,4 +86,8 @@ class MyReservationController extends Controller
             ->back()
             ->with('success', 'Reservation cancelled successfully.');
     }
+    public function search()
+    {
+        return view('my_reservations');
+    }
 }

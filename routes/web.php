@@ -81,7 +81,6 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
 
-
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {
 
@@ -100,8 +99,12 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/customer/my_page', [ReviewController::class, 'show'])->name('customer.mypage');
     Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
+    Route::get('/favorites', [FavoriteController::class, 'view'])->name('favorites.index');
+    Route::get('/my_reservations', [MyReservationController::class, 'index'])->name('my_reservations');
+    Route::get('/my_page', [ReviewController::class, 'myPage'])->name('customer.mypage');
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 });
 
 // Page for display restaurants after search
