@@ -11,32 +11,27 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    /**
-     * カスタマー マイページ表示
-     */
     public function myPage()
     {
-        // 1. ログインしているユーザー情報を取得
         $user = Auth::user();
-
-        // 2. ログインユーザーの投稿一覧（紐づくコメント、ユーザー、評価データも同時に）を取得
-        $posts = Post::with(['comments.user', 'user', 'star']) // 星評価リレーションがある場合
+        $posts = Post::with(['comments.user', 'user', 'star'])
                      ->where('user_id', $user->id)
                      ->latest()
                      ->get();
 
-        // 3. 更生した my_page.blade.php にすべてのデータを届ける
         return view('customer.my_page', compact('user', 'posts'));
     }
 
-    /**
-     * レビュー一覧表示
-     */
     public function index(Request $request)
     {
-        // 💡 フロント画面をシンプルに呼び出す設定を維持します
         return view('customer.reviews.index');
     }
+
+    public function search()
+    {
+        return view('customer.mypage');
+    }
+}
 
     // 💡 以下、今後使う可能性があるためコメントアウトのまま綺麗に保持します
     /*
@@ -95,4 +90,3 @@ class ReviewController extends Controller
         return view('customer.user_profile', compact('user', 'reviews'));
     }
     */
-}

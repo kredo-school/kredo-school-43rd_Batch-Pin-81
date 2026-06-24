@@ -18,6 +18,11 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        return back()->with('success', 'Your message was sent successfully！');
+        return back()->with('success', 'Your message was sent successfully.');
+    }
+
+    public function search()
+    {
+        return view('contact.index');
     }
 }

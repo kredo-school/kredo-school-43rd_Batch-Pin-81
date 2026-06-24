@@ -74,4 +74,8 @@ class FavoriteController extends Controller
             ->back()
             ->with('success', 'Favorite restaurant deleted.');
     }
+    public function search()
+    {
+        return view('favorites.index');
+    }
 }
