@@ -5,178 +5,178 @@
 @section('content')
 
 @php
-$restaurants = [
-    [
-        'image' => 'https://picsum.photos/400/250?random=1',
-        'name' => 'Restaurant 1',
-        'category' => 'Sushi',
-        'area' => 'Ginza, Tokyo',
-        'rating' => 4.5,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=2',
-        'name' => 'Restaurant 2',
-        'category' => 'Ramen',
-        'area' => 'Shibuya, Tokyo',
-        'rating' => 4.8,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=3',
-        'name' => 'Restaurant 3',
-        'category' => 'Yakitori',
-        'area' => 'Shinjuku, Tokyo',
-        'rating' => 4.7,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-    [
-        'image' => 'https://picsum.photos/400/250?random=4',
-        'name' => 'Restaurant 4',
-        'category' => 'Kaiseki',
-        'area' => 'Roppongi, Tokyo',
-        'rating' => 4.9,
-        'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-        'features' => ['English Menu', 'Table', 'Credit Cards'],
-        'review_count' => 128
-    ],
-];
+// $restaurants = [
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=1',
+//         'name' => 'Restaurant 1',
+//         'category' => 'Sushi',
+//         'area' => 'Ginza, Tokyo',
+//         'rating' => 4.5,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=2',
+//         'name' => 'Restaurant 2',
+//         'category' => 'Ramen',
+//         'area' => 'Shibuya, Tokyo',
+//         'rating' => 4.8,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=3',
+//         'name' => 'Restaurant 3',
+//         'category' => 'Yakitori',
+//         'area' => 'Shinjuku, Tokyo',
+//         'rating' => 4.7,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+//     [
+//         'image' => 'https://picsum.photos/400/250?random=4',
+//         'name' => 'Restaurant 4',
+//         'category' => 'Kaiseki',
+//         'area' => 'Roppongi, Tokyo',
+//         'rating' => 4.9,
+//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
+//         'features' => ['English Menu', 'Table', 'Credit Cards'],
+//         'review_count' => 128
+//     ],
+// ];
 @endphp
 
 <div class="container bg-light"> 

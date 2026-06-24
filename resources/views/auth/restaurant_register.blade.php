@@ -15,7 +15,7 @@
                       style="color: #0a2540;">{{ __('Register Your Restaurant on Pin+81') }}
                     </h3>
 
-                    <form method="POST" action="{{ route('register.restaurant') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('restaurant.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         {{-- Restarant Name --}}
