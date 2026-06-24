@@ -122,7 +122,7 @@
                     <h3 class="fw-bold m-0 h5 text-color: #0a2540">All Restaurants</h3>
                     <p class="text-muted small m-0">Browse our complete collection</p>
                 </div>
-                <a href="#" class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
+                <a href="{{ route('restaurants.view') }}" class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
             </div>
 
             @php

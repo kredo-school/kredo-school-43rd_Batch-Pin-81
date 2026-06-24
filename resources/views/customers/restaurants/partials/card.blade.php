@@ -1,11 +1,11 @@
- <a href="#"
+ <a href="{{ route('restaurant.show') }}"
     class="text-decoration-none">
 
-    <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: #fff; color: #0a2540;">
+    <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: #fff; font-family: inter;">
       <div class="row g-0">
 
         <!-- Image -->
-        <div class="col-4 restaurant-card col-md-12">
+        <div class="col-4 col-md-12">
             <img
                 src="{{ /*$restaurant->image*/ $restaurant['image'] }}"
                 alt="{{ /*$restaurant->name*/ $restaurant['name'] }}"
@@ -17,18 +17,20 @@
             <div class="card-body">
 
                 {{-- Name & Rating --}}
-                <div class="d-flex justify-content-between align-items-start mb-0">
+                <div class="d-flex justify-content-between align-items-start mb-0 restaurant-name">
                     <h4 class="fw-bold">{{ /*$restaurant->name*/ $restaurant['name'] }}</h4>
+                    <div>
                     <i class="fa-solid fa-star text-warning"></i><span class="small text-nowrap"> {{ /*$restaurant->rating*/ $restaurant['rating']}} ({{ $restaurant['review_count'] }})</span>
+                    </div>
                 </div>
 
                 {{-- Category --}}
-                <div class="d-flex justify-content-start">
+                <div class="d-flex justify-content-start category">
                   <p class="mb-1 d-inline pe-4">{{ /*$restaurant->category*/ $restaurant['category'] }}</p>
                 </div>
 
                 {{-- Location --}}
-                <div class="d-flex justify-content-start">
+                <div class="d-flex justify-content-start location">
                   <p class="mb-1">
                     <i class="fa-solid fa-location-dot location-icon"></i>
                     {{ /*$restaurant->area*/ $restaurant['area'] }}
@@ -38,7 +40,7 @@
                 {{-- Avalable time --}}
                 <div class="mb-2">
 
-                  <p class="mb-1">
+                  <p class="mb-1 avalable-time">
                     <i class="fa-regular fa-clock time-icon"></i>
                     Avalable Now
                   </p>
@@ -71,7 +73,7 @@
                       @foreach(/*$restaurant->available_times*/ $restaurant['available_times'] as $time)
                         @auth
                             <a href="{{ route('booking.create', [
-                              'restaurant' => $restaurant['id'],
+                              // 'restaurant' => $restaurant['id'],
                               'time' => $time
                               ]) }}"
                               class="time-btn">
@@ -154,6 +156,13 @@ document.addEventListener('DOMContentLoaded', function () {
     object-fit: cover;
   }
 
+  .restaurant-name, 
+  .category, 
+  .location, 
+  .avalable-time{
+    color: #0a2540;
+  }
+
   /* Mobile */
   @media (max-width: 767.98px) {
     .restaurant-card img {
@@ -188,16 +197,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   .time-btn{
-    color: #0a2540;
+    color: #0a2540 !important;
     background-color: transparent;
     border: 1px solid #FCE7F3;
     font-size: 0.75rem;
     padding: 2px 9px;
     border-radius: 10px;
+
+    text-decoration: none;   /* Remove underline */
+    display: inline-block;
   }
 
   .time-btn:hover{
     background-color: #FCE7F3 !important;
+    color: #0a2540 !important;
+    text-decoration: none;
   }
 
 </style>

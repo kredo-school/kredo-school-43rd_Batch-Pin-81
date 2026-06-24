@@ -3,7 +3,7 @@
 @section('title', 'Sign up')
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light" style="font-family: inter; color: #0a2540;">
     
         <div class="col-12 col-md-10 col-lg-5">
 
@@ -18,7 +18,7 @@
                         {{-- Name --}}
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="first_name" class="form-label fw-semibold">{{ __('First Name') }}</label>
+                                <label for="first_name" class="form-label fw-semibold">First Name *</label>
 
                                 <div class="col">
                                     <input 
@@ -39,7 +39,7 @@
                             </div>
                             
                             <div class="col">
-                                <label for="last_name" class="form-label fw-semibold">{{ __('Last Name') }}</label>
+                                <label for="last_name" class="form-label fw-semibold">Last Name *</label>
 
                                 <div class="col">
                                     <input 
@@ -61,7 +61,7 @@
                         </div>
 
                         {{-- Email --}}
-                        <label for="email" class="form-label fw-semibold">{{ __('Email') }}</label>
+                        <label for="email" class="form-label fw-semibold">Email *</label>
 
                         <input 
                         id="email" 
@@ -80,7 +80,7 @@
                         @enderror
                             
                         {{-- Passward --}}
-                        <label for="password" class="form-label fw-semibold">{{ __('Password') }}</label>
+                        <label for="password" class="form-label fw-semibold">Password *</label>
 
                         <input 
                         id="password" 
@@ -97,7 +97,7 @@
                             </span>
                         @enderror
                         
-                        <label for="password-confirm" class="form-label fw-semibold">{{ __('Confirm Password') }}</label>
+                        <label for="password-confirm" class="form-label fw-semibold">Confirm Password *</label>
 
                         <input 
                         id="password-confirm" 
@@ -111,11 +111,17 @@
                         {{-- Agreement check box --}}
                         <div class="form-check mb-4">
                             <input 
-                            class="form-check-input custom-checkbox" 
+                            class="form-check-input custom-checkbox @error('agreement') is-invalid @enderror" 
                             type="checkbox" 
                             name="agreement" 
                             id="agreement" 
                             {{ old('agreement') ? 'checked' : '' }}>
+
+                            @error('agreement')
+                                <div class="text-danger">
+                                    {{ $message }}
+                                </div>
+                            @enderror
 
                             {{-- <label class="form-check-label" for="agreement">
                                 I agree to the
@@ -170,7 +176,6 @@
     label{
         color: #0a2540;
     }
-
 
     /* Check box */
     .custom-checkbox:checked {

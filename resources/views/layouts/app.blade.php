@@ -230,31 +230,31 @@
                         <i class="bi bi-shield-check fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-icon-link text-decoration-none"
+                    <a href="{{ route('customer.search') }}" class="nav-icon-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Home">
                         <i class="bi bi-house fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-icon-link text-decoration-none"
+                    <a href="{{ route('favorites.index') }}" class="nav-icon-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Favorites">
                         <i class="bi bi-heart fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('my_reservations') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Reservations">
                         <i class="bi bi-calendar-event fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('customer.mypage') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Reviews">
                         <i class="bi bi-star fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('customer.profile') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Account">
                         <i class="bi bi-person fs-5"></i>
@@ -266,7 +266,7 @@
                         <i class="bi bi-bell fs-5"></i>
                     </a>
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('contact.index') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Contact">
                         <i class="bi bi-chat-left fs-5"></i>
@@ -316,19 +316,19 @@
             </div>
             <div class="offcanvas-body p-0">
                 <div class="list-group list-group-flush">
-                    <a href="#"
+                    <a href="{{ route('customer.notifications') }}"
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-navy fs-6">
                         <i class="bi bi-bell fs-5 text-navy"></i> Notifications
                     </a>
-                    <a href="#"
+                    <a href="{{ route('contact.index') }}"
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-navy fs-6">
                         <i class="bi bi-chat-right fs-5 text-navy"></i> Contact
                     </a>
-                    <a href="#"
+                    <a href="{{ route('customer.settings') }}"
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-navy fs-6">
                         <i class="bi bi-gear fs-5 text-navy"></i> Settings
                     </a>
-                    <a href="#"
+                    <a href="{{ route('login') }}"
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-danger fs-6">
                         <i class="bi bi-box-arrow-right fs-5 text-danger"></i> Log out
                     </a>
@@ -343,15 +343,15 @@
         <a href="#" class="chat-badge"><i class="bi bi-chat-text-fill"></i></a>
 
         <div class="mobile-bottom-nav d-md-none">
-            <div class="nav-item"><a class="nav-link-item active" href="#"><i
+            <div class="nav-item"><a class="nav-link-item active" href="{{ route('customer.search') }}"><i
                         class="bi bi-house"></i><span>Home</span></a></div>
-            <div class="nav-item"><a class="nav-link-item" href="#"><i
+            <div class="nav-item"><a class="nav-link-item" href="{{ route('favorites.index') }}"><i
                         class="bi bi-heart"></i><span>Favorites</span></a></div>
-            <div class="nav-item"><a class="nav-link-item" href="#"><i
+            <div class="nav-item"><a class="nav-link-item" href="{{ route('my_reservations') }}"><i
                         class="bi bi-calendar-event"></i><span>Reservations</span></a></div>
-            <div class="nav-item"><a class="nav-link-item" href="#"><i
+            <div class="nav-item"><a class="nav-link-item" href="{{ route('customer.mypage') }}"><i
                         class="bi bi-star"></i><span>Reviews</span></a></div>
-            <div class="nav-item"><a class="nav-link-item" href="#"><i
+            <div class="nav-item"><a class="nav-link-item" href="{{ route('customer.profile') }}"><i
                         class="bi bi-person"></i><span>Account</span></a></div>
         </div>
     </div>

@@ -42,8 +42,30 @@ Route::middleware('auth')->group(function () {
   Route::post('/logout', [LoginController::class, 'destroy'])
     ->name('logout');
 
+  // dissplay Home page
+  Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
+
+  // Favorites Page
+  Route::get('/favorites', [FavoriteController::class, 'view'])->name('favorites.index');
+  Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+
+  // My Reservations Page
+  Route::get('/my_reservations', [MyReservationController::class, 'index'])->name('my_reservations');
+  Route::get('/my_reservations/{reservation}/edit', [MyReservationController::class, 'edit'])
+    ->name('my_reservations.edit');
+  Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])
+    ->name('my_reservations.update');
+  Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])
+    ->name('my_reservations.notify-late');
+  Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])
+    ->name('my_reservations.destroy');
+
+  Route::get('/my_page', [ReviewController::class, 'myPage'])->name('customer.mypage');
+  Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
+  Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+
   // Register page for restaurant
-  Route::get('/restaurant/register', [RestaurantController::class, 'registerRestaurant'])->name('register.restaurant');
+  Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
   Route::post('/restaurant/register', [RestaurantController::class, 'register'])
     ->name('restaurant.store');
 });
@@ -89,7 +111,6 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
 
-
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {
 
@@ -107,35 +128,14 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/customer/my_page', [ReviewController::class, 'show'])->name('customer.mypage');
-});
-
 // Page for display restaurants after search
 Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
 
 // Restaurant Page for customer
 Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
-Route::get('/booking', [RestaurantSearchController::class, 'displayBookingPage'])->name('restaurant.book');
+Route::get('/booking', [RestaurantSearchController::class, 'create'])->name('booking.create');
 Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
 Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
 })->name('booking.confirmation');
 Route::get('/restaurant/reviews', [RestaurantReviewController::class, 'index'])->name('restaurant.reviews.index');
-
-// My Reservations Page
-Route::get('/my_reservations', [MyReservationController::class, 'index'])
-  ->name('my_reservations');
-Route::get('/my_reservations/{reservation}/edit', [MyReservationController::class, 'edit'])
-  ->name('my_reservations.edit');
-Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])
-  ->name('my_reservations.update');
-Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])
-  ->name('my_reservations.notify-late');
-Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])
-  ->name('my_reservations.destroy');
-
-// Favorites Page
-Route::get('/favorites', [FavoriteController::class, 'view'])
-  ->name('favorites.index');
-Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
