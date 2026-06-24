@@ -86,7 +86,7 @@
 
                             <div class="custom-modal-body d-flex flex-column flex-md-row">
                                 <div class="custom-modal-img-container">
-                                    <img src="{{ $post->image }}" alt="拡大画像">
+                                    <img src="{{ $post->image }}" alt="Enlarged image">
                                 </div>
 
                                 <div class="custom-modal-info-container d-flex flex-column">
@@ -113,7 +113,7 @@
                                                     </div>
                                                 </div>
                                             @empty
-                                                <p class="text-center text-muted py-4 my-0" style="font-size: 0.8rem;">まだコメントはありません。</p>
+                                                <p class="text-center text-muted py-4 my-0" style="font-size: 0.8rem;">There are no comments yet.</p>
                                             @endforelse
                                         </div>
                                     </div>
@@ -127,13 +127,13 @@
                                                 <textarea 
                                                     name="body" 
                                                     rows="1" 
-                                                    placeholder="コメントを追加..." 
+                                                    placeholder="Add a comment..." 
                                                     required
                                                     style="font-size: 0.85rem; resize: none;"
                                                     class="form-control form-control-sm rounded-3 py-2 px-3 focus-none"
                                                 ></textarea>
                                                 <button type="submit" class="btn btn-sm btn-primary px-3 fw-bold rounded-3" style="background-color: #051d3b; border: none; font-size: 0.8rem;">
-                                                    投稿
+                                                    POST
                                                 </button>
                                             </div>
                                         </form>
@@ -148,7 +148,6 @@
         </div>
 
         <style>
-            /* モーダル全体を覆うラッパー */
             .custom-post-modal-wrapper {
                 position: fixed;
                 top: 0;
@@ -162,7 +161,6 @@
                 padding: 20px;
             }
 
-            /* 黒い背景のレイヤー */
             .custom-modal-backdrop {
                 position: absolute;
                 top: 0;
@@ -172,7 +170,6 @@
                 background-color: rgba(0, 0, 0, 0.7);
             }
 
-            /* 白いコンテンツボックス本体 */
             .custom-modal-content-box {
                 position: relative;
                 background-color: #fff;
@@ -190,13 +187,11 @@
                 to { opacity: 1; transform: scale(1); }
             }
 
-            /* モーダルのインナースケール構造 */
             .custom-modal-body {
                 width: 100%;
                 height: 100%;
             }
 
-            /* 左側：拡大画像スペース */
             .custom-modal-img-container {
                 width: 60%;
                 height: 100%;
@@ -211,13 +206,11 @@
                 object-fit: contain;
             }
 
-            /* 右側：情報＆コメントスペース */
             .custom-modal-info-container {
                 width: 40%;
                 height: 100%;
             }
 
-            /* モバイル環境（768px以下）でのレスポンシブ調整 */
             @media (max-width: 767.98px) {
                 .custom-modal-content-box {
                     height: 90vh;
@@ -232,7 +225,6 @@
                 }
             }
 
-            /* × 閉じるボタン */
             .custom-modal-close-btn {
                 position: absolute;
                 top: 10px;
@@ -250,13 +242,11 @@
                 color: #000;
             }
 
-            /* フォーム入力欄の青枠を消す微調整 */
             .focus-none:focus {
                 box-shadow: none !important;
                 border-color: #ced4da !important;
             }
 
-            /* 既存マイページスタイル群保持 */
             @media (max-width: 767.98px) {
                 .avatar-responsive { width: 77px !important; height: 77px !important; }
             }
