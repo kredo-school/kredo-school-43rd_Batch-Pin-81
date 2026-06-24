@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     const ROLE_USER = 1;
     const ROLE_RESTAURANT = 2;
