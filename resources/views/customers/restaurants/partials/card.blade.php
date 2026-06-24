@@ -1,4 +1,4 @@
- <a href="#"
+ <a href="{{ route('restaurant.show') }}"
     class="text-decoration-none">
 
     <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" style="background: #fff; font-family: inter;">

@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     ->name('logout');
 
   // Register page for restaurant
-  Route::get('/restaurant/register', [RestaurantController::class, 'registerRestaurant'])->name('register.restaurant');
+  Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
   Route::post('/restaurant/register', [RestaurantController::class, 'register'])
     ->name('restaurant.store');
 });
@@ -100,7 +100,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/customer/my_page', [ReviewController::class, 'show'])->name('customer.mypage');
+  Route::get('/customer/my_page', [ReviewController::class, 'show'])->name('customer.mypage');
 });
 
 // Page for display restaurants after search
