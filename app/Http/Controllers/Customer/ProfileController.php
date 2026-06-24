@@ -35,4 +35,8 @@ class ProfileController extends Controller
 
         return redirect('/')->with('success', 'Account deleted successfully.');
     }
+    public function search()
+    {
+        return view('customer.profile');
+    }
 }
