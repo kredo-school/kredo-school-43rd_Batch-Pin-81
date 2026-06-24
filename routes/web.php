@@ -85,8 +85,16 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::patch('/menu/{id}/update', [MenuController::class, 'update'])->name('menu.update');
   Route::delete('menu/{id}/destroy', [MenuController::class, 'destroy'])->name('menu.destroy');
 
+  // Photo
+  Route::get('/photos', [PhotoController::class, 'index'])->name('photos.index');
+  Route::post('/photos/store', [PhotoController::class, 'store'])->name('photos.store');
+  Route::get('/photos/{id}/edit', [PhotoController::class, 'edit'])->name('photos.edit');
+  Route::patch('/photos/{id}/update', [PhotoController::class, 'update'])->name('photos.update');
+  Route::delete('photos/{id}', [PhotoController::class, 'destroy'])->name('photos.destroy');
 
-  Route::get('/photos', [PhotoController::class, 'index'])->name('photos');
+
+
+
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
