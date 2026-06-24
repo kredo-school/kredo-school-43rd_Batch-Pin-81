@@ -162,7 +162,7 @@
                                 </div>
 
                                 <div class="reservation-actions">
-                                    <a href="{{ route('restaurant.book', ['restaurant' => $past->restaurant_id]) }}" class="btn btn-action-outline">Book Again</a>
+                                    <a href="{{ route('booking.create', ['restaurant' => $past->restaurant_id]) }}" class="btn btn-action-outline">Book Again</a>
                                 </div>
                             </div>
                         </div>

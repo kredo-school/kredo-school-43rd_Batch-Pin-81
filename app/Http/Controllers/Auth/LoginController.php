@@ -30,7 +30,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended('/customer/search');
+            return redirect()->route('customer.search');
         }
 
         return back()->withErrors([

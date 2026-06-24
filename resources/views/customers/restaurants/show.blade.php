@@ -341,7 +341,7 @@
                         </select>
                     </div>
 
-                    <a href="{{ route('restaurant.book') }}" class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
+                    <a href="{{ route('booking.create') }}" class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
                         Book as a Guest
                     </a>
 

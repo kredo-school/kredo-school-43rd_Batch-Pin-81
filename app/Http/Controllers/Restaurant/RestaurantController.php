@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class RestaurantController extends Controller
 {
 
-    public function registerRestaurant()
+    public function create()
     {
         return view('auth.restaurant_register');
     }
