@@ -68,6 +68,13 @@ Route::middleware('auth')->group(function () {
   Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
   Route::post('/restaurant/register', [RestaurantController::class, 'register'])
     ->name('restaurant.store');
+
+    // Settings
+  Route::prefix('customer')->name('customer.')->group(function () {
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+    Route::patch('/settings/profile', [UserController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::patch('/settings/password', [UserController::class, 'updatePassword'])->name('settings.password.update');
+});
 });
 
 
@@ -124,7 +131,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/user/{user}/profile', [ReviewController::class, 'userProfile'])->name('user.profile');
   Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
-  Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 

@@ -16,9 +16,18 @@
                 </h2>
             </div>
 
+            @if (session('success'))
+                <div class="alert alert-success border-0 rounded-3 shadow-sm mb-4 small" style="color: #1f513b; background-color: #d1e7dd; padding: 12px 16px;">
+                    <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Profile Information Form --}}
-            <form class="needs-validation" action="#" method="POST" enctype="multipart/form-data" novalidate>
+            <form class="needs-validation" action="{{ route('customer.settings.profile.update') }}" method="POST"
+                enctype="multipart/form-data" novalidate>
                 @csrf
+                @method('PATCH')
+
                 <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background-color: #ffffff;">
                     <h6 class="fw-bold mb-4 text-navy" style="font-size: 1rem;">Profile Information</h6>
 
@@ -60,8 +69,11 @@
             </form>
 
             {{-- Change Password Form --}}
-            <form class="needs-validation" action="#" method="POST" novalidate>
+            <form class="needs-validation" action="{{ route('customer.settings.password.update') }}" method="POST"
+                novalidate>
                 @csrf
+                @method('PATCH')
+
                 <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background-color: #ffffff;">
                     <h6 class="fw-bold mb-4 text-navy" style="font-size: 1rem;">Change Password</h6>
 
@@ -71,6 +83,13 @@
                             <input type="password" name="current_password"
                                 class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="••••••••"
                                 style="background-color: #f4f6f9;" required>
+
+                            @error('current_password')
+                                <div class="text-danger small mt-1">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
                         </div>
 
                         <div class="col-12">
@@ -78,6 +97,13 @@
                             <input type="password" name="new_password"
                                 class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="••••••••"
                                 style="background-color: #f4f6f9;" required>
+
+                            @error('new_password')
+                                <div class="text-danger small mt-1">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
                         </div>
 
                         <div class="col-12">
@@ -98,8 +124,7 @@
 
             {{-- Partner Link --}}
             <a href="{{ url('restaurant/register') }}" class="text-decoration-none d-block mb-4">
-                <div class="card border shadow-sm rounded-4 p-3 custom-partner-card"
-                    style="background-color: #ffffff;">
+                <div class="card border shadow-sm rounded-4 p-3 custom-partner-card" style="background-color: #ffffff;">
                     <div class="d-flex align-items-center justify-content-between w-100 text-dark">
                         <div class="d-flex align-items-center">
                             <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
@@ -108,7 +133,8 @@
                             </div>
                             <div>
                                 <p class="fw-bold mb-0 text-navy" style="font-size: 0.95rem;">Partner with Us</p>
-                                <p class="text-muted small mb-0" style="font-size: 0.8rem;">Register your restaurant on Pin+81</p>
+                                <p class="text-muted small mb-0" style="font-size: 0.8rem;">Register your restaurant on
+                                    Pin+81</p>
                             </div>
                         </div>
                         <i class="fa-solid fa-chevron-right text-secondary" style="font-size: 0.9rem;"></i>
@@ -116,46 +142,16 @@
                 </div>
             </a>
 
-            <button type="button" class="btn btn-logout-custom w-100 fw-bold py-2 rounded-3 d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#logoutConfirmationModal">
+            <button type="button"
+                class="btn btn-logout-custom w-100 fw-bold py-2 rounded-3 d-flex align-items-center justify-content-center gap-2"
+                data-bs-toggle="modal" data-bs-target="#logoutConfirmationModal">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Log out
             </button>
 
         </div>
     </div>
 
-    <div class="modal fade" id="logoutConfirmationModal" tabindex="-1" aria-labelledby="logoutConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow" style="font-family: 'Inter', sans-serif; color: #0a2540; background-color: #fffefc">
-
-                <div class="modal-header border-0">
-                    <h5 class="modal-title" id="logoutConfirmationModalLabel">
-                        Log Out
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body text-center">
-                    <p class="mb-0" style="color: #0a2540;">
-                        Are you sure you want to log out of your account?
-                    </p>
-                </div>
-
-                <div class="modal-footer border-0 justify-content-center gap-2">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    
-                    <form action="{{ route('logout')}}" method="POST" class="d-inline mb-0">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">
-                            Log Out
-                        </button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    @include('customer.settings.modals.logout')
 
     <style>
         .text-navy {
@@ -193,6 +189,7 @@
             border: 1px solid #e2e8f0 !important;
             transition: background-color 0.2s;
         }
+
         .btn-modal-cancel:hover {
             background-color: #f4f6f9 !important;
         }
@@ -203,6 +200,7 @@
             border: none;
             transition: opacity 0.2s;
         }
+
         .btn-modal-confirm:hover {
             opacity: 0.9;
         }
