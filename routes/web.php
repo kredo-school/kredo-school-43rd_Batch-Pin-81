@@ -13,7 +13,7 @@ use App\Http\Controllers\Customer\RestaurantSearchController;
 use App\Http\Controllers\Customer\PostController;
 use App\Http\Controllers\Customer\UserController;
 
-use  App\Http\Controllers\Restaurant\RestaurantController;
+use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
 use App\Http\Controllers\Restaurant\OwnerAccountController;
@@ -21,6 +21,9 @@ use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
+
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -69,15 +72,88 @@ Route::middleware('auth')->group(function () {
   Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
   Route::post('/restaurant/register', [RestaurantController::class, 'register'])
     ->name('restaurant.store');
+
+  // Settings
+  Route::prefix('customer')->name('customer.')->group(function () {
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+    Route::patch('/settings/profile', [UserController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::patch('/settings/password', [UserController::class, 'updatePassword'])->name('settings.password.update');
+  });
 });
 
+// Admin Page
+Route::middleware(['auth', 'admin'])
+  ->prefix('admin')
+  ->group(function () {
 
+    // Users dashboard
+    Route::get('/users', [AdminUserController::class, 'index'])
+      ->name('admin.users');
+    Route::get('/users/customers', [AdminUserController::class, 'customers'])
+      ->name('admin.users.customers');
+    Route::get('/users/restaurants', [AdminUserController::class, 'restaurants'])
+      ->name('admin.users.restaurants');
+    Route::get('/users/admin', [AdminUserController::class, 'admin'])
+      ->name('admin.users.admin');
+    // Roles
+    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])
+      ->name('admin.users.role');
+    // Status of Users
+    Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus'])
+      ->name('admin.users.status');
+    // Delete user
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
+      ->name('admin.users.destroy');
+
+    // Restaurants dashboard
+    Route::get('/restaurants', [AdminRestaurantController::class, 'index'])
+      ->name('admin.restaurants');
+    // Status of Restaurants
+    Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
+      ->name('admin.restaurants.pending');
+    Route::get('/restaurants/active', [AdminRestaurantController::class, 'active'])
+      ->name('admin.restaurants.active');
+    Route::get('/restaurants/rejected', [AdminRestaurantController::class, 'rejected'])
+      ->name('admin.restaurants.rejected');
+    Route::get('/restaurants/suspended', [AdminRestaurantController::class, 'suspended'])
+      ->name('admin.restaurants.suspended');
+    Route::patch('/restaurants/{restaurant}/status', [AdminRestaurantController::class, 'updateStatus'])
+      ->name('admin.restaurants.status');
+    // Display restaurant details
+    Route::get('/restaurants/{restaurant}', [AdminRestaurantController::class, 'show'])
+      ->name('admin.restaurants.show');
+    Route::get('/restaurants/{restaurant}/edit', [AdminRestaurantController::class, 'edit'])
+      ->name('admin.restaurants.edit');
+    Route::patch('/restaurants/{restaurant}', [AdminRestaurantController::class, 'update'])
+      ->name('admin.restaurants.update');
+
+    // Delete restaurant
+    Route::delete('/restaurants/{restaurant}', [AdminRestaurantController::class, 'destroy'])
+      ->name('admin.restaurants.destroy');
+
+
+    // Reservations dashboard
+    Route::get('/reservations', [ReservationController::class, 'index'])
+      ->name('admin.reservations');
+
+    // Reviews dashboard
+    Route::get('/reviews', [ReviewController::class, 'index'])
+      ->name('admin.reviews');
+
+    // Categories & Features dashboard
+    Route::get('/categories&features', [ReviewController::class, 'index'])
+      ->name('admin.categories_features');
+  });
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
   Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
+
+  // Reservation
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
+  Route::patch('/reservations/{reservation}/stasus', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
+
 
   // Menu
   Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
@@ -86,7 +162,13 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::patch('/menu/{id}/update', [MenuController::class, 'update'])->name('menu.update');
   Route::delete('menu/{id}/destroy', [MenuController::class, 'destroy'])->name('menu.destroy');
 
-  Route::get('/photos', [PhotoController::class, 'index'])->name('photos');
+  // Photo
+  Route::get('/photos', [PhotoController::class, 'index'])->name('photos.index');
+  Route::post('/photos/store', [PhotoController::class, 'store'])->name('photos.store');
+  Route::get('/photos/{id}/edit', [PhotoController::class, 'edit'])->name('photos.edit');
+  Route::patch('/photos/{id}/update', [PhotoController::class, 'update'])->name('photos.update');
+  Route::delete('photos/{id}', [PhotoController::class, 'destroy'])->name('photos.destroy');
+
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
@@ -120,7 +202,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
   Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
-  Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 
