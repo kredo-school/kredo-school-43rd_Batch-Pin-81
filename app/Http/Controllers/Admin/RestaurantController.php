@@ -7,59 +7,54 @@ use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Auth;
 
+
 class RestaurantController extends Controller
 {
     public function index()
     {
-        $restaurants = Restaurant::orderBy('created_at', 'desc')->get();
+        $restaurants = Restaurant::with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
     public function pending()
     {
-        $restaurants = Restaurant::where('status', 1)
-            ->latest()
-            ->get();
+        $restaurants = Restaurant::where('status', 'pending')->get();
 
-        return view(
-            'admin.restaurants',
-            compact('restaurants')
-        );
+        return view('admin.restaurants.index', compact('restaurants'));
     }
 
     public function active()
     {
-        $restaurants = Restaurant::where('status', 2)
-            ->latest()
-            ->get();
+        $restaurants = Restaurant::where('status', 'active')->get();
 
-        return view(
-            'admin.restaurants',
-            compact('restaurants')
-        );
+        return view('admin.restaurants.index', compact('restaurants'));
     }
 
     public function rejected()
     {
-        $restaurants = Restaurant::where('status', 3)
-            ->latest()
-            ->get();
+        $restaurants = Restaurant::where('status', 'rejected')->get();
 
-        return view(
-            'admin.restaurants',
-            compact('restaurants')
-        );
+        return view('admin.restaurants.index', compact('restaurants'));
+    }
+
+    public function suspended()
+    {
+        $restaurants = Restaurant::where('status', 'suspended')->get();
+
+        return view('admin.restaurants.index', compact('restaurants'));
     }
 
     public function updateStatus(Request $request, Restaurant $restaurant)
     {
         $request->validate([
-            'is_active' => 'required|boolean',
+            'status' => 'required|boolean',
         ]);
 
         $restaurant->update([
-            'is_active' => $request->is_active
+            'status' => $request->status
         ]);
 
         return back()->with(
@@ -70,6 +65,93 @@ class RestaurantController extends Controller
 
     public function show(Restaurant $restaurant)
     {
+        $restaurant->load('user');
+
         return view('admin.restaurants.show', compact('restaurant'));
+    }
+
+    public function edit(Restaurant $restaurant)
+    {
+        $restaurant->load('user');
+
+        return view('admin.restaurants.edit', compact('restaurant'));
+    }
+
+    public function update(Request $request, Restaurant $restaurant)
+    {
+        $request->validate([
+            'restaurant_name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'address' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:30',
+
+            'website' => 'nullable|string|max:255',
+            'instagram' => 'nullable|string|max:255',
+            'facebook' => 'nullable|string|max:255',
+            'twitter' => 'nullable|string|max:255',
+
+            'capacity' => 'nullable|integer',
+        ]);
+
+        // ----------------------------
+        // CLEAN OPERATING HOURS
+        // ----------------------------
+        $hours = $request->hours ?? [];
+
+        $cleaned = [];
+
+        foreach ($hours as $day => $data) {
+
+            $opens = $data['open'] ?? [];
+            $closes = $data['close'] ?? [];
+
+            foreach ($opens as $i => $open) {
+
+                $close = $closes[$i] ?? null;
+
+                if (!$open || !$close) {
+                    continue;
+                }
+
+                $cleaned[$day][] = [
+                    'open' => $open,
+                    'close' => $close,
+                ];
+            }
+        }
+
+        // ----------------------------
+        // UPDATE RESTAURANT
+        // ----------------------------
+        $restaurant->update([
+            'restaurant_name' => $request->restaurant_name,
+            'description' => $request->description,
+            'address' => $request->address,
+            'phone_number' => $request->phone_number,
+
+            'website' => $request->website,
+            'instagram' => $request->instagram,
+            'facebook' => $request->facebook,
+            'twitter' => $request->twitter,
+
+            'capacity' => $request->capacity,
+
+            'operating_hours' => $cleaned,
+        ]);
+
+        return redirect()
+            ->route('admin.restaurants.show', $restaurant)
+            ->with('success', 'Restaurant updated successfully.');
+    }
+
+
+    public function destroy(Restaurant $restaurant)
+    {
+        $restaurant->delete();
+
+        return back()->with(
+            'success',
+            'Restaurant deleted successfully.'
+        );
     }
 }

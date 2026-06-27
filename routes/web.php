@@ -72,12 +72,12 @@ Route::middleware('auth')->group(function () {
   Route::post('/restaurant/register', [RestaurantController::class, 'register'])
     ->name('restaurant.store');
 
-    // Settings
+  // Settings
   Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::patch('/settings/profile', [UserController::class, 'updateProfile'])->name('settings.profile.update');
     Route::patch('/settings/password', [UserController::class, 'updatePassword'])->name('settings.password.update');
-});
+  });
 });
 
 // Admin Page
@@ -107,24 +107,28 @@ Route::middleware(['auth', 'admin'])
     // Restaurants dashboard
     Route::get('/restaurants', [AdminRestaurantController::class, 'index'])
       ->name('admin.restaurants');
+    // Status of Restaurants
     Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
       ->name('admin.restaurants.pending');
     Route::get('/restaurants/active', [AdminRestaurantController::class, 'active'])
       ->name('admin.restaurants.active');
     Route::get('/restaurants/rejected', [AdminRestaurantController::class, 'rejected'])
       ->name('admin.restaurants.rejected');
-    // Status of Restaurants
-    Route::patch(
-      '/restaurants/{restaurant}/status',
-      [AdminRestaurantController::class, 'updateStatus']
-    )->name('admin.restaurants.status');
+    Route::get('/restaurants/suspended', [AdminRestaurantController::class, 'suspended'])
+      ->name('admin.restaurants.suspended');
+    Route::patch('/restaurants/{restaurant}/status', [AdminRestaurantController::class, 'updateStatus'])
+      ->name('admin.restaurants.status');
     // Display restaurant details
-    Route::get('/admin/restaurants/{restaurant}', [AdminRestaurantController::class, 'show'])
+    Route::get('/restaurants/{restaurant}', [AdminRestaurantController::class, 'show'])
       ->name('admin.restaurants.show');
+    Route::get('/restaurants/{restaurant}/edit', [AdminRestaurantController::class, 'edit'])
+      ->name('admin.restaurants.edit');
+    Route::patch('/restaurants/{restaurant}', [AdminRestaurantController::class, 'update'])
+      ->name('admin.restaurants.update');
+
     // Delete restaurant
     Route::delete('/restaurants/{restaurant}', [AdminRestaurantController::class, 'destroy'])
       ->name('admin.restaurants.destroy');
-
 
 
     // Reservations dashboard

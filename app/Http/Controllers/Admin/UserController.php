@@ -95,14 +95,6 @@ class UserController extends Controller
         );
     }
 
-    public function toggleStatus(User $user)
-    {
-        $user->is_active = !$user->is_active;
-        $user->save();
-
-        return back()->with('success', 'User status updated.');
-    }
-
     public function destroy(User $user)
     {
         if ($user->id == Auth::id()) {

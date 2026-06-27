@@ -5,7 +5,6 @@
 @section('content')
 
 <style>
-<style>
 .page-title{
     color:#0a2540;
     font-size:48px;
@@ -49,21 +48,6 @@
     color: #fff !important;
     border-color: #0a2540 !important;
 }
-
-.avatar-circle{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#eef1f5;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-weight:600;
-    color:#6b7280;
-}
-
 .table th{
     font-size:13px;
     color:#6b7280;
@@ -74,24 +58,34 @@
     padding:1rem 1.5rem;
 }
 
-.role-customer{
-    background:#dbeafe;
-    color:#2563eb;
+/* Pending */
+.status-pending{
+    background: #dbeafe;
+    color: #2563eb;
 }
 
-.role-restaurant-owner{
-    background:#ffedd5;
-    color:#ea580c;
+/* Active */
+.status-active{
+    background:#dcffd5;
+    color:#5dea0c;
 }
 
-.role-admin{
-    background:#f3e8ff;
-    color:#9333ea;
+/* Reject */
+.status-rejected{
+    background: #f3e8ff;
+    color: #9333ea;
 }
 
-.role-customer,
-.role-restaurant-owner,
-.role-admin{
+/* Suspended */
+.status-suspended{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.status-pending,
+.status-active,
+.status-rejected,
+.status-suspended{
     border: none;
     padding: .5rem .75rem;
     border-radius: 999px;
@@ -105,7 +99,7 @@
     box-shadow: 0 8px 24px rgba(0,0,0,.08);
 }
 
-.role-option{
+.status-option{
     display: block;
     width: 100%;
     text-align: left;
@@ -116,63 +110,34 @@
     font-weight: 500;
 }
 
-/* Customer */
-.role-option-customer{
+/* Pending */
+.status-option-pending{
     color: #2563eb;
 }
 
-.role-option-customer:hover{
+.status-option-pending:hover{
     background: #dbeafe;
     color: #2563eb;
 }
 
-/* Restaurant Owner */
-.role-option-restaurant-owner{
-    color: #ea580c;
-}
-
-.role-option-restaurant-owner:hover{
-    background: #ffedd5;
-    color: #ea580c;
-}
-
-/* Admin */
-.role-option-admin{
-    color: #9333ea;
-}
-
-.role-option-admin:hover{
-    background: #f3e8ff;
-    color: #9333ea;
-}
-
-.status-active{
-    background:#dcfce7;
-    color:#16a34a;
-}
-
-.status-suspended{
-    background:#fee2e2;
-    color:#dc2626;
-}
-
-.status-option{
-    display:block;
-    width:100%;
-    text-align:left;
-    border:none;
-    background:transparent;
-    padding:.6rem .8rem;
-    border-radius:10px;
-    font-weight:500;
-}
-
+/* active */
 .status-option-active{
     color:#16a34a;
 }
 
 .status-option-active:hover{
-    background:#dcfce7;
+    background:#dcffd5;
+    color:#16a34a;
+}
+
+/* Admin */
+.status-option-rejected{
+    color: #9333ea;
+}
+
+.status-option-rejected:hover{
+    background: #f3e8ff;
+    color: #9333ea;
 }
 
 .status-option-suspended{
@@ -181,6 +146,7 @@
 
 .status-option-suspended:hover{
     background:#fee2e2;
+    color:#dc2626;
 }
 
 /* Modal style */
@@ -197,58 +163,9 @@
     border-top: 1px solid #e5e7eb;
 }
 
-.status-pending{
-    background:#fef3c7;
-    color:#d97706;
-}
-
-.status-active{
-    background:#dcfce7;
-    color:#16a34a;
-}
-
-.status-rejected{
-    background:#fee2e2;
-    color:#dc2626;
-}
-
-.status-option{
-    display:block;
-    width:100%;
-    text-align:left;
-    border:none;
-    background:transparent;
-    padding:.6rem .8rem;
-    border-radius:10px;
-    font-weight:500;
-}
-
-.status-option-pending{
-    color:#d97706;
-}
-
-.status-option-pending:hover{
-    background:#fef3c7;
-}
-
-.status-option-active{
-    color:#16a34a;
-}
-
-.status-option-active:hover{
-    background:#dcfce7;
-}
-
-.status-option-rejected{
-    color:#dc2626;
-}
-
-.status-option-rejected:hover{
-    background:#fee2e2;
-}
 </style>
 
-<h1 class="fw-bold mb-4">
+<h1 class="fw-bold mb-4 page-title">
     Restaurants
 </h1>
 
@@ -257,6 +174,7 @@
     <a href="{{ route('admin.restaurants.pending') }}" class="btn {{ request()->routeIs('admin.restaurants.pending') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Pending</a>
     <a href="{{ route('admin.restaurants.active') }}" class="btn {{ request()->routeIs('admin.restaurants.active') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Active</a>
     <a href="{{ route('admin.restaurants.rejected') }}" class="btn {{ request()->routeIs('admin.restaurants.rejected') ? 'btn-dark-blue' : 'btn-unactive' }}">Rejected</a>
+    <a href="{{ route('admin.restaurants.suspended') }}" class="btn {{ request()->routeIs('admin.restaurants.suspended') ? 'btn-dark-blue' : 'btn-unactive' }}">Suspended</a>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4">
@@ -269,8 +187,8 @@
                 <tr>
                     <th>RESTAURANT</th>
                     <th>OWNER</th>
-                    <th>CATEGORY</th>
                     <th>LOCATION</th>
+                    <th>CATEGORY</th>
                     <th>STATUS</th>
                     <th></th>
                 </tr>
@@ -289,16 +207,16 @@
                                   </strong>
 
                                   <div class="small text-secondary">
-                                      {{ $restaurant->email }}
+                                      {{ $restaurant->user->email }}
                                   </div>
                               </div>
 
                           </div>
                       </td>
 
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>{{ $restaurant->owner_name }}</td>
+                      <td>{{ $restaurant->address }}</td>
+                      <td>{{ $restaurant->category ?? '-' }}</td>
 
                       <td>
                           <div class="dropdown">
@@ -307,115 +225,114 @@
                                   type="button"
                                   class="badge border-0 dropdown-toggle
 
-                                  @if($restaurant->is_active == 'pending')
+                                  @if($restaurant->status == 'pending')
                                       status-pending
-                                  @elseif($restaurant->is_active == 'approved')
+                                  @elseif($restaurant->status == 'approved')
                                       status-active
-                                  @else
+                                  @elseif($restaurant->status == 'rejected')
                                       status-rejected
+                                  @else
+                                      status-suspended
                                   @endif"
 
                                   data-bs-toggle="dropdown">
 
-                                  {{ ucfirst($restaurant->is_active) }}
+                                  {{ ucfirst($restaurant->status) }}
 
                               </button>
 
-                              <ul class="dropdown-menu">
+                                <ul class="dropdown-menu">
 
-                                  <li>
+                                    <li>
+                                        <form action="{{ route('admin.restaurants.status', $restaurant) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
 
-                                      <form action="{{ route('admin.restaurants.status', $restaurant) }}"
-                                            method="POST">
+                                            <input type="hidden" name="status" value="pending">
 
-                                          @csrf
-                                          @method('PATCH')
+                                            <button type="submit"
+                                                    class="status-option status-option-pending d-flex justify-content-between">
 
-                                          <input type="hidden"
-                                                name="is_active"
-                                                value="pending">
+                                                <span>Pending</span>
 
-                                          <button type="submit"
-                                                  class="status-option status-option-pending d-flex justify-content-between">
+                                                @if($restaurant->status == 'pending')
+                                                    <span>✓</span>
+                                                @endif
 
-                                              <span>Pending</span>
+                                            </button>
+                                        </form>
+                                    </li>
 
-                                              @if($restaurant->is_active == 'pending')
-                                                  <span>✓</span>
-                                              @endif
+                                    <li>
+                                        <form action="{{ route('admin.restaurants.status', $restaurant) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
 
-                                          </button>
+                                            <input type="hidden" name="status" value="active">
 
-                                      </form>
+                                            <button type="submit"
+                                                    class="status-option status-option-active d-flex justify-content-between">
 
-                                  </li>
+                                                <span>Active</span>
 
-                                  <li>
+                                                @if($restaurant->status == 'active')
+                                                    <span>✓</span>
+                                                @endif
 
-                                      <form action="{{ route('admin.restaurants.status', $restaurant) }}"
-                                            method="POST">
+                                            </button>
+                                        </form>
+                                    </li>
 
-                                          @csrf
-                                          @method('PATCH')
+                                    <li>
+                                        <form action="{{ route('admin.restaurants.status', $restaurant) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
 
-                                          <input type="hidden"
-                                                name="is_active"
-                                                value="approved">
+                                            <input type="hidden" name="status" value="rejected">
 
-                                          <button type="submit"
-                                                  class="status-option status-option-active d-flex justify-content-between">
+                                            <button type="submit"
+                                                    class="status-option status-option-rejected d-flex justify-content-between">
 
-                                              <span>Active</span>
+                                                <span>Rejected</span>
 
-                                              @if($restaurant->is_active == 'approved')
-                                                  <span>✓</span>
-                                              @endif
+                                                @if($restaurant->status == 'rejected')
+                                                    <span>✓</span>
+                                                @endif
 
-                                          </button>
+                                            </button>
+                                        </form>
+                                    </li>
 
-                                      </form>
+                                    <li>
+                                        <form action="{{ route('admin.restaurants.status', $restaurant) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
 
-                                  </li>
+                                            <input type="hidden" name="status" value="suspended">
 
-                                  <li>
+                                            <button type="submit"
+                                                    class="status-option status-option-suspended d-flex justify-content-between">
 
-                                      <form action="{{ route('admin.restaurants.status', $restaurant) }}"
-                                            method="POST">
+                                                <span>Suspended</span>
 
-                                          @csrf
-                                          @method('PATCH')
+                                                @if($restaurant->status == 'suspended')
+                                                    <span>✓</span>
+                                                @endif
 
-                                          <input type="hidden"
-                                                name="is_active"
-                                                value="rejected">
+                                            </button>
+                                        </form>
+                                    </li>
 
-                                          <button type="submit"
-                                                  class="status-option status-option-rejected d-flex justify-content-between">
-
-                                              <span>Rejected</span>
-
-                                              @if($restaurant->is_active == 'rejected')
-                                                  <span>✓</span>
-                                              @endif
-
-                                          </button>
-
-                                      </form>
-
-                                  </li>
-
-                              </ul>
+                                </ul>
 
                           </div>
 
                       </td>
 
-                      <td class="d-flex justify-content-center align-items-center">
+                      <td>
                             <a href="{{ route('admin.restaurants.show', $restaurant) }}"
-                                class="btn btn-sm btn-outline-secondary">
-
-                                View
-
+                            class="btn text-secondary border-0">
+                                <i class="fa-solid fa-magnifying-glass"></i>
                             </a>
 
                             <button type="button"
@@ -424,7 +341,6 @@
                                     data-bs-target="#deleteModal{{ $restaurant->id }}">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
-
 
                       </td>
 
