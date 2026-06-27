@@ -16,6 +16,13 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
+                    {{-- Account susspended messagae --}}
+                    @error('email')
+                        <div class="alert alert-danger">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
                     <!-- Email Field -->
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold" style="color: #0a2540;">{{ __('Email') }}</label>

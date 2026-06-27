@@ -13,12 +13,12 @@ class RestaurantController extends Controller
 
     public function create()
     {
+
         return view('auth.restaurant_register');
     }
 
     public function register(Request $request)
     {
-        // register restaurant
         $validated = $request->validate([
             'restaurant_name' => 'required|max:255',
             'postal_code' => 'required|max:20',
@@ -39,9 +39,10 @@ class RestaurantController extends Controller
             'user_id' => Auth::id(),
             'restaurant_name' => $validated['restaurant_name'],
             'address' => $fullAddress,
-            'phone_number' => $validated['phone_number'],
+            'phone_number' => $validated['phone_number'] ?? null,
             'description' => $validated['description'] ?? null,
-            'business_license' => $validated['business_license'],
+            'business_license' => $validated['business_license'] ?? null,
+            'status' => Restaurant::STATUS_PENDING,
         ]);
 
         return redirect('/restaurant/dashboard')

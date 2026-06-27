@@ -28,6 +28,18 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
 
+            $user = Auth::user();
+
+            // Check if account is suspended
+            if (!$user->is_active) {
+
+                Auth::logout();
+
+                return back()->withErrors([
+                    'email' => 'Your account is currently suspended and cannot be used.'
+                ]);
+            }
+
             $request->session()->regenerate();
 
             return redirect()->route('customer.search');
