@@ -17,6 +17,7 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
+        /** @var \App\Models\User $user */ 
         $user = Auth::user();
 
         $request->validate([
@@ -36,6 +37,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request)
     {
+        /** @var \App\Models\User $user */ 
         $user = Auth::user();
 
         $request->validate([
