@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.restaurant')
 
 @section('title', 'Restaurant Information')
 
@@ -133,8 +133,8 @@
         }
     </style>
 
-    <div class="container py-5" style="max-width: 1000px;">
-        <h2 class="mb-4 fw-bold text-navy">Restaurant Information</h2>
+    <div class="container pb-5" style="max-width: 1140px;">
+        <h2 class="fw-bold mb-4 text-navy" style="font-size: 28px;">Restaurant Information</h2>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -153,8 +153,8 @@
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Restaurant Name</label>
-                    <input type="text" class="form-control" id="name" name="name"
-                        value="{{ $restaurant->name }}">
+                    <input type="text" class="form-control" id="restaurant_name" name="restaurant_name"
+                        value="{{ $restaurant->restaurant_name }}">
                 </div>
 
                 <div class="mb-4">
@@ -197,8 +197,8 @@
                 <div class="row mb-3">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" name="phone"
-                            value="{{ $restaurant->phone }}">
+                        <input type="text" class="form-control" id="phone_number" name="phone_number"
+                            value="{{ $restaurant->phone_number }}">
                     </div>
                     <div class="col-md-6">
                         <label for="email" class="form-label">Email</label>
@@ -283,6 +283,7 @@
                                         data-day-name="{{ $day }}">
                                         <i class="bi bi-plus"></i> Add break / second shift
                                     </button>
+                                    
                                 </div>
                             @endif
                         </div>
@@ -300,6 +301,19 @@
                         </div>
                     </div>
                 @endforeach
+
+                <div class="mt-4 pt-3">
+                    <label class="form-label small fw-bold" style="color: #0A2540;">Reservation Slot Duration</label>
+                    <select name="stay_duration" class="form-select form-custom-input">
+                        <option value="60" {{ $restaurant->stay_duration == 60 ? 'selected' : '' }}>1 Hour</option>
+                        <option value="90" {{ $restaurant->stay_duration == 90 ? 'selected' : '' }}>1.5 Hours</option>
+                        <option value="120" {{ $restaurant->stay_duration == 120 ? 'selected' : '' }}>2 Hours</option>
+                        <option value="150" {{ $restaurant->stay_duration == 150 ? 'selected' : '' }}>2.5 Hours</option>
+                        <option value="180" {{ $restaurant->stay_duration == 180 ? 'selected' : '' }}>3 Hours</option>
+                    </select>
+                    <small class="text-muted d-block mt-1">Select the default time slot allocated for each customer group.</small>
+                </div>
+
             </div>
 
             {{-- 4. 特徴セクション --}}

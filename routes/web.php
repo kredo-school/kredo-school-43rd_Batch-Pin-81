@@ -81,7 +81,7 @@ Route::middleware('auth')->group(function () {
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
   Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
 
