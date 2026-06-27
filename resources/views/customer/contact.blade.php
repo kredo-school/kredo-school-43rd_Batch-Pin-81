@@ -249,182 +249,228 @@
 
         <div class="tab-content" id="supportTabContent">
 
-            <div class="tab-pane fade show active" id="new-message" role="tabpanel">
-                <div class="support-card p-4">
-                    <h5 class="fw-bold mb-3">Send us a message</h5>
+    {{-- ✉️ 1. 新規問い合わせタブ --}}
+    <div class="tab-pane fade show active" id="new-message" role="tabpanel">
+        <div class="support-card p-4">
+            <h5 class="fw-bold mb-3">Send us a message</h5>
 
-                    <form action="{{ route('customer.contact.send') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+            <form action="{{ route('customer.contact.send') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-                        <div class="mb-3">
-                            <label for="message" class="form-label fw-semibold">Message</label>
-                            <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="4"
-                                placeholder="Please describe your issue in detail..." required>{{ old('message') }}</textarea>
-                            @error('message')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label d-block fw-semibold">Attach Files (optional)</label>
-                            <input type="file" id="attachments" name="attachments[]" class="d-none" multiple>
-                            <button type="button" id="btn-upload-trigger"
-                                class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-bold">
-                                <i class="bi bi-paperclip"></i> Add images or files
-                            </button>
-                            <div id="file-list-preview" class="form-text mt-2 text-primary fw-semibold"></div>
-                        </div>
-
-                        <div class="form-check mb-4 bg-light p-3 rounded border">
-                            <input class="form-check-input ms-0 me-2" type="checkbox" id="confirmCheck" required>
-                            <label class="form-check-label small" for="confirmCheck">
-                                I confirm that the above information is correct and I want to send this message to the
-                                Pin+81 support team.
-                            </label>
-                        </div>
-
-                        <button type="submit" id="submitBtn" class="btn btn-submit w-100 fw-bold" disabled>
-                            <i class="bi bi-send me-2"></i>Send Message
-                        </button>
-                        <div class="text-center text-muted small mt-2">
-                            We typically respond within 24 hours on business days
-                        </div>
-                    </form>
+                <div class="mb-3">
+                    <label for="message" class="form-label fw-semibold">Message</label>
+                    <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="4"
+                        placeholder="Please describe your issue in detail..." required>{{ old('message') }}</textarea>
+                    @error('message')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label d-block fw-semibold">Attach Files (optional)</label>
+                    <input type="file" id="attachments" name="attachments[]" class="d-none" multiple>
+                    <button type="button" id="btn-upload-trigger"
+                        class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-bold">
+                        <i class="bi bi-paperclip"></i> Add images or files
+                    </button>
+                    <div id="file-list-preview" class="form-text mt-2 text-primary fw-semibold"></div>
+                </div>
+
+                <div class="form-check mb-4 bg-light p-3 rounded border">
+                    <input class="form-check-input ms-0 me-2" type="checkbox" id="confirmCheck" required>
+                    <label class="form-check-label small" for="confirmCheck">
+                        I confirm that the above information is correct and I want to send this message to the
+                        Pin+81 support team.
+                    </label>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-submit w-100 fw-bold" disabled>
+                    <i class="bi bi-send me-2"></i>Send Message
+                </button>
+                <div class="text-center text-muted small mt-2">
+                    We typically respond within 24 hours on business days
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- 📜 2. 履歴一覧 ＆ 詳細チャットタブ --}}
+    <div class="tab-pane fade" id="message-history" role="tabpanel">
+
+        {{-- 📝 A. 履歴リスト表示エリア --}}
+        <div id="history-list-view" class="support-card p-4">
+            <h5 class="fw-bold mb-3">Message History</h5>
+
+            <div class="list-group list-group-flush gap-2">
+                @forelse ($contacts as $contact)
+                    <a href="#"
+                        class="history-item list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between px-3 border rounded-3 text-decoration-none shadow-sm mb-1 bg-white"
+                        data-id="{{ $contact->id }}">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 40px; height: 40px; background-color: #e8f7f0;">
+                                <i class="bi bi-chat-left-text text-success" style="font-size: 1.1rem;"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">
+                                    {{ $contact->title ?? 'Inquiry' }}
+                                </div>
+                                <div class="d-flex align-items-center gap-2 small text-muted">
+                                    <span><i class="bi bi-clock me-1"></i>{{ $contact->created_at->format('Y-m-d H:i') }}</span>
+                                    <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill"
+                                        style="font-size: 0.75rem; font-weight: 500;">{{ $contact->status }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                    </a>
+                @empty
+                    <div class="text-center text-muted py-4">No message history found.</div>
+                @endforelse
+            </div>
+        </div>
+
+        {{-- 💬 B. チャット詳細表示エリア --}}
+        <div id="history-detail-view" class="support-card p-4 d-none">
+            <div class="d-flex align-items-center mb-4">
+                <button type="button" id="btn-back-to-list" class="btn btn-back p-0 fw-bold me-2">
+                    <i class="bi bi-arrow-left me-1"></i>Back
+                </button>
+                <h5 id="detail-view-title" class="fw-bold mb-0" style="color: #0f2d4a;">Subject</h5>
             </div>
 
-            <div class="tab-pane fade" id="message-history" role="tabpanel">
-                <div id="history-list-view" class="support-card p-4">
-                    <h5 class="fw-bold mb-3">Message History</h5>
+            <div class="chat-log mb-4 d-flex flex-column gap-3">
+                @foreach ($contacts as $contact)
+                    <div class="chat-thread d-none" id="thread-{{ $contact->id }}">
+                        <div class="d-flex flex-column gap-3">
 
-                    <div class="list-group list-group-flush gap-2">
+                            {{-- 1️⃣ 親メッセージ（最初に自分が送った内容） --}}
+                            <div class="align-self-end text-end" style="max-width: 80%;">
+                                <div class="p-3 text-start rounded-3 text-white shadow-sm"
+                                    style="background-color: #0b2238; font-size: 0.95rem;">
+                                    {{ $contact->message }}
 
-                        <a href="#"
-                            class="history-item list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between px-3 border rounded-3 text-decoration-none shadow-sm mb-1 bg-white"
-                            data-id="1">
-                            <div class="d-flex align-items-center">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
-                                    style="width: 40px; height: 40px; background-color: #e8f7f0;">
-                                    <i class="bi bi-chat-left-text text-success" style="font-size: 1.1rem;"></i>
+                                    {{-- 📸 親メッセージに画像が添付されている場合 --}}
+                                    @if(!empty($contact->attachments))
+                                        <div class="chat-attachments mt-2 d-flex flex-wrap gap-2 justify-content-end">
+                                            @foreach($contact->attachments as $path)
+                                                <img src="{{ asset('storage/' . $path) }}" 
+                                                     class="img-thumbnail zoomable-img" 
+                                                     style="max-width: 150px; max-height: 150px; cursor: pointer; object-fit: cover;" 
+                                                     alt="Attachment">
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
-                                <div>
-                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Reservation
-                                        cancellation question</div>
-                                    <div class="d-flex align-items-center gap-2 small text-muted">
-                                        <span><i class="bi bi-clock me-1"></i>2026-05-10 09:30</span>
-                                        <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill"
-                                            style="font-size: 0.75rem; font-weight: 500;">replied</span>
-                                    </div>
-                                </div>
+                                <small class="text-muted d-block mt-1"
+                                    style="font-size: 0.75rem;">{{ $contact->created_at->format('Y-m-d H:i') }}</small>
                             </div>
-                            <i class="bi bi-chevron-right text-muted small"></i>
-                        </a>
 
-                        <a href="#"
-                            class="history-item list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between px-3 border rounded-3 text-decoration-none shadow-sm bg-white"
-                            data-id="2">
-                            <div class="d-flex align-items-center">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
-                                    style="width: 40px; height: 40px; background-color: #e8f7f0;">
-                                    <i class="bi bi-chat-left-text text-success" style="font-size: 1.1rem;"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Review photo upload
-                                        issue</div>
-                                    <div class="d-flex align-items-center gap-2 small text-muted">
-                                        <span><i class="bi bi-clock me-1"></i>2026-05-08 11:15</span>
-                                        <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill"
-                                            style="font-size: 0.75rem; font-weight: 500;">replied</span>
+                            {{-- 子メッセージ（Adminからの返信や、自分のFollow-up） --}}
+                            @foreach ($contact->replies as $reply)
+                                @if ($reply->user_id == Auth::id())
+                                    {{-- 2️⃣ 子メッセージ：自分（右側） --}}
+                                    <div class="align-self-end text-end" style="max-width: 80%;">
+                                        <div class="p-3 text-start rounded-3 text-white shadow-sm"
+                                            style="background-color: #0b2238; font-size: 0.95rem;">
+                                            {{ $reply->message }}
+
+                                            {{-- 📸 自分の返信に画像が添付されている場合 --}}
+                                            @if(!empty($reply->attachments))
+                                                <div class="chat-attachments mt-2 d-flex flex-wrap gap-2 justify-content-end">
+                                                    @foreach($reply->attachments as $path)
+                                                        <img src="{{ asset('storage/' . $path) }}" 
+                                                             class="img-thumbnail zoomable-img" 
+                                                             style="max-width: 150px; max-height: 150px; cursor: pointer; object-fit: cover;" 
+                                                             alt="Attachment">
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <small class="text-muted d-block mt-1"
+                                            style="font-size: 0.75rem;">{{ $reply->created_at->format('Y-m-d H:i') }}</small>
                                     </div>
-                                </div>
-                            </div>
-                            <i class="bi bi-chevron-right text-muted small"></i>
-                        </a>
+                                @else
+                                    {{-- 3️⃣ 子メッセージ：Adminなど相手（左側） --}}
+                                    <div class="align-self-start" style="max-width: 80%;">
+                                        <div class="p-3 rounded-3 text-dark shadow-sm bg-light border"
+                                            style="font-size: 0.95rem;">
+                                            {{ $reply->message }}
 
+                                            {{-- 📸 相手の返信に画像が添付されている場合 --}}
+                                            @if(!empty($reply->attachments))
+                                                <div class="chat-attachments mt-2 d-flex flex-wrap gap-2">
+                                                    @foreach($reply->attachments as $path)
+                                                        <img src="{{ asset('storage/' . $path) }}" 
+                                                             class="img-thumbnail zoomable-img" 
+                                                             style="max-width: 150px; max-height: 150px; cursor: pointer; object-fit: cover;" 
+                                                             alt="Attachment">
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <small class="text-muted d-block mt-1"
+                                            style="font-size: 0.75rem;">{{ $reply->created_at->format('Y-m-d H:i') }}</small>
+                                    </div>
+                                @endif
+                            @endforeach
+
+                        </div>
                     </div>
-                </div>
+                @endforeach
+            </div>
 
-                <div id="history-detail-view" class="support-card p-4 d-none">
-                    <div class="d-flex align-items-center mb-4">
-                        <button type="button" id="btn-back-to-list" class="btn btn-back p-0 fw-bold me-2">
-                            <i class="bi bi-arrow-left me-1"></i>Back
+            {{-- 🔄 返信フォーム --}}
+            <div class="border-top pt-4">
+                <h6 class="fw-bold mb-2 text-dark">Add a follow-up message</h6>
+
+                <form action="{{ route('customer.contact.send') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="parent_id" id="form-parent-id" value="">
+
+                    <div class="mb-3">
+                        <textarea name="message" class="form-control" rows="3" placeholder="Type your follow-up question..." required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <input type="file" id="reply-attachments" name="attachments[]" class="d-none" multiple>
+
+                        <button type="button" id="btn-reply-upload-trigger"
+                            class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-bold">
+                            <i class="bi bi-paperclip"></i> Attach files
                         </button>
-                        <h5 id="detail-view-title" class="fw-bold mb-0" style="color: #0f2d4a;">Subject</h5>
+
+                        <button type="submit" class="btn fw-bold px-4 py-2"
+                            style="background-color: #0b2238; color: #fff; border: none; border-radius: 8px;">
+                            <i class="bi bi-send me-2"></i>Send Follow-up
+                        </button>
                     </div>
 
-                    <div class="chat-log mb-4 d-flex flex-column gap-3">
-                        <div class="chat-thread" id="thread-1">
-                            <div class="d-flex flex-column gap-3">
-                                <div class="align-self-end text-end" style="max-width: 80%;">
-                                    <div class="p-3 text-start rounded-3 text-white shadow-sm"
-                                        style="background-color: #0b2238; font-size: 0.95rem;">
-                                        I need to cancel my reservation for tonight due to a sudden change of plans. Will I
-                                        be charged a fee?
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-10
-                                        09:30</small>
-                                </div>
-
-                                <div class="align-self-start" style="max-width: 80%;">
-                                    <div class="p-3 rounded-3 text-dark shadow-sm bg-light border"
-                                        style="font-size: 0.95rem;">
-                                        Thank you for contacting us. According to our policy, cancellations made within 24
-                                        hours of the reservation time may incur a fee. However, we have waived it this time.
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-10
-                                        14:20</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="chat-thread d-none" id="thread-2">
-                            <div class="d-flex flex-column gap-3">
-                                <div class="align-self-end text-end" style="max-width: 80%;">
-                                    <div class="p-3 text-start rounded-3 text-white shadow-sm"
-                                        style="background-color: #0b2238; font-size: 0.95rem;">
-                                        I am trying to upload photos along with my review of the restaurant, but it keeps
-                                        giving me an error saying the file format is not supported. The photos are JPEGs.
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-08
-                                        11:15</small>
-                                </div>
-
-                                <div class="align-self-start" style="max-width: 80%;">
-                                    <div class="p-3 rounded-3 text-dark shadow-sm bg-light border"
-                                        style="font-size: 0.95rem;">
-                                        We apologize for the inconvenience. There was a temporary server issue affecting
-                                        file uploads, but it has now been resolved. Please try uploading your photos again.
-                                    </div>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">2026-05-08
-                                        12:00</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-top pt-4">
-                        <h6 class="fw-bold mb-2 text-dark">Add a follow-up message</h6>
-                        <div class="mb-3">
-                            <textarea class="form-control" rows="3" placeholder="Type your follow-up question..."></textarea>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-bold">
-                                <i class="bi bi-paperclip"></i> Attach files
-                            </button>
-                            <button type="button" class="btn fw-bold px-4 py-2"
-                                style="background-color: #8596a6; color: #fff; border: none; border-radius: 8px;">
-                                <i class="bi bi-send me-2"></i>Send Follow-up
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
+                    <div id="reply-file-list-preview" class="form-text mt-2 text-primary fw-semibold"></div>
+                </form>
             </div>
 
         </div>
     </div>
 
+</div>
+
+{{-- ======================================================= --}}
+{{-- ✨ 画像拡大用モーダル（タブの外側に綺麗に配置しました） --}}
+{{-- ======================================================= --}}
+<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0 position-relative">
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body p-0 text-center">
+                <img id="zoomed-image" src="" class="img-fluid rounded-3 shadow-lg" style="max-height: 85vh;">
+            </div>
+        </div>
+    </div>
+</div>
+
     <script>
+        // FAQ アコーディオンの手動制御
         document.querySelectorAll('.accordion-button').forEach(button => {
             button.removeAttribute('data-bs-toggle');
             button.addEventListener('click', function() {
@@ -435,6 +481,7 @@
             });
         });
 
+        // 📎 添付ファイルボタンのトリガーとプレビュー制御
         const uploadTrigger = document.getElementById('btn-upload-trigger');
         const realFileInput = document.getElementById('attachments');
         const fileListPreview = document.getElementById('file-list-preview');
@@ -455,6 +502,7 @@
             }
         });
 
+        // ✅ 送信前確認チェックボックスの制御
         const confirmCheck = document.getElementById('confirmCheck');
         const submitBtn = document.getElementById('submitBtn');
 
@@ -462,35 +510,120 @@
             submitBtn.disabled = !this.checked;
         });
 
-        // 一覧と詳細メッセージの画面切り替え・連動ロジック
+        // 🔄 一覧と詳細メッセージの画面切り替え・連動ロジック
         const historyListView = document.getElementById('history-list-view');
         const historyDetailView = document.getElementById('history-detail-view');
         const detailViewTitle = document.getElementById('detail-view-title');
         const btnBackToList = document.getElementById('btn-back-to-list');
 
-        // 各履歴アイテムをクリックした時
+        // 各履歴アイテムをクリックした時の処理
         document.querySelectorAll('.history-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                // クリックした要素内のタイトルテキストを取得
+                // 1. クリックした要素内のタイトルテキストを取得して詳細画面のヘッダーにセット
                 const title = this.querySelector('.fw-bold').textContent.trim();
                 detailViewTitle.textContent = title;
 
-                // data-id に応じて表示するスレッド（チャットログ）を切り替える
+                // 2. クリックされた会話のID（data-id）を取得
                 const id = this.getAttribute('data-id');
+
+                // ✨【重要】返信フォームの隠しパラメータ（parent_id）にこのIDを自動セット
+                const formParentId = document.getElementById('form-parent-id');
+                if (formParentId) {
+                    formParentId.value = id;
+                }
+
+                // 3. すべてのスレッドを一旦非表示にして、クリックされたIDのスレッドだけを表示
                 document.querySelectorAll('.chat-thread').forEach(thread => {
                     thread.classList.add('d-none');
                 });
-                document.getElementById(`thread-${id}`).classList.remove('d-none');
+
+                const activeThread = document.getElementById(`thread-${id}`);
+                if (activeThread) {
+                    activeThread.classList.remove('d-none');
+                }
+
+                // 4. 一覧ビューを隠し、詳細チャットビューを表示
                 historyListView.classList.add('d-none');
                 historyDetailView.classList.remove('d-none');
             });
         });
 
+        // 「Back」ボタンを押して一覧に戻る時の処理
         btnBackToList.addEventListener('click', function() {
             historyDetailView.classList.add('d-none');
             historyListView.classList.remove('d-none');
         });
+        // 📎 【追加】返信フォーム用の添付ファイルボタンとプレビュー制御
+        const replyUploadTrigger = document.getElementById('btn-reply-upload-trigger');
+        const replyRealFileInput = document.getElementById('reply-attachments');
+        const replyFileListPreview = document.getElementById('reply-file-list-preview');
+
+        if (replyUploadTrigger && replyRealFileInput) {
+            // 見た目のボタンをクリックした時に実際のinput[type=file]をクリックさせる
+            replyUploadTrigger.addEventListener('click', () => {
+                replyRealFileInput.click();
+            });
+
+            // ファイルが選択されたらファイル名を画面に表示する
+            replyRealFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    let fileNames = [];
+                    for (let i = 0; i < this.files.length; i++) {
+                        fileNames.push(`<i class="bi bi-file-earmark-check me-1"></i>${this.files[i].name}`);
+                    }
+                    replyFileListPreview.innerHTML = `Selected: ${fileNames.join(', ')}`;
+                } else {
+                    replyFileListPreview.innerHTML = '';
+                }
+            });
+        }
+        // 🔍 添付画像の拡大モーダル制御
+    const imageZoomModalEl = document.getElementById('imageZoomModal');
+    
+    // BootstrapのModalインスタンスを手動生成（前回の制御ロジックと合わせるため）
+    if (imageZoomModalEl) {
+        // 画像が新しく追加された場合にも対応できるよう、document全体でクリックを監視
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('zoomable-img')) {
+                const src = e.target.getAttribute('src');
+                const zoomedImage = document.getElementById('zoomed-image');
+                
+                if (zoomedImage) {
+                    zoomedImage.setAttribute('src', src);
+                    
+                    // モーダルを表示させるクラス操作（アコーディオンと同様の手動トグル手法）
+                    imageZoomModalEl.classList.add('show');
+                    imageZoomModalEl.style.display = 'block';
+                    document.body.classList.add('modal-open');
+                    
+                    // 背景のオーバーレイ（黒幕）を作成して追加
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    backdrop.id = 'modal-custom-backdrop';
+                    document.body.appendChild(backdrop);
+                }
+            }
+        });
+
+        // モーダルの閉じるボタン、または黒幕クリックで閉じる処理
+        const closeModalFn = function() {
+            imageZoomModalEl.classList.remove('show');
+            imageZoomModalEl.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            const backdrop = document.getElementById('modal-custom-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        };
+
+        // 閉じるボタン、およびモーダルの背景クリックで閉じる
+        imageZoomModalEl.addEventListener('click', function(e) {
+            if (e.target === imageZoomModalEl || e.target.classList.contains('btn-close')) {
+                closeModalFn();
+            }
+        });
+    }
     </script>
 @endsection
