@@ -10,7 +10,7 @@ use App\Http\Controllers\Customer\MyReservationController;
 use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\RestaurantSearchController;
-use App\Http\Controllers\Customer\ReviewController;
+use App\Http\Controllers\Customer\PostController;
 use App\Http\Controllers\Customer\UserController;
 
 use  App\Http\Controllers\Restaurant\RestaurantController;
@@ -20,7 +20,6 @@ use App\Http\Controllers\Restaurant\OwnerAccountController;
 use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
-use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
 
 use Illuminate\Support\Facades\Auth;
@@ -39,8 +38,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-  Route::post('/logout', [LoginController::class, 'destroy'])
-    ->name('logout');
+  Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
   // dissplay Home page
   Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
@@ -51,16 +49,16 @@ Route::middleware('auth')->group(function () {
 
   // My Reservations Page
   Route::get('/my_reservations', [MyReservationController::class, 'index'])->name('my_reservations');
-  Route::get('/my_reservations/{reservation}/edit', [MyReservationController::class, 'edit'])
-    ->name('my_reservations.edit');
-  Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])
-    ->name('my_reservations.update');
-  Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])
-    ->name('my_reservations.notify-late');
-  Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])
-    ->name('my_reservations.destroy');
+  Route::get('/my_reservations/{reservation}/edit', [MyReservationController::class, 'edit'])->name('my_reservations.edit');
+  Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])->name('my_reservations.update');
+  Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])->name('my_reservations.notify-late');
+  Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])->name('my_reservations.destroy');
+  
+  //POST
+  Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
+  Route::post('/restaurants/{restaurant_id}/post', [PostController::class, 'store'])->name('posts.store');
+  Route::get('/restaurants/{restaurant_id}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews.index');
 
-  Route::get('/my_page', [ReviewController::class, 'myPage'])->name('customer.mypage');
   Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
   Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 
@@ -103,9 +101,6 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::patch('/photos/{id}/update', [PhotoController::class, 'update'])->name('photos.update');
   Route::delete('photos/{id}', [PhotoController::class, 'destroy'])->name('photos.destroy');
 
-
-
-
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
@@ -122,6 +117,10 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'sendFollowUp'])->name('contact.reply');
 });
 
+Route::middleware(['auth', 'is_restaurant'])->prefix('restaurant')->name('restaurant.')->group(function () {  
+  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');   
+});
+
 //Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {
 
@@ -129,10 +128,10 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
-  Route::get('/my_page', [ReviewController::class, 'myPage'])->name('my_page');
-  Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
-  Route::post('/user/{user}/follow', [ReviewController::class, 'toggleFollow'])->name('user.follow');
-  Route::get('/user/{user}/profile', [ReviewController::class, 'userProfile'])->name('user.profile');
+  Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
+  Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
+  Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
+  Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
   Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
@@ -149,4 +148,3 @@ Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'
 Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
 })->name('booking.confirmation');
-Route::get('/restaurant/reviews', [RestaurantReviewController::class, 'index'])->name('restaurant.reviews.index');
