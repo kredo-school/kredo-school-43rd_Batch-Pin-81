@@ -72,20 +72,19 @@
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="review-card p-4 text-center h-100 d-flex flex-column justify-content-center">
-                    <h1 class="display-4 fw-bold text-navy mb-1">{{ number_format($stats['average_rating'], 1) }}</h1>
+                    <h1 class="display-4 fw-bold text-navy mb-1">{{ number_format($stats['average_rating'] ?? 4.5, 1) }}</h1>
                     <div class="mb-2">
                         @for ($i = 1; $i <= 5; $i++)
-                            <i
-                                class="bi bi-star-fill {{ $i <= round($stats['average_rating']) ? 'star-rating' : 'star-rating-muted' }} fs-5"></i>
+                            <i class="bi bi-star-fill {{ $i <= round($stats['average_rating'] ?? 4.5) ? 'star-rating' : 'star-rating-muted' }} fs-5"></i>
                         @endfor
                     </div>
-                    <small class="text-muted">{{ $stats['total_reviews'] }} reviews</small>
+                    <small class="text-muted">{{ $reviews->count() + 2 }} reviews</small> {{-- 動的投稿数 + 固定2件 --}}
                 </div>
             </div>
 
             <div class="col-md-4">
                 <div class="review-card p-4 h-100 d-flex flex-column justify-content-center">
-                    @foreach ($stats['stars'] as $star => $data)
+                    @foreach ($stats['stars'] ?? [5 => ['percentage' => 70, 'count' => 5], 4 => ['percentage' => 20, 'count' => 2], 3 => ['percentage' => 10, 'count' => 1], 2 => ['percentage' => 0, 'count' => 0], 1 => ['percentage' => 0, 'count' => 0]] as $star => $data)
                         <div class="d-flex align-items-center mb-1">
                             <span class="small text-muted me-2" style="width: 15px;">{{ $star }}★</span>
                             <div class="progress flex-grow-1" style="height: 6px;">
@@ -100,7 +99,7 @@
 
             <div class="col-md-4">
                 <div class="review-card p-4 text-center h-100 d-flex flex-column justify-content-center">
-                    <h1 class="display-4 fw-bold text-danger mb-1">{{ $stats['reported_count'] }}</h1>
+                    <h1 class="display-4 fw-bold text-danger mb-1">{{ $stats['reported_count'] ?? 0 }}</h1>
                     <div class="fw-semibold text-muted mb-1">Reported Reviews</div>
                     <small class="text-muted">Reported reviews are sent to admin for removal</small>
                 </div>
@@ -110,20 +109,20 @@
         {{-- 💬 口コミ一覧リストエリア --}}
         <div class="d-flex flex-column gap-3">
 
-            {{-- ▼ 1. データベースから取得した動的な口コミのループ --}}
+            {{-- ▼ 1. データベース（Postモデル）から取得した動的な口コミのループ --}}
             @foreach ($reviews as $review)
                 <div class="review-card p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
-                            <h5 class="fw-bold text-navy mb-1">John Smith</h5>
+                            <h5 class="fw-bold text-navy mb-1">{{ $review->user->name ?? 'John Smith' }}</h5>
                             <div class="d-flex align-items-center gap-2">
                                 <div class="star-rating small">
+                                    @php $rating = $review->star->rating ?? 5; @endphp
                                     @for ($i = 1; $i <= 5; $i++)
-                                        <i
-                                            class="bi bi-star-fill {{ $i <= $review->rating ? 'star-rating' : 'star-rating-muted' }}"></i>
+                                        <i class="bi bi-star-fill {{ $i <= $rating ? 'star-rating' : 'star-rating-muted' }}"></i>
                                     @endfor
                                 </div>
-                                <small class="text-muted">2026-05-10</small>
+                                <small class="text-muted">{{ $review->created_at ? \Carbon\Carbon::parse($review->created_at)->format('Y-m-d') : '2026-05-10' }}</small>
                             </div>
                         </div>
                         <a href="#" class="btn-report d-flex align-items-center gap-1">
@@ -132,72 +131,40 @@
                     </div>
 
                     <p class="text-navy mb-3" style="line-height: 1.6;">
-                        {{ $review->comment }}
+                        {{ $review->description }}
                     </p>
 
-                    {{-- 📸 画像表示ロジック --}}
-                    @php
-                        $images = $review->images;
-                        if (is_string($images)) {
-                            $images = json_decode($images, true);
-                        }
+                    {{-- 📸 画像表示ロジック（Postモデルの単数形imageに対応） --}}
+                    @if($review->image)
+                        <div class="d-flex gap-2 mb-2">
+                            <img src="{{ asset($review->image) }}" alt="Review Image" class="review-img" style="cursor: pointer;"
+                                data-bs-toggle="modal" data-bs-target="#imageModal-{{ $loop->index }}">
+                        </div>
 
-                        $displayImages =
-                            !empty($images) && is_array($images)
-                                ? $images
-                                : [
-                                    'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400',
-                                    'https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=400',
-                                ];
-                    @endphp
+                        {{-- 拡大モーダル本体 --}}
+                        <div class="modal fade" id="imageModal-{{ $loop->index }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content bg-transparent border-0">
+                                    <div class="modal-body p-0 position-relative">
+                                        <button type="button"
+                                            class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
+                                            data-bs-dismiss="modal" aria-label="Close"></button>
 
-                    {{-- サムネイル表示 --}}
-                    <div class="d-flex gap-2 mb-2">
-                        @foreach ($displayImages as $index => $imgUrl)
-                            <img src="{{ $imgUrl }}" alt="Review Image" class="review-img" style="cursor: pointer;"
-                                data-bs-toggle="modal" data-bs-target="#imageModal-{{ $loop->parent->index }}"
-                                data-bs-slide-to="{{ $index }}">
-                        @endforeach
-                    </div>
-
-                    {{-- 拡大モーダル本体 --}}
-                    <div class="modal fade" id="imageModal-{{ $loop->index }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content bg-transparent border-0">
-                                <div class="modal-body p-0 position-relative">
-                                    <button type="button"
-                                        class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
-                                        data-bs-dismiss="modal" aria-label="Close"></button>
-
-                                    <div id="carousel-{{ $loop->index }}" class="carousel slide" data-bs-ride="false">
-                                        <div class="carousel-inner text-center">
-                                            @foreach ($displayImages as $idx => $imgUrl)
-                                                <div class="carousel-item {{ $idx === 0 ? 'active' : '' }}">
-                                                    <img src="{{ $imgUrl }}" class="img-fluid rounded"
-                                                        alt="Enlarged Review Image"
-                                                        style="max-height: 80vh; object-fit: contain;">
-                                                </div>
-                                            @endforeach
+                                        <div class="text-center bg-dark rounded p-2">
+                                            <img src="{{ asset($review->image) }}" class="img-fluid rounded"
+                                                alt="Enlarged Review Image"
+                                                style="max-height: 80vh; object-fit: contain;">
                                         </div>
-
-                                        {{-- 修正箇所：ボタンを@endforeachの内側（かつcarouselの閉じタグの直前）に正しく移動しました --}}
-                                        @if (count($displayImages) > 1)
-                                            <button class="carousel-control-prev" type="button"
-                                                data-bs-target="#carousel-{{ $loop->index }}" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Previous</span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button"
-                                                data-bs-target="#carousel-{{ $loop->index }}" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Next</span>
-                                            </button>
-                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        {{-- 画像がない場合はプレースホルダーか、あるいは非表示（今回はプレースホルダーを表示） --}}
+                        <div class="review-img-placeholder mb-2">
+                            <i class="bi bi-image fs-3"></i>
+                        </div>
+                    @endif
                 </div>
             @endforeach
 
@@ -253,6 +220,6 @@
                 </p>
             </div>
 
-        </div> {{-- .d-flex.flex-column.gap-3 の閉じタグ --}}
-    </div> {{-- .container-fluid の閉じタグ --}}
+        </div>
+    </div>
 @endsection
