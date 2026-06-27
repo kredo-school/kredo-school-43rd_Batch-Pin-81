@@ -13,7 +13,7 @@ use App\Http\Controllers\Customer\RestaurantSearchController;
 use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\UserController;
 
-use  App\Http\Controllers\Restaurant\RestaurantController;
+use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
 use App\Http\Controllers\Restaurant\OwnerAccountController;
@@ -22,6 +22,9 @@ use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileContro
 use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ReviewController as RestaurantReviewController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
+
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -70,7 +73,65 @@ Route::middleware('auth')->group(function () {
     ->name('restaurant.store');
 });
 
+// Admin Page
+Route::middleware(['auth', 'admin'])
+  ->prefix('admin')
+  ->group(function () {
 
+    // Users dashboard
+    Route::get('/users', [AdminUserController::class, 'index'])
+      ->name('admin.users');
+    Route::get('/users/customers', [AdminUserController::class, 'customers'])
+      ->name('admin.users.customers');
+    Route::get('/users/restaurants', [AdminUserController::class, 'restaurants'])
+      ->name('admin.users.restaurants');
+    Route::get('/users/admin', [AdminUserController::class, 'admin'])
+      ->name('admin.users.admin');
+    // Roles
+    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])
+      ->name('admin.users.role');
+    // Status of Users
+    Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus'])
+      ->name('admin.users.status');
+    // Delete user
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
+      ->name('admin.users.destroy');
+
+    // Restaurants dashboard
+    Route::get('/restaurants', [AdminRestaurantController::class, 'index'])
+      ->name('admin.restaurants');
+    Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
+      ->name('admin.restaurants.pending');
+    Route::get('/restaurants/active', [AdminRestaurantController::class, 'active'])
+      ->name('admin.restaurants.active');
+    Route::get('/restaurants/rejected', [AdminRestaurantController::class, 'rejected'])
+      ->name('admin.restaurants.rejected');
+    // Status of Restaurants
+    Route::patch(
+      '/restaurants/{restaurant}/status',
+      [AdminRestaurantController::class, 'updateStatus']
+    )->name('admin.restaurants.status');
+    // Display restaurant details
+    Route::get('/admin/restaurants/{restaurant}', [AdminRestaurantController::class, 'show'])
+      ->name('admin.restaurants.show');
+    // Delete restaurant
+    Route::delete('/restaurants/{restaurant}', [AdminRestaurantController::class, 'destroy'])
+      ->name('admin.restaurants.destroy');
+
+
+
+    // Reservations dashboard
+    Route::get('/reservations', [ReservationController::class, 'index'])
+      ->name('admin.reservations');
+
+    // Reviews dashboard
+    Route::get('/reviews', [ReviewController::class, 'index'])
+      ->name('admin.reviews');
+
+    // Categories & Features dashboard
+    Route::get('/categories&features', [ReviewController::class, 'index'])
+      ->name('admin.categories_features');
+  });
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ

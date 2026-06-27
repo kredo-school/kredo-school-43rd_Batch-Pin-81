@@ -24,8 +24,6 @@
 
     {{-- Font awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ asset('css/rikako-style.css') }}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
@@ -224,7 +222,7 @@
 
                 <div class="d-flex align-items-center gap-3 bg-transparent ms-4">
 
-                    <a href="#" class="nav-link text-decoration-none"
+                    <a href="{{ route('admin.users') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Admin">
                         <i class="bi bi-shield-check fs-5"></i>

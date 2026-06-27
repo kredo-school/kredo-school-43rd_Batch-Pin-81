@@ -1,0 +1,460 @@
+@extends('layouts.admin')
+
+@section('title', 'Restaurants')
+
+@section('content')
+
+<style>
+<style>
+.page-title{
+    color:#0a2540;
+    font-size:48px;
+    font-weight:700;
+}
+
+.btn-dark-blue{
+    background-color: #0a2540;
+    color: #fff !important;
+}
+
+.btn-dark-blue:hover{
+    background-color:#0a2540;
+    color:#fff !important;
+}
+
+.btn-unactive {
+    background: #fff;
+    color: #0a2540;
+    border: 1px solid #0a2540;
+}
+
+.btn-unactive:hover{
+    background-color: #0a2540;
+    color: #fff !important;
+}
+
+.btn-dark-blue:active,
+.btn-dark-blue.active,
+.btn-dark-blue:focus,
+.btn-dark-blue:focus-visible {
+    background-color: #0a2540 !important;
+    color: #fff !important;
+    border-color: #0a2540 !important;
+    box-shadow: none !important;
+}
+
+.btn-unactive:active,
+.btn-unactive.active {
+    background-color: #0a2540 !important;
+    color: #fff !important;
+    border-color: #0a2540 !important;
+}
+
+.avatar-circle{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#eef1f5;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:600;
+    color:#6b7280;
+}
+
+.table th{
+    font-size:13px;
+    color:#6b7280;
+    padding:1rem 1.5rem;
+}
+
+.table td{
+    padding:1rem 1.5rem;
+}
+
+.role-customer{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.role-restaurant-owner{
+    background:#ffedd5;
+    color:#ea580c;
+}
+
+.role-admin{
+    background:#f3e8ff;
+    color:#9333ea;
+}
+
+.role-customer,
+.role-restaurant-owner,
+.role-admin{
+    border: none;
+    padding: .5rem .75rem;
+    border-radius: 999px;
+}
+
+.dropdown-menu{
+    border: none;
+    border-radius: 16px;
+    padding: .5rem;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+
+.role-option{
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    padding: .6rem .8rem;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* Customer */
+.role-option-customer{
+    color: #2563eb;
+}
+
+.role-option-customer:hover{
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* Restaurant Owner */
+.role-option-restaurant-owner{
+    color: #ea580c;
+}
+
+.role-option-restaurant-owner:hover{
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+/* Admin */
+.role-option-admin{
+    color: #9333ea;
+}
+
+.role-option-admin:hover{
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+.status-active{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.status-suspended{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.status-option{
+    display:block;
+    width:100%;
+    text-align:left;
+    border:none;
+    background:transparent;
+    padding:.6rem .8rem;
+    border-radius:10px;
+    font-weight:500;
+}
+
+.status-option-active{
+    color:#16a34a;
+}
+
+.status-option-active:hover{
+    background:#dcfce7;
+}
+
+.status-option-suspended{
+    color:#dc2626;
+}
+
+.status-option-suspended:hover{
+    background:#fee2e2;
+}
+
+/* Modal style */
+.modal-content{
+    border-radius: 20px;
+    border: none;
+}
+
+.modal-header{
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-footer{
+    border-top: 1px solid #e5e7eb;
+}
+
+.status-pending{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.status-active{
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.status-rejected{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.status-option{
+    display:block;
+    width:100%;
+    text-align:left;
+    border:none;
+    background:transparent;
+    padding:.6rem .8rem;
+    border-radius:10px;
+    font-weight:500;
+}
+
+.status-option-pending{
+    color:#d97706;
+}
+
+.status-option-pending:hover{
+    background:#fef3c7;
+}
+
+.status-option-active{
+    color:#16a34a;
+}
+
+.status-option-active:hover{
+    background:#dcfce7;
+}
+
+.status-option-rejected{
+    color:#dc2626;
+}
+
+.status-option-rejected:hover{
+    background:#fee2e2;
+}
+</style>
+
+<h1 class="fw-bold mb-4">
+    Restaurants
+</h1>
+
+<div class="mb-4">
+    <a href="{{ route('admin.restaurants') }}" class="btn {{ request()->routeIs('admin.restaurants') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">All</a>
+    <a href="{{ route('admin.restaurants.pending') }}" class="btn {{ request()->routeIs('admin.restaurants.pending') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Pending</a>
+    <a href="{{ route('admin.restaurants.active') }}" class="btn {{ request()->routeIs('admin.restaurants.active') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Active</a>
+    <a href="{{ route('admin.restaurants.rejected') }}" class="btn {{ request()->routeIs('admin.restaurants.rejected') ? 'btn-dark-blue' : 'btn-unactive' }}">Rejected</a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4">
+
+    <div class="table-responsive">
+
+        <table class="table align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th>RESTAURANT</th>
+                    <th>OWNER</th>
+                    <th>CATEGORY</th>
+                    <th>LOCATION</th>
+                    <th>STATUS</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                  @forelse($restaurants as $restaurant)
+                  <tr>
+                      <td>
+                          <div class="d-flex align-items-center">
+
+                              <div>
+                                  <strong>
+                                      {{ $restaurant->restaurant_name }}
+                                  </strong>
+
+                                  <div class="small text-secondary">
+                                      {{ $restaurant->email }}
+                                  </div>
+                              </div>
+
+                          </div>
+                      </td>
+
+                      <td></td>
+                      <td></td>
+                      <td></td>
+
+                      <td>
+                          <div class="dropdown">
+
+                              <button
+                                  type="button"
+                                  class="badge border-0 dropdown-toggle
+
+                                  @if($restaurant->is_active == 'pending')
+                                      status-pending
+                                  @elseif($restaurant->is_active == 'approved')
+                                      status-active
+                                  @else
+                                      status-rejected
+                                  @endif"
+
+                                  data-bs-toggle="dropdown">
+
+                                  {{ ucfirst($restaurant->is_active) }}
+
+                              </button>
+
+                              <ul class="dropdown-menu">
+
+                                  <li>
+
+                                      <form action="{{ route('admin.restaurants.status', $restaurant) }}"
+                                            method="POST">
+
+                                          @csrf
+                                          @method('PATCH')
+
+                                          <input type="hidden"
+                                                name="is_active"
+                                                value="pending">
+
+                                          <button type="submit"
+                                                  class="status-option status-option-pending d-flex justify-content-between">
+
+                                              <span>Pending</span>
+
+                                              @if($restaurant->is_active == 'pending')
+                                                  <span>✓</span>
+                                              @endif
+
+                                          </button>
+
+                                      </form>
+
+                                  </li>
+
+                                  <li>
+
+                                      <form action="{{ route('admin.restaurants.status', $restaurant) }}"
+                                            method="POST">
+
+                                          @csrf
+                                          @method('PATCH')
+
+                                          <input type="hidden"
+                                                name="is_active"
+                                                value="approved">
+
+                                          <button type="submit"
+                                                  class="status-option status-option-active d-flex justify-content-between">
+
+                                              <span>Active</span>
+
+                                              @if($restaurant->is_active == 'approved')
+                                                  <span>✓</span>
+                                              @endif
+
+                                          </button>
+
+                                      </form>
+
+                                  </li>
+
+                                  <li>
+
+                                      <form action="{{ route('admin.restaurants.status', $restaurant) }}"
+                                            method="POST">
+
+                                          @csrf
+                                          @method('PATCH')
+
+                                          <input type="hidden"
+                                                name="is_active"
+                                                value="rejected">
+
+                                          <button type="submit"
+                                                  class="status-option status-option-rejected d-flex justify-content-between">
+
+                                              <span>Rejected</span>
+
+                                              @if($restaurant->is_active == 'rejected')
+                                                  <span>✓</span>
+                                              @endif
+
+                                          </button>
+
+                                      </form>
+
+                                  </li>
+
+                              </ul>
+
+                          </div>
+
+                      </td>
+
+                      <td class="d-flex justify-content-center align-items-center">
+                            <a href="{{ route('admin.restaurants.show', $restaurant) }}"
+                                class="btn btn-sm btn-outline-secondary">
+
+                                View
+
+                            </a>
+
+                            <button type="button"
+                                    class="btn text-danger border-0"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ $restaurant->id }}">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+
+
+                      </td>
+
+                    </tr>
+
+                    {{-- include  the modal here --}}
+                    @include('admin.modals.delete', [
+                        'id' => $restaurant->id,
+                        'route' => route('admin.restaurants.destroy', $restaurant),
+                        'title' => 'Delete Restaurant',
+                        'message' => 'Are you sure you want to delete ' . $restaurant->restaurant_name . '?'
+                    ])
+                                    
+                    @empty
+
+                    <tr>
+
+                        <td colspan="6" class="text-center py-4">
+                            No restaurants found.
+                        </td>
+
+                    </tr>
+
+                    @endforelse
+                </tbody>
+            
+            </table>
+
+    </div>
+
+</div>
+   
+@endsection
