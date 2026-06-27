@@ -66,13 +66,20 @@ Route::middleware('auth')->group(function () {
   Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
   Route::post('/restaurant/register', [RestaurantController::class, 'register'])
     ->name('restaurant.store');
+
+    // Settings
+  Route::prefix('customer')->name('customer.')->group(function () {
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+    Route::patch('/settings/profile', [UserController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::patch('/settings/password', [UserController::class, 'updatePassword'])->name('settings.password.update');
+});
 });
 
 
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => 'restaurant'*/], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
   Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
 
@@ -83,7 +90,13 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::patch('/menu/{id}/update', [MenuController::class, 'update'])->name('menu.update');
   Route::delete('menu/{id}/destroy', [MenuController::class, 'destroy'])->name('menu.destroy');
 
-  Route::get('/photos', [PhotoController::class, 'index'])->name('photos');
+  // Photo
+  Route::get('/photos', [PhotoController::class, 'index'])->name('photos.index');
+  Route::post('/photos/store', [PhotoController::class, 'store'])->name('photos.store');
+  Route::get('/photos/{id}/edit', [PhotoController::class, 'edit'])->name('photos.edit');
+  Route::patch('/photos/{id}/update', [PhotoController::class, 'update'])->name('photos.update');
+  Route::delete('photos/{id}', [PhotoController::class, 'destroy'])->name('photos.destroy');
+
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
@@ -117,7 +130,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
   Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
-  Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 

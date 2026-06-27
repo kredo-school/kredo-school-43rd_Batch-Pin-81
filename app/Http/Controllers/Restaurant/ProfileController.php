@@ -19,11 +19,11 @@ class ProfileController extends Controller
 
         // フォームの初期表示用サンプルデータ
         $restaurant = (object)[
-            'name' => 'Sushi Masaru',
+            'restaurant_name' => 'Sushi Masaru',
             'description' => 'Traditional Edomae sushi in contemporary setting',
             'cuisine_types' => ['Sushi'],
             'address' => '3-8-15 Ginza, Chuo-ku, Tokyo',
-            'phone' => '+81-3-1234-5678',
+            'phone_number' => '+81-3-1234-5678',
             'email' => 'info@sushimasaru.jp',
             'website' => 'www.sushimasaru.jp',
             'instagram' => 'https://instagram.com/yourrestaurant',
@@ -46,7 +46,8 @@ class ProfileController extends Controller
                 'Friday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
                 'Saturday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
                 'Sunday' => ['open' => '', 'close' => '', 'closed' => true],
-            ]
+            ],
+            'stay_duration' => 120
         ];
 
         return view('restaurants.profile', compact('restaurant'));
