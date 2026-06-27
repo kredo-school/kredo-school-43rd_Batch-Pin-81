@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Reservation extends Model
 {
     use HasFactory, SoftDeletes; 
-    
+
     // データベースへの一括保存を許可するカラム
     protected $fillable = [
         'user_id',
@@ -20,6 +20,7 @@ class Reservation extends Model
         'reservation_time',
         'end_time',
         'status',
+        'cancelled_by',
     ];
 
     /**
