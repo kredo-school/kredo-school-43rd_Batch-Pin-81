@@ -17,7 +17,7 @@ class MenuController extends Controller
 
         $menus = Menu::where('restaurant_id', $restaurantId)->get();
 
-        return view('restaurants.menus.menu')->with('menus', $menus);
+        return view('restaurants.menus.index')->with('menus', $menus);
     }
 
     public function store(Request $request) {
