@@ -120,7 +120,7 @@ class PostController extends Controller
             ['path' => request()->url()]
         );
 
-        return view('restaurants.reviews', compact('reviews', 'stats'));
+        return view('customers.restaurants.reviews', compact('reviews', 'stats'));
     }
 
     // 📝 口コミ・レビューを保存する（Postモデルに保存）

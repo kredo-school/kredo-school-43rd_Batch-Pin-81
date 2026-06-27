@@ -61,8 +61,11 @@ Route::middleware('auth')->group(function () {
   Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
   Route::post('/restaurants/{restaurant_id}/post', [PostController::class, 'store'])->name('posts.store');
   Route::get('/restaurants/{restaurant_id}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews.index');
-
+  
+  //Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
+
+  //Contact
   Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 
   // Register page for restaurant
