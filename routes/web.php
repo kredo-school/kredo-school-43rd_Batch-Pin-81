@@ -3,7 +3,7 @@
 #Restaurant
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Customer\ContactController;
+use App\Http\Controllers\Customer\ContactController as CustomerContactController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\FavoriteController;
 use App\Http\Controllers\Customer\MyReservationController;
@@ -66,7 +66,8 @@ Route::middleware('auth')->group(function () {
   Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
 
   //Contact
-  Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+  Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
+  Route::delete('/customer/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('customer.contact.destroy');
 
   // Register page for restaurant
   Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
@@ -137,11 +138,11 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.reservations');
 
     // Reviews dashboard
-    Route::get('/reviews', [ReviewController::class, 'index'])
+    Route::get('/reviews', [PostController::class, 'index'])
       ->name('admin.reviews');
 
     // Categories & Features dashboard
-    Route::get('/categories&features', [ReviewController::class, 'index'])
+    Route::get('/categories&features', [PostController::class, 'index'])
       ->name('admin.categories_features');
   });
 
@@ -182,7 +183,8 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::get('/contact', [RestaurantContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [RestaurantContactController::class, 'send'])->name('contact.send');
   Route::get('/contact/{id}', [RestaurantContactController::class, 'show'])->name('contact.show');
-  Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'sendFollowUp'])->name('contact.reply');
+  Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'reply'])->name('contact.reply');
+  Route::delete('/contact/{id}', [RestaurantContactController::class, 'destroy'])->name('contact.destroy');
 });
 
 Route::middleware(['auth', 'is_restaurant'])->prefix('restaurant')->name('restaurant.')->group(function () {  
@@ -200,8 +202,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
   Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
   Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
-  Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-  Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+  Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
+  Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
+  Route::delete('/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('contact.destroy');
 
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });

@@ -15,7 +15,13 @@ class Contact extends Model
         'title',
         'message',
         'status',
+        'attachments',
     ];
+    protected $casts = [
+
+        'attachments' => 'array',
+    ];
+    
     public function user()
     {
         return $this->belongsTo(User::class);
