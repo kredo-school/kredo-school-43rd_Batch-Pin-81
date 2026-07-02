@@ -119,7 +119,7 @@
                     <i class="fa-regular fa-image me-3" style="width: 20px;"></i>Photos
                 </a>
 
-                <a href="#"
+                <a href="{{ route('restaurant.reviews') }}"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.reviews') ? '' : 'bg-transparent text-white-50' }}"
                     style="{{ request()->routeIs('restaurant.reviews') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-regular fa-star me-3" style="width: 20px;"></i>Reviews
@@ -142,11 +142,11 @@
                 </div>
 
                 <div id="settingsSubMenu" class="custom-menu-wrap ps-4 pb-2 d-flex flex-column gap-1">
-                    <a href="#"
+                    <a href="{{ route('restaurant.settings.owner_account.edit') }}"
                         class="text-white-50 text-decoration-none py-2 px-3 small rounded-3 d-flex align-items-center list-group-item-action">
                         <i class="fa-regular fa-user me-3" style="width: 16px;"></i>Owner account
                     </a>
-                    <a href="#"
+                    <a href="{{ route('restaurant.settings.contact.index') }}"
                         class="text-white-50 text-decoration-none py-2 px-3 small rounded-3 d-flex align-items-center list-group-item-action">
                         <i class="fa-solid fa-phone me-3" style="width: 16px;"></i>Contact
                     </a>

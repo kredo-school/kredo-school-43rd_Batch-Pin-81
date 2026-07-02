@@ -64,4 +64,8 @@ class User extends Authenticatable
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name ?: 'User') . '&color=7F9CF5&background=EBF4FF';
     }
+    public function restaurant()
+    {
+        return $this->hasOne(Restaurant::class);
+    }
 }

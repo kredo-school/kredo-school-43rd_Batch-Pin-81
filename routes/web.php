@@ -171,6 +171,8 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' =>
   Route::delete('photos/{id}', [PhotoController::class, 'destroy'])->name('photos.destroy');
 
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
+
+  // Profile
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
 });
@@ -187,7 +189,7 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::delete('/contact/{id}', [RestaurantContactController::class, 'destroy'])->name('contact.destroy');
 });
 
-Route::middleware(['auth', 'is_restaurant'])->prefix('restaurant')->name('restaurant.')->group(function () {  
+Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(function () {  
   Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');   
 });
 
@@ -195,9 +197,12 @@ Route::middleware(['auth', 'is_restaurant'])->prefix('restaurant')->name('restau
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {
 
   Route::get('/search', [CustomerController::class, 'index'])->name('search');
+  
+  // Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
+  
   Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
   Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
   Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
@@ -205,7 +210,6 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
   Route::delete('/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('contact.destroy');
-
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 
