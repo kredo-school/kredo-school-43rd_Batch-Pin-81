@@ -19,16 +19,35 @@
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label for="date" class="form-label fw-semibold text-navy small">Date</label>
-                        <input type="date" class="form-control custom-input" id="date" name="date" required>
+                        <input type="date"
+                            class="form-control custom-input"
+                            id="date"
+                            name="date"
+                            value="{{ old('date', $selectedDate) }}"
+                            min="{{ date('Y-m-d') }}"
+                            required>
                     </div>
+
                     <div class="col-md-6">
                         <label for="time" class="form-label fw-semibold text-navy small">Time</label>
-                        <select class="form-select custom-input" id="time" name="time" required>
-                            <option value="" selected disabled>Select time</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
+                        <select class="form-select custom-input" id="reservation_time" name="reservation_time" required>
+                            @if($selectedTime)
+                                <option value="{{ $selectedTime }}" selected>
+                                    {{ $selectedTime }}
+                                </option>
+                            @else
+                                <option value="" selected disabled>
+                                    Select time
+                                </option>
+                            @endif
+
+                            @foreach($availableSlots ?? [] as $time)
+                                @if($time != $selectedTime)
+                                    <option value="{{ $time }}" {{ $time == $selectedTime ? 'selected' : '' }}>
+                                        {{ $time }}
+                                    </option>
+                                @endif
+                            @endforeach
                         </select>
                     </div>
                 </div>
