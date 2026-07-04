@@ -45,8 +45,14 @@ class Restaurant extends Model
 
     // 配列やJSON形式のオブジェクトデータを自動変換する設定
     protected $casts = [
+        'cuisine_types' => 'array',
         'operating_hours' => 'array',
+        'features' => 'array',
     ];
+    public function getHoursAttribute()
+    {
+        return $this->operating_hours ?? [];
+    }
 
     public function availableSlots()
     {
@@ -63,14 +69,6 @@ class Restaurant extends Model
         return $slots;
     }
 
-    public function categories()
-    {
-        return $this->belongsToMany(
-            Category::class,
-            'category_restaurant'
-        );
-    }
-
     public function photos()
     {
         return $this->hasMany(Photo::class);
@@ -79,15 +77,6 @@ class Restaurant extends Model
     public function menus()
     {
         return $this->hasMany(Reservation::class);
-    }
-
-
-    public function features()
-    {
-        return $this->belongsToMany(
-            Feature::class,
-            'feature_restaurant'
-        );
     }
 
     /**
@@ -111,6 +100,22 @@ class Restaurant extends Model
         return $this->user
             ? $this->user->first_name . ' ' . $this->user->last_name
             : '-';
+    }
+
+    /**
+     * レストランが持つカテゴリー（料理ジャンル）
+     */
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_restaurant', 'restaurant_id', 'category_id');
+    }
+
+    /**
+     * レストランが持つ特徴
+     */
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class, 'feature_restaurant', 'restaurant_id', 'feature_id');
     }
 
     public function posts()

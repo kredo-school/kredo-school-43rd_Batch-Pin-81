@@ -86,6 +86,8 @@
 
         .time-picker-wrapper {
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
         .time-picker-wrapper .clock-icon {
@@ -94,22 +96,25 @@
             top: 50%;
             transform: translateY(-50%);
             color: #0f2d4a;
-            pointer-events: none;
             font-size: 0.95rem;
+            cursor: pointer;
+            z-index: 2;
         }
 
         .time-input::-webkit-calendar-picker-indicator {
             position: absolute;
-            left: 0;
+            right: 0;
             top: 0;
-            width: 100%;
+            width: 35px;
             height: 100%;
             opacity: 0;
             cursor: pointer;
+            z-index: 1;
         }
 
         .time-input {
-            padding-right: 35px !important;
+            padding-right: 38px !important;
+            z-index: 0;
         }
 
         .remove-shift-btn {
@@ -117,7 +122,6 @@
             background: none;
             border: none;
             padding: 0;
-            margin-top: 24px;
             width: 32px;
             height: 32px;
             display: inline-flex;
@@ -130,6 +134,16 @@
         .remove-shift-btn:hover {
             color: #dc3545;
             background-color: #fde8e8;
+        }
+
+        /* 💡 モーダルのボタンスタイルをブランドカラーに調整 */
+        .btn-navy-confirm {
+            background-color: #0f2d4a;
+            color: #fff;
+        }
+        .btn-navy-confirm:hover {
+            background-color: #173b5e;
+            color: #fff;
         }
     </style>
 
@@ -152,7 +166,7 @@
                 <div class="section-title">Basic Information</div>
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Restaurant Name</label>
+                    <label for="restaurant_name" class="form-label">Restaurant Name</label>
                     <input type="text" class="form-control" id="restaurant_name" name="restaurant_name"
                         value="{{ $restaurant->restaurant_name }}">
                 </div>
@@ -165,17 +179,14 @@
                 <div class="mb-2">
                     <label class="form-label d-block">Cuisine Type (Select all that apply)</label>
                     <div class="row g-2">
-                        @php
-                            $cuisines = ['Japanese', 'Korean', 'Italian', 'Chinese', 'French', 'Cafe'];
-                        @endphp
-                        @foreach ($cuisines as $cuisine)
+                        @foreach ($allCategories as $category)
                             <div class="col-md-4 col-6">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="cuisine_types[]"
-                                        value="{{ $cuisine }}" id="cuisine-{{ $loop->index }}"
-                                        {{ in_array($cuisine, $restaurant->cuisine_types ?? []) ? 'checked' : '' }}>
-                                    <label class="form-check-label text-navy" for="cuisine-{{ $loop->index }}">
-                                        {{ $cuisine }}
+                                        value="{{ $category->id }}" id="cuisine-{{ $category->id }}"
+                                        {{ in_array($category->id, $selectedCategoryIds) ? 'checked' : '' }}>
+                                    <label class="form-check-label text-navy" for="cuisine-{{ $category->id }}">
+                                        {{ $category->categories_name }}
                                     </label>
                                 </div>
                             </div>
@@ -196,14 +207,14 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6 mb-3 mb-md-0">
-                        <label for="phone" class="form-label">Phone</label>
+                        <label for="phone_number" class="form-label">Phone</label>
                         <input type="text" class="form-control" id="phone_number" name="phone_number"
                             value="{{ $restaurant->phone_number }}">
                     </div>
                     <div class="col-md-6">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email"
-                            value="{{ $restaurant->email }}">
+                            value="{{ Auth::user()->email }}" readonly>
                     </div>
                 </div>
 
@@ -228,14 +239,30 @@
                 </div>
             </div>
 
-            {{-- 3. 営業時間セクション (改良版) --}}
+            {{-- 3. 営業時間セクション --}}
             <div class="profile-card">
                 <div class="section-title">Operating Hours</div>
 
                 @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
                     @php
-                        $dayHours = $restaurant->hours[$day] ?? ['open' => '', 'close' => '', 'closed' => false];
+                        $dayData = $restaurant->operating_hours[$day] ?? ($restaurant->hours[$day] ?? []);
                         $dayLower = strtolower($day);
+                        $isClosed = isset($dayData['closed']) && $dayData['closed'] == '1';
+
+                        $shifts = [];
+                        foreach ($dayData as $key => $val) {
+                            if (is_numeric($key)) {
+                                $shifts[$key] = $val;
+                            }
+                        }
+
+                        if (empty($shifts)) {
+                            if (isset($dayData['open'])) {
+                                $shifts[0] = ['open' => $dayData['open'], 'close' => $dayData['close'] ?? ''];
+                            } else {
+                                $shifts[0] = ['open' => '', 'close' => ''];
+                            }
+                        }
                     @endphp
                     <div class="row align-items-start mb-4">
                         <div class="col-md-2 col-12 mb-2 mb-md-0 pt-2">
@@ -243,56 +270,52 @@
                         </div>
 
                         <div class="col-md-8 col-8">
-                            {{-- シフトリストを囲うコンテナ --}}
                             <div class="time-inputs-container" id="{{ $dayLower }}-time-container">
-
-                                {{-- 1つ目の時間設定枠 --}}
-                                <div class="time-input-row d-flex align-items-center gap-3 mb-2">
-                                    <div class="flex-grow-1">
-                                        <span class="small text-muted d-block mb-1"
-                                            style="font-size: 0.75rem;">Open</span>
-                                        <div class="position-relative time-picker-wrapper">
-                                            <input type="time" class="form-control time-input"
-                                                name="hours[{{ $day }}][0][open]"
-                                                value="{{ $dayHours['open'] }}">
-                                            <i class="bi bi-clock clock-icon"></i>
+                                
+                                @foreach($shifts as $index => $shift)
+                                    <div class="time-input-row d-flex align-items-center gap-3 mb-2">
+                                        <div class="col-auto" style="min-width: 55px;">
+                                            <span class="text-muted small shift-label">Shift {{ $index + 1 }}</span>
                                         </div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <span class="small text-muted d-block mb-1"
-                                            style="font-size: 0.75rem;">Close</span>
-                                        <div class="position-relative time-picker-wrapper">
-                                            <input type="time" class="form-control time-input"
-                                                name="hours[{{ $day }}][0][close]"
-                                                value="{{ $dayHours['close'] }}">
-                                            <i class="bi bi-clock clock-icon"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="time-picker-wrapper">
+                                                <input type="time" class="form-control time-input"
+                                                    name="hours[{{ $day }}][{{ $index }}][open]"
+                                                    value="{{ $shift['open'] ?? '' }}" {{ $isClosed ? 'disabled' : '' }}>
+                                                <i class="fa-regular fa-clock clock-icon"></i>
+                                            </div>
                                         </div>
+                                        <div class="text-muted small">to</div>
+                                        <div class="flex-grow-1">
+                                            <div class="time-picker-wrapper">
+                                                <input type="time" class="form-control time-input"
+                                                    name="hours[{{ $day }}][{{ $index }}][close]"
+                                                    value="{{ $shift['close'] ?? '' }}" {{ $isClosed ? 'disabled' : '' }}>
+                                                <i class="fa-regular fa-clock clock-icon"></i>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="remove-shift-btn" title="Remove shift">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
                                     </div>
-                                    {{-- 1つ目の枠の右側にも設置したゴミ箱アイコン --}}
-                                    <button type="button" class="remove-shift-btn" title="Clear time">
-                                        <i class="bi bi-trash fs-5"></i>
-                                    </button>
-                                </div>
+                                @endforeach
 
                             </div>
 
-                            {{-- 日曜日以外に「+ Add break」ボタンを配置 --}}
-                            @if ($day !== 'Sunday')
-                                <div class="mt-2">
-                                    <button type="button" class="add-shift-btn" data-day="{{ $dayLower }}"
-                                        data-day-name="{{ $day }}">
-                                        <i class="bi bi-plus"></i> Add break / second shift
-                                    </button>
-                                    
-                                </div>
-                            @endif
+                            <div class="mt-2">
+                                <button type="button" class="add-shift-btn" data-day="{{ $dayLower }}"
+                                    data-day-name="{{ $day }}" {{ $isClosed ? 'disabled' : '' }}>
+                                    <i class="fa-solid fa-plus"></i> Add break / second shift
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="col-md-2 col-4 text-end pt-4">
+                        <div class="col-md-2 col-4 text-end pt-2">
                             <div class="form-check d-inline-block">
-                                <input class="form-check-input" type="checkbox"
+                                <input class="form-check-input closed-switch" type="checkbox"
                                     name="hours[{{ $day }}][closed]" value="1"
-                                    id="closed-{{ $day }}" {{ $dayHours['closed'] ? 'checked' : '' }}>
+                                    id="closed-{{ $day }}"
+                                    {{ $isClosed ? 'checked' : '' }}>
                                 <label class="form-check-label text-navy small fw-semibold"
                                     for="closed-{{ $day }}">
                                     Closed
@@ -304,7 +327,7 @@
 
                 <div class="mt-4 pt-3">
                     <label class="form-label small fw-bold" style="color: #0A2540;">Reservation Slot Duration</label>
-                    <select name="stay_duration" class="form-select form-custom-input">
+                    <select name="stay_duration" class="form-select">
                         <option value="60" {{ $restaurant->stay_duration == 60 ? 'selected' : '' }}>1 Hour</option>
                         <option value="90" {{ $restaurant->stay_duration == 90 ? 'selected' : '' }}>1.5 Hours</option>
                         <option value="120" {{ $restaurant->stay_duration == 120 ? 'selected' : '' }}>2 Hours</option>
@@ -313,30 +336,19 @@
                     </select>
                     <small class="text-muted d-block mt-1">Select the default time slot allocated for each customer group.</small>
                 </div>
-
             </div>
 
             {{-- 4. 特徴セクション --}}
             <div class="profile-card">
                 <div class="section-title">Restaurant Features</div>
                 <div class="d-flex flex-column gap-3">
-                    @php
-                        $featuresList = [
-                            'english_menu' => 'English Menu Available',
-                            'credit_cards' => 'Credit Cards Accepted',
-                            'reservations_required' => 'Reservations Required',
-                            'english_speaking_staff' => 'English Speaking Staff',
-                            'vegetarian_options' => 'Vegetarian Options',
-                            'halal_options' => 'Halal Options',
-                        ];
-                    @endphp
-                    @foreach ($featuresList as $key => $label)
+                    @foreach ($allFeatures as $feature)
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold text-navy">{{ $label }}</span>
+                            <span class="fw-semibold text-navy">{{ $feature->features_name }}</span>
                             <div class="form-check form-switch fs-5">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                    name="features[{{ $key }}]" value="1"
-                                    {{ $restaurant->features[$key] ?? false ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" role="switch" name="features[]"
+                                    value="{{ $feature->id }}" id="feature-{{ $feature->id }}"
+                                    {{ in_array($feature->id, $selectedFeatureIds) ? 'checked' : '' }}>
                             </div>
                         </div>
                     @endforeach
@@ -359,52 +371,104 @@
         </form>
     </div>
 
+    {{-- 💡 削除確認用のBootstrapモーダルを追加 --}}
+    <div class="modal fade" id="deleteShiftModal" tabindex="-1" aria-labelledby="deleteShiftModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-body p-4 text-center">
+                    <div class="text-danger mb-3">
+                        <i class="fa-solid fa-circle-exclamation fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold text-navy mb-2" id="deleteShiftModalLabel">Are you sure?</h5>
+                    <p class="text-muted small mb-4">Do you really want to delete this shift slot? This action cannot be undone.</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light fw-semibold px-4 py-2" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+                        <button type="button" id="confirmDeleteBtn" class="btn btn-danger fw-semibold px-4 py-2" style="border-radius: 8px;">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ⚙️ 制御用JavaScript --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // モーダルインスタンスの生成と保持変数
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteShiftModal'));
+            let activeRowToDelete = null; // 削除対象の一時格納用
 
-            // 1. シフト追加ボタンのイベントリスナー
+            // 時計アイコンをクリックしたら標準ピッカーを開く
+            document.body.addEventListener('click', function(e) {
+                const clockIcon = e.target.closest('.clock-icon');
+                if (clockIcon) {
+                    const wrapper = clockIcon.closest('.time-picker-wrapper');
+                    const timeInput = wrapper.querySelector('.time-input');
+                    if (timeInput) {
+                        timeInput.showPicker();
+                    }
+                }
+            });
+
+            // 1. シフト追加ボタン
             document.querySelectorAll('.add-shift-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const dayKey = this.getAttribute('data-day');
                     const dayName = this.getAttribute('data-day-name');
                     const container = document.getElementById(`${dayKey}-time-container`);
 
-                    // 現在の入力枠数をチェック
                     const currentRows = container.querySelectorAll('.time-input-row').length;
+                    const nextIndex = currentRows; 
+                    const shiftNumber = currentRows + 1; 
 
-                    // 最大2つの時間枠（営業＋業務外）までに制限
-                    if (currentRows >= 2) {
-                        alert('You can add a maximum of 2 time shifts.');
-                        return;
-                    }
-
-                    // 新しい時間枠行を生成（右側にゴミ箱アイコン付き）
                     const newRow = document.createElement('div');
                     newRow.className = 'time-input-row d-flex align-items-center gap-3 mb-2';
                     newRow.innerHTML = `
-                <div class="flex-grow-1">
-                    <div class="position-relative time-picker-wrapper">
-                        <input type="time" class="form-control time-input" name="hours[${dayName}][${currentRows}][open]">
-                        <i class="bi bi-clock clock-icon"></i>
-                    </div>
-                </div>
-                <div class="flex-grow-1">
-                    <div class="position-relative time-picker-wrapper">
-                        <input type="time" class="form-control time-input" name="hours[${dayName}][${currentRows}][close]">
-                        <i class="bi bi-clock clock-icon"></i>
-                    </div>
-                </div>
-                <button type="button" class="remove-shift-btn" style="margin-top: 0;" title="Remove shift">
-                    <i class="bi bi-trash fs-5"></i>
-                </button>
-            `;
+                        <div class="col-auto" style="min-width: 55px;">
+                            <span class="text-muted small shift-label">Shift ${shiftNumber}</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="time-picker-wrapper">
+                                <input type="time" class="form-control time-input" name="hours[${dayName}][${nextIndex}][open]">
+                                <i class="fa-regular fa-clock clock-icon"></i>
+                            </div>
+                        </div>
+                        <div class="text-muted small">to</div>
+                        <div class="flex-grow-1">
+                            <div class="time-picker-wrapper">
+                                <input type="time" class="form-control time-input" name="hours[${dayName}][${nextIndex}][close]">
+                                <i class="fa-regular fa-clock clock-icon"></i>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-shift-btn" title="Remove shift">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
 
                     container.appendChild(newRow);
                 });
             });
 
-            // 2. ゴミ箱ボタンの削除・クリア処理（動的追加要素にも対応するイベント委譲）
+            // ナンバー・インデックス再整列処理
+            function reindexShifts(container, dayName) {
+                container.querySelectorAll('.time-input-row').forEach((row, index) => {
+                    const label = row.querySelector('.shift-label');
+                    if (label) {
+                        label.textContent = `Shift ${index + 1}`;
+                    }
+
+                    const openInput = row.querySelector('input[name$="[open]"]');
+                    const closeInput = row.querySelector('input[name$="[close]"]');
+
+                    if (openInput) {
+                        openInput.setAttribute('name', `hours[${dayName}][${index}][open]`);
+                    }
+                    if (closeInput) {
+                        closeInput.setAttribute('name', `hours[${dayName}][${index}][close]`);
+                    }
+                });
+            }
+
+            // 2. ゴミ箱ボタンクリック（モーダル呼び出しを挟む）
             document.body.addEventListener('click', function(e) {
                 const removeBtn = e.target.closest('.remove-shift-btn');
                 if (removeBtn) {
@@ -412,13 +476,48 @@
                     const container = row.closest('.time-inputs-container');
                     const allRows = container.querySelectorAll('.time-input-row');
 
+                    // シフトが2つ以上ある場合のみ、削除確認モーダルを表示させる
                     if (allRows.length > 1) {
-                        // 2つ以上枠がある場合は、その行自体を削除する
-                        row.remove();
+                        activeRowToDelete = row; // 削除対象を一時退避
+                        deleteModal.show();      // モーダルオープン
                     } else {
-                        // 最後の1つの場合は行を消さず、入力値をクリアする（写真の1行目のゴミ箱の挙動をカバー）
+                        // 最後の1つの場合はモーダルを出さず、値を空にするクリア処理に留める
                         row.querySelectorAll('input[type="time"]').forEach(input => input.value = '');
                     }
+                }
+            });
+
+            // 3. モーダル内の「Delete」確定ボタンが押された時の実行ロジック
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                if (activeRowToDelete) {
+                    const row = activeRowToDelete;
+                    const container = row.closest('.time-inputs-container');
+                    const nameAttr = row.querySelector('input[name^="hours["]').getAttribute('name');
+                    const dayName = nameAttr.split('][')[0].replace('hours[', '');
+
+                    row.remove();
+                    reindexShifts(container, dayName);
+
+                    activeRowToDelete = null; // リセット
+                    deleteModal.hide();       // モーダルを閉じる
+                }
+            });
+
+            // 4. Closed（定休日）切り替えの活性・非活性制御
+            document.body.addEventListener('change', function(e) {
+                const closedSwitch = e.target.closest('.closed-switch');
+                if (closedSwitch) {
+                    const rowContainer = closedSwitch.closest('.row');
+                    const timeContainer = rowContainer.querySelector('.time-inputs-container');
+                    const addBtn = rowContainer.querySelector('.add-shift-btn');
+                    const isChecked = closedSwitch.checked;
+
+                    timeContainer.querySelectorAll('input[type="time"]').forEach(input => {
+                        input.disabled = isChecked;
+                        if (isChecked) input.value = '';
+                    });
+
+                    if (addBtn) addBtn.disabled = isChecked;
                 }
             });
         });

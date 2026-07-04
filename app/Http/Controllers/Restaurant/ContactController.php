@@ -3,89 +3,115 @@
 namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use Illuminate\Http\Request;
-// ※実際のモデル名に合わせて適宜変更する（例: ContactMessage, Reply など）
-// use App\Models\ContactMessage; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
 {
-    /**
-     * メッセージ履歴一覧画面 (Message History)
-     */
+    //一覧・問い合わせ画面表示
     public function index()
     {
-        // 実際の開発ではデータベースからログインユーザーのメッセージ一覧を取得
-        // $messages = ContactMessage::where('user_id', auth()->id())->latest()->get();
-        
-        // 【修正点】ダミーデータをオブジェクト型（Collection）に変換して、将来のDB連携と同じ動きにします
-        $messages = collect([
-            (object)[
-                'id' => 1,
-                'name' => 'John Doe', // ブレード側で呼んでいるnameを追加しておきました
-                'subject' => 'Subscription inquiry',
-                'created_at' => '2026-05-10 09:30',
-                'status' => 'replied'
-            ],
-            (object)[
-                'id' => 2,
-                'name' => 'Jane Smith',
-                'subject' => 'Dashboard access issue',
-                'created_at' => '2026-05-08 11:15',
-                'status' => 'replied'
-            ],
-        ]);
+        $contacts = Contact::with('replies')
+            ->where('user_id', Auth::id())
+            ->whereNull('parent_id')
+            ->latest()
+            ->get();
 
-        return view('restaurants.settings.contact', compact('messages'));
+        return view('restaurants.settings.contact', compact('contacts'));
     }
 
-    /**
-     * メッセージ詳細画面 (各件名のスレッド表示)
-     */
-    public function show($id)
-    {
-        // データベースから該当するメッセージと、そのやり取り（返信履歴）を取得
-        // $message = ContactMessage::with('replies')->findOrFail($id);
-
-        // ダミーデータ例（ID: 1 の場合）
-        $message = (object)[
-            'id' => $id,
-            'subject' => $id == 1 ? 'Subscription inquiry' : 'Dashboard access issue',
-            'replies' => [
-                [
-                    'sender' => 'user',
-                    'content' => $id == 1 ? 'I would like to know more about upgrading our plan.' : 'We are unable to access our dashboard since this morning.',
-                    'created_at' => $id == 1 ? '2026-05-10 09:30' : '2026-05-08 11:15',
-                ],
-                [
-                    'sender' => 'support',
-                    'content' => $id == 1 ? 'Thank you for reaching out! We offer premium plans starting at ¥9,800/month. Please check your email for the full pricing breakdown.' : 'Our team has resolved the access issue. Please try logging in again and let us know if the problem persists.',
-                    'created_at' => $id == 1 ? '2026-05-10 14:20' : '2026-05-08 12:00',
-                ],
-            ]
-        ];
-
-        return view('restaurant.settings.contact_show', compact('message'));
-    }
-
+    //新規送信処理
     public function send(Request $request)
     {
         $request->validate([
-            'subject' => 'required|string|max:255', 
             'message' => 'required|string',
+            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        return back()->with('success', 'Your message was sent successfully');
+        $contact = new Contact();
+        $contact->user_id = Auth::id(); 
+        $contact->message = $request->message;
+        $contact->parent_id = null; 
+        $contact->status = 'open';
+
+        $paths = [];
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $paths[] = $file->store('attachments', 'public'); 
+            }
+        }
+        $contact->attachments = !empty($paths) ? $paths : null;
+        $contact->save();
+
+        return redirect()->back()->with('success', 'Message sent successfully!');
     }
 
-    public function sendFollowUp(Request $request, $id)
+     //返信（フォローアップ）送信処理
+    public function reply(Request $request, $id)
     {
         $request->validate([
             'message' => 'required|string',
+            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // 該当メッセージに対する返信（追記）をデータベースに保存する処理
-        // Reply::create([...]);
+        $parentContact = Contact::findOrFail($id);
 
-        return back()->with('success', 'Follow-up message sent successfully');
+        $reply = new Contact();
+        $reply->user_id = Auth::id();
+        $reply->message = $request->message;
+        $reply->parent_id = $parentContact->id;
+        $reply->status = 'open';
+
+        $paths = [];
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $paths[] = $file->store('attachments', 'public'); 
+            }
+        }
+        $reply->attachments = !empty($paths) ? $paths : null;
+        $reply->save();
+
+        return redirect()->back()->with('success', 'Follow-up message sent successfully!');
+    }
+
+    //削除処理（過去の古い形式のデータが来ても絶対にクラッシュしない安全版）
+    public function destroy($id)
+    {
+        $contact = Contact::where('user_id', Auth::id())->findOrFail($id);
+
+        // 子メッセージのループ削除
+        foreach ($contact->replies as $reply) {
+            $this->deletePhysicalFiles($reply->attachments);
+        }
+
+        // 親メッセージのループ削除
+        $this->deletePhysicalFiles($contact->attachments);
+
+        Contact::where('parent_id', $id)->delete();
+        $contact->delete();
+
+        return redirect()->back()->with('success', 'Message deleted successfully.');
+    }
+
+     //📁 古いデータが混ざっても絶対に落ちない安全な削除ヘルパー
+    private function deletePhysicalFiles($attachmentsData)
+    {
+        if (empty($attachmentsData)) return;
+
+        // 配列か文字列（JSON）かを自動判定して安全に1つの配列にする魔法の処理
+        if (is_array($attachmentsData)) {
+            $attachments = $attachmentsData;
+        } else {
+            $decoded = json_decode($attachmentsData, true);
+            $attachments = is_array($decoded) ? $decoded : [$attachmentsData];
+        }
+
+        foreach ($attachments as $path) {
+            if (!empty($path) && is_string($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
     }
 }
