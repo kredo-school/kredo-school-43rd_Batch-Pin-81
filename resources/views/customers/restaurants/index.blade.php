@@ -4,188 +4,13 @@
 
 @section('content')
 
-@php
-// $restaurants = [
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=1',
-//         'name' => 'Restaurant 1',
-//         'category' => 'Sushi',
-//         'area' => 'Ginza, Tokyo',
-//         'rating' => 4.5,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=2',
-//         'name' => 'Restaurant 2',
-//         'category' => 'Ramen',
-//         'area' => 'Shibuya, Tokyo',
-//         'rating' => 4.8,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=3',
-//         'name' => 'Restaurant 3',
-//         'category' => 'Yakitori',
-//         'area' => 'Shinjuku, Tokyo',
-//         'rating' => 4.7,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-//     [
-//         'image' => 'https://picsum.photos/400/250?random=4',
-//         'name' => 'Restaurant 4',
-//         'category' => 'Kaiseki',
-//         'area' => 'Roppongi, Tokyo',
-//         'rating' => 4.9,
-//         'available_times' => ['18:00', '18:30', '19:00', '20:15', '20:15', '20:15'],
-//         'features' => ['English Menu', 'Table', 'Credit Cards'],
-//         'review_count' => 128
-//     ],
-// ];
-@endphp
-
 <div class="container bg-light"> 
     {{-- Desktop --}}
     <div class="mb-3 filter-bar d-none d-md-block bg-white">
 
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h5 class="h4 fw-bold" style="color: #0a2540;">
-                125 Restaurants Found
+                {{ $restaurants->count() }} Restaurants Found
             </h5>
 
             <button class="btn filter-btn ms-3 flex-shrink-0"
@@ -239,14 +64,11 @@
         </button>
     </div>
 
-
     {{-- Restaurants cards --}}
     <div class="row g-4">
         @foreach ($restaurants as $restaurant)
             <div class="col-12 col-md-6 col-lg-4">
-                @include('customers.restaurants.partials.card', [
-                    'restaurant' => $restaurant
-                ])
+               @include ('customers.restaurants.partials.card', ['restaurant' => $restaurant])
             </div>
         @endforeach
     </div>

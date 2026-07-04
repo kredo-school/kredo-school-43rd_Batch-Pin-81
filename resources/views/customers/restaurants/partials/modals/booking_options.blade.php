@@ -21,7 +21,7 @@
                     Create Account
                 </a>
 
-                <a href="#" class="btn custom-btn-b w-100 mb-4 fw-semibold">
+                <a href="#" id="continueGuestBtn" class="btn custom-btn-b w-100 mb-4 fw-semibold">
                     Continue as Guest
                 </a>
 
@@ -37,6 +37,20 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('continueGuestBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const modal = document.getElementById('bookingOptionsModal');
+
+    const restaurantId = modal.dataset.restaurantId;
+    const time = modal.dataset.time;
+
+    window.location.href =
+        `/booking/${restaurantId}?time=${encodeURIComponent(time)}`;
+});
+</script>
 
 <style>
     .btn-close:focus {

@@ -11,62 +11,96 @@
         <div class="col-lg-9 order-lg-1 order-1">
             
             {{-- Inline Restaurant Photos Container --}}
-            <div id="restaurantCarousel" class="carousel slide position-relative w-100 bg-black rounded-4 overflow-hidden mb-4 shadow-sm" data-bs-touch="true" data-bs-interval="false">
-                <div class="carousel-inner">
-                    @foreach($photos as $index => $photo)
-                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                            <div class="d-flex justify-content-center align-items-center image-container">
-                                <img src="{{ $photo }}" class="restaurant-image"
-                                alt="Restaurant Photo">
+            <div id="restaurantCarousel" 
+            class="carousel slide position-relative w-100 bg-black rounded-4 overflow-hidden mb-4 shadow-sm" 
+            data-bs-touch="true" 
+            data-bs-interval="false">
+
+                @if($restaurant->photos->isNotEmpty())
+
+                    <div class="carousel-inner">
+                        @foreach($restaurant->photos as $photo)
+                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                <div class="d-flex justify-content-center align-items-center image-container">
+                                    <img src="{{ asset('storage/' . $photo->photo_path) }}" class="restaurant-image"
+                                    alt="Restaurant Photo">
+                                </div>
                             </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Carousel Controls --}}
+                    <button class="carousel-control-prev custom-minimal-control" 
+                            style="font-size: 3rem"
+                            type="button"
+                            data-bs-target="#restaurantCarousel" 
+                            data-bs-slide="prev">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="carousel-control-next custom-minimal-control"
+                            style="font-size: 3rem" 
+                            type="button" 
+                            data-bs-target="#restaurantCarousel" 
+                            data-bs-slide="next">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+
+                    {{-- Indicators --}}
+                    <div class="carousel-indicators custom-indicators">
+                        @foreach($restaurant->photos as $index => $photo)
+                            <button type="button" data-bs-target="#restaurantCarousel" data-bs-slide-to="{{ $index }}" class="{{ $loop->first ? 'active' : '' }}"></button>
+                        @endforeach
+                    </div>
+
+                @else
+
+                    <div class="d-flex justify-content-center align-items-center image-container">
+                        <div class="text-center text-white">
+                            <i class="fa-regular fa-image fa-4x mb-3"></i>
+                            <p class="mb-0">No photos available</p>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
 
-                {{-- Carousel Controls --}}
-                <button class="carousel-control-prev custom-minimal-control" 
-                        style="font-size: 3rem"
-                        type="button"  
-                        data-bs-target="#restaurantCarousel" 
-                        data-bs-slide="prev">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <button class="carousel-control-next custom-minimal-control"
-                        style="font-size: 3rem" 
-                        type="button" 
-                        data-bs-target="#restaurantCarousel" 
-                        data-bs-slide="next">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+                @endif
 
-                {{-- Indicators --}}
-                <div class="carousel-indicators custom-indicators">
-                    @foreach($photos as $index => $photo)
-                        <button type="button" data-bs-target="#restaurantCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}"></button>
-                    @endforeach
-                </div>
             </div>
 
             {{-- Main Restaurant Header Specs --}}
             <div class="card bg-white border-0 shadow-sm rounded-4 p-4 mb-4">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <h1 class="fw-bold mb-0 text-navy">Sushi Masaru</h1>
-                    <span class="fs-6 fw-bold text-warning ms-2">★ 4.8 <span class="text-muted fw-normal">(245)</span></span>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                    <h1 class="fw-bold mb-0 text-navy">{{ $restaurant->restaurant_name }}</h1>
+
+                    @php
+                        $averageRating = $restaurant->posts_avg_rating ?? 0;
+                        $percentage = ($averageRating / 5) * 100;
+                    @endphp
+                    {{-- Desktop --}}
+                    <div class="star-rating d-none d-md-flex align-items-center me-4">
+                        <div class="star-rating-top" style="width: {{ $percentage }}%">
+                            ★★★★★
+                        </div>
+                        <div class="star-rating-bottom">
+                            ★★★★★
+                        </div>
+                        <span class="fs-6 mx-1">{{ number_format($averageRating, 1) }}</span>
+                        <span class="small text-secondary">({{ $restaurant->posts_count }})</span>
+                    </div>
                 </div>
 
                 <p class="text-muted mb-3 fs-5">
-                    Traditional Edomae sushi in a contemporary setting
+                    {{ $restaurant->description }}
                 </p>
 
                 {{-- Features --}}
                 <div class="d-flex flex-wrap gap-1 ">
-                  {{-- @foreach ($restaurant['features'] as $feature) --}}
+                  @foreach ($restaurant->features as $feature)
                     <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                          style="background-color: #e8ebf1; font-size: 12px;">{{ /* $feature */  "English Menu"}}</span>
+                          style="background-color: #e8ebf1; font-size: 12px;">
+                          {{ $feature->feature_name }}</span>
                           {{-- Navy --}}
                           {{-- <span class="badge rounded-pill fw-normal px-2 py-1"
                           style="background-color: #eff6fd; color:#0a2540; font-size: 10px;">{{ $feature }}</span> --}}
-                  {{-- @endforeach --}}
+                  @endforeach
                 </div>
             </div>
 
@@ -100,87 +134,90 @@
                         </p>
                         
                         <div class="mt-4">
-    <div class="row g-4">
-        
-        {{-- LEFT COLUMN: Location, Phone, Party Size --}}
-        <div class="col-md-6 d-flex flex-column gap-4 overview">
-            
-            {{-- Location --}}
-            <div class="d-flex align-items-start gap-3">
-                <i class="bi bi-geo-alt fs-4 mt-1 icon"></i>
-                <div>
-                    <h6 class="fw-bold text-navy mb-1">Location</h6>
-                    <a href="https://maps.google.com/?q=3-8-15+Ginza,+Chuo-ku,+Tokyo" target="_blank" class="text-muted text-decoration-underline">
-                        3-8-15 Ginza, Chuo-ku, Tokyo
-                    </a>
-                </div>
-            </div>
+                            <div class="row g-4">
+                                
+                                {{-- LEFT COLUMN: Location, Phone, Party Size --}}
+                                <div class="col-md-6 d-flex flex-column gap-4 overview">
+                                    
+                                    {{-- Location --}}
+                                    <div class="d-flex align-items-start gap-3">
+                                        <i class="bi bi-geo-alt fs-4 mt-1 icon"></i>
+                                        <div>
+                                            <h6 class="fw-bold text-navy mb-1">Location</h6>
+                                            <a href="https://maps.google.com/?q=3-8-15+Ginza,+Chuo-ku,+Tokyo" target="_blank" class="text-muted text-decoration-underline">
+                                                {{ $restaurant->postal_code }}
+                                                {{ $restaurant->prefecture }}
+                                                {{ $restaurant->city }}
+                                                {{ $restaurant->street_address_building }}
+                                            </a>
+                                        </div>
+                                    </div>
 
-            {{-- Phone --}}
-            <div class="d-flex align-items-start gap-3">
-                <i class="bi bi-telephone fs-4 mt-1 icon"></i>
-                <div>
-                    <h6 class="fw-bold text-navy mb-1">Phone</h6>
-                    <p class="text-muted mb-1">+81-3-1234-5678</p>
-                    <small class="text-success d-flex align-items-center gap-1">
-                        <i class="bi bi-check-lg"></i> English speaking staff available
-                    </small>
-                </div>
-            </div>
+                                    {{-- Phone --}}
+                                    <div class="d-flex align-items-start gap-3">
+                                        <i class="bi bi-telephone fs-4 mt-1 icon"></i>
+                                        <div>
+                                            <h6 class="fw-bold text-navy mb-1">Phone</h6>
+                                            <p class="text-muted mb-1">{{ $restaurant->phone_number}}</p>
+                                            <small class="text-success d-flex align-items-center gap-1">
+                                                <i class="bi bi-check-lg"></i> English speaking staff available
+                                            </small>
+                                        </div>
+                                    </div>
 
-            {{-- Party Size --}}
-            <div class="d-flex align-items-start gap-3">
-                <i class="bi bi-people fs-4 mt-1 icon"></i>
-                <div>
-                    <h6 class="fw-bold text-navy mb-1">Party Size</h6>
-                    <p class="text-muted mb-0">Up to 8 guests</p>
-                </div>
-            </div>
+                                    {{-- Party Size --}}
+                                    <div class="d-flex align-items-start gap-3">
+                                        <i class="bi bi-people fs-4 mt-1 icon"></i>
+                                        <div>
+                                            <h6 class="fw-bold text-navy mb-1">Party Size</h6>
+                                            <p class="text-muted mb-0">Up to {{ $restaurant->capacity }} guests</p>
+                                        </div>
+                                    </div>
 
-        </div>
+                                </div>
 
-        {{-- RIGHT COLUMN: Hours, Website & SNS Links --}}
-        <div class="col-md-6 d-flex flex-column gap-4 overview">
-            
-            {{-- Hours --}}
-            <div class="d-flex align-items-start gap-3">
-                <i class="bi bi-clock fs-4 mt-1 icon"></i>
-                <div>
-                    <h6 class="fw-bold text-navy mb-1">Hours</h6>
-                    <p class="text-muted mb-0">17:00 - 22:00</p>
-                </div>
-            </div>
+                                {{-- RIGHT COLUMN: Hours, Website & SNS Links --}}
+                                <div class="col-md-6 d-flex flex-column gap-4 overview">
+                                    
+                                    {{-- Hours --}}
+                                    <div class="d-flex align-items-start gap-3">
+                                        <i class="bi bi-clock fs-4 mt-1 icon"></i>
+                                        <div>
+                                            <h6 class="fw-bold text-navy mb-1">Hours</h6>
+                                            <p class="text-muted mb-0">{{ $restaurant->open_time }} - {{ $restaurant->close_time }}</p>
+                                        </div>
+                                    </div>
 
-            {{-- Website & SNS Links --}}
-            <div class="d-flex align-items-start gap-3">
-                <i class="bi bi-globe fs-4 mt-1 icon"></i>
-                <div>
-                    <h6 class="fw-bold text-navy mb-1">Website & Socials</h6>
-                    <p class="mb-2">
-                        <a href="https://www.sushimasaru.jp" target="_blank" class="text-muted text-decoration-none hover-underline">
-                            www.sushimasaru.jp
-                        </a>
-                    </p>
-                    
-                    {{-- SNS Quick Links Row --}}
-                    <div class="d-flex align-items-center gap-3 mt-2">
-                        <a href="#" class="text-muted fs-5 transition-colors" title="Instagram" style="opacity: 0.85;">
-                            <i class="bi bi-instagram text-danger"></i>
-                        </a>
-                        <a href="#" class="text-muted fs-5 transition-colors" title="Facebook" style="opacity: 0.85;">
-                            <i class="bi bi-facebook text-primary"></i>
-                        </a>
-                        <a href="#" class="text-muted fs-5 transition-colors" title="X (Twitter)" style="opacity: 0.85;">
-                            <i class="bi bi-twitter-x text-dark"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+                                    {{-- Website & SNS Links --}}
+                                    <div class="d-flex align-items-start gap-3">
+                                        <i class="bi bi-globe fs-4 mt-1 icon"></i>
+                                        <div>
+                                            <h6 class="fw-bold text-navy mb-1">Website & Socials</h6>
+                                            <p class="mb-2">
+                                                <a href="https://www.sushimasaru.jp" target="_blank" class="text-muted text-decoration-none hover-underline">
+                                                    {{ $restaurant->website }}
+                                                </a>
+                                            </p>
+                                            
+                                            {{-- SNS Quick Links Row --}}
+                                            <div class="d-flex align-items-center gap-3 mt-2">
+                                                <a href="{{ $restaurant->instagram }}" class="text-muted fs-5 transition-colors" title="Instagram" style="opacity: 0.85;">
+                                                    <i class="bi bi-instagram text-danger"></i>
+                                                </a>
+                                                <a href="{{ $restaurant->facebook }}" class="text-muted fs-5 transition-colors" title="Facebook" style="opacity: 0.85;">
+                                                    <i class="bi bi-facebook text-primary"></i>
+                                                </a>
+                                                <a href="{{ $restaurant->twitter }}" class="text-muted fs-5 transition-colors" title="X (Twitter)" style="opacity: 0.85;">
+                                                    <i class="bi bi-twitter-x text-dark"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
 
-        </div>
+                                </div>
 
-    </div>
-</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -200,20 +237,15 @@
                     <div class="tab-content" id="menuSubTabsContent">
                         <div class="tab-pane fade show active" id="menu-food" role="tabpanel">
                             <div class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
-                                <div class="d-flex justify-content-between align-items-start border-bottom pb-3">
-                                    <div>
-                                        <h5 class="fw-bold text-navy mb-1">Omakase Course</h5>
-                                        <p class="text-muted mb-0 small">Chef's selection of seasonal sushi</p>
+                                @foreach($restaurant->menus as $menu)
+                                    <div class="d-flex justify-content-between align-items-start border-bottom pb-3">
+                                        <div>
+                                            <h5 class="fw-bold text-navy mb-1">{{ $restaurant->menus->menu_name }}</h5>
+                                            <p class="text-muted mb-0 small">{{ $restaurant->menus->description }}</p>
+                                        </div>
+                                        <span class="fw-bold text-navy fs-5">{{ $restaurant->menus->price }}</span>
                                     </div>
-                                    <span class="fw-bold text-navy fs-5">¥15,000</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h5 class="fw-bold text-navy mb-1">Nigiri Sushi Set</h5>
-                                        <p class="text-muted mb-0 small">12 pieces of chef's choice nigiri</p>
-                                    </div>
-                                    <span class="fw-bold text-navy fs-5">¥8,000</span>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
                         <div class="tab-pane fade" id="menu-drink" role="tabpanel">
@@ -237,10 +269,10 @@
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="photo-all" role="tabpanel">
                             <div class="row g-3">
-                                @foreach($photos as $photo)
+                                @foreach($restaurant->photos as $photo)
                                     <div class="col-md-4 col-6">
                                         <div class="ratio ratio-1x1 rounded-4 overflow-hidden shadow-sm">
-                                            <img src="{{ $photo }}" alt="Gallery Image" class="w-100 h-100 object-fit-cover">
+                                            <img src="{{ asset('storage/' . $photo->photo_path) }}" alt="Gallery Image" class="w-100 h-100 object-fit-cover">
                                         </div>
                                     </div>
                                 @endforeach
@@ -324,10 +356,12 @@
                         <label class="form-label fw-bold text-navy small">Time</label>
                         <select name="reservation_time" class="form-select border rounded-3 py-2 text-muted input-box" required>
                             <option value="" selected disabled>Select time</option>
-                            <option value="17:00">17:00</option>
-                            <option value="18:00">18:00</option>
-                            <option value="19:00">19:00</option>
-                            <option value="20:00">20:00</option>
+
+                            @foreach($availableSlots as $time)
+                                <option value="{{ $time }}">
+                                    {{ $time }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -341,14 +375,25 @@
                         </select>
                     </div>
 
-                    <a href="{{ route('booking.create') }}" class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
-                        Book as a Guest
-                    </a>
+                    {{-- Booking Button --}}
+                    @auth
+                        <a href="{{ route('booking.create', $restaurant->id) }}"
+                            class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
+                            Book Restaurant
+                        </a>
+                    @endauth
 
-                    <a href="{{ route('login') }}" 
-                        class="btn custom-btn-b w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center">
-                        Book as a User (Login)
-                    </a>
+                    @guest
+                        <a href="{{ route('booking.create', $restaurant->id) }}"
+                            class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
+                            Book as a Guest
+                        </a>
+
+                        <a href="{{ route('login') }}"
+                            class="btn custom-btn-b w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center">
+                            Book as a User (Login)
+                        </a>
+                    @endguest
                 </form>
             </div>
         </div>
@@ -460,6 +505,28 @@
 
 .custom-indicators .active { 
     background-color: #fff; 
+}
+
+/* Stars */
+.star-rating {
+    position: relative;
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.star-rating-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #ffc107; /* Gold */
+}
+
+.star-rating-bottom {
+    white-space: nowrap;
+    color: #d9d9d9; /* Gray */
 }
 
 /* Continuous Container Rail Tab Settings */

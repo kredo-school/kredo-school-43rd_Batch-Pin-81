@@ -16,7 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('restaurant_name');
             $table->text('description')->nullable();
-            $table->string('address');
+            $table->string('postal_code');
+            $table->string('prefecture');
+            $table->string('city');
+            $table->string('street_address_building');
             $table->string('phone_number');
             $table->string('business_license')->nullable();
             $table->timestamps();
