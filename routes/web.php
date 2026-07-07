@@ -58,10 +58,6 @@ Route::middleware('auth')->group(function () {
   Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])->name('my_reservations.notify-late');
   Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])->name('my_reservations.destroy');
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
   //POST
   Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
   Route::post('/restaurants/{restaurant_id}/post', [PostController::class, 'store'])->name('posts.store');
@@ -243,9 +239,5 @@ Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'
   ->name('booking.store');
 Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
-<<<<<<< HEAD
-})->name('booking.confirmation');
-=======
 })
   ->name('booking.confirmation');
->>>>>>> origin/master
