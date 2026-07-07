@@ -11,8 +11,14 @@ use App\Models\Star;
 class Post extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['description', 'image', 'user_id', 'restaurant_id'];
-    
+    protected $fillable = [
+        'description',
+        'image',
+        'user_id',
+        'restaurant_id',
+        'rating',
+    ];
+
     public function user()
     {
         return $this->belongTo(User::class);

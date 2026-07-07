@@ -31,10 +31,10 @@
                     <div class="text-center my-4 pb-2">
                         <div class="position-relative d-inline-block">
 
-                            {{-- ✨ ユーザーが画像をアップロードしているか、していないかで切り替え --}}
-                            @if (Auth::check() && Auth::user()->profile_image)
+                            {{-- ✨ `profile_image` をデータベースのカラム名 `avatar` に修正 --}}
+                            @if (Auth::check() && Auth::user()->avatar)
                                 {{-- 🖼️ 画像をアップロードしている場合 --}}
-                                <img id="avatar-preview" src="{{ asset('storage/' . Auth::user()->profile_image) }}"
+                                <img id="avatar-preview" src="{{ asset('storage/' . Auth::user()->avatar) }}"
                                     alt="Profile" class="rounded-circle object-fit-cover shadow-sm"
                                     style="width: 130px; height: 130px; border: 3px solid #f8f9fa;">
                             @else
@@ -49,15 +49,20 @@
                                     style="width: 130px; height: 130px; border: 3px solid #f8f9fa;">
                             @endif
 
+                            {{-- 📷 カメラアイコンをFontAwesomeの `fa-camera` に修正 --}}
                             <label for="avatar-input"
                                 class="btn position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm"
                                 style="width: 38px; height: 38px; background-color: #0a2540; color: white; cursor: pointer; border: 2px solid white; margin-bottom: 4px; margin-right: 4px;">
-                                <i class="bi bi-camera-fill" style="font-size: 0.9rem;"></i>
+                                <i class="fa-solid fa-camera" style="font-size: 0.9rem;"></i>
                             </label>
                             <input type="file" name="avatar" id="avatar-input" class="d-none" accept="image/*"
                                 onchange="previewImage(this);">
                         </div>
                         <p class="text-muted small mt-3 mb-0">Click the camera icon to upload a new photo</p>
+                        
+                        @error('avatar')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-4 mx-auto" style="max-width: 480px; width: 100%;">

@@ -4,35 +4,43 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Restaurant;
 use App\Models\Reservation;
 
 class RestaurantSearchController extends Controller
 {
-
     public function view()
     {
-        return view('customers.restaurants.index');
+        // $restaurants = Restaurant::all();
+        $restaurants = Restaurant::with([
+            'photos',
+            'categories',
+            'features'
+        ])->withAvg('posts', 'rating')->get();
+
+
+        return view('customers.restaurants.index', compact('restaurants'));
     }
 
-    public function show()
+    public function show(Restaurant $restaurant)
     {
-        $photos = [
-            asset('https://picsum.photos/400/250?random=6'),
-            asset('https://picsum.photos/400/250?random=10'),
-            asset('https://picsum.photos/400/250?random=9'),
-            asset('https://picsum.photos/400/250?random=8'),
-            asset('https://picsum.photos/400/250?random=7'),
-        ];
 
-        shuffle($photos);
+        $restaurant->load([
+            'photos',
+            'categories',
+            'features',
+            'menus',
+            'menus.photos',
+            'posts.user',
+            'posts.photos'
+        ]);
 
-        return view('customers.restaurants.show', compact('photos'));
-    }
+        $restaurant->loadAvg('posts', 'rating')
+            ->loadCount('posts');
 
-    // Display booking page
-    public function create()
-    {
-        return view('customers.restaurants.book');
+        $availableSlots = $restaurant->availableSlots();
+
+        return view('customers.restaurants.show', compact('restaurant', 'availableSlots'));
     }
 
     public function store(Request $request)
