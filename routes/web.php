@@ -25,6 +25,7 @@ use App\Http\Controllers\Restaurant\ContactController as RestaurantContactContro
 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -92,6 +93,10 @@ Route::middleware(['auth', 'admin'])
   ->prefix('admin')
   ->group(function () {
 
+    // Notifications
+    Route::get('/notifications', [AdminNotificationController::class, 'index'])
+      ->name('admin.notifications');
+
     // Users dashboard
     Route::get('/users', [AdminUserController::class, 'index'])
       ->name('admin.users');
@@ -115,6 +120,22 @@ Route::middleware(['auth', 'admin'])
     // Admin restaurants dashboard
     Route::get('/restaurants', [AdminRestaurantController::class, 'index'])
       ->name('admin.restaurants');
+
+    // Notifications
+    Route::get('/notifications', [AdminNotificationController::class, 'index'])
+      ->name('admin.notifications');
+
+    // Restaurants
+    Route::patch(
+      '/restaurants/{restaurant}/approve',
+      [AdminRestaurantController::class, 'approve']
+    )
+      ->name('admin.restaurants.approve');
+    Route::patch(
+      '/restaurants/{restaurant}/reject',
+      [AdminRestaurantController::class, 'reject']
+    )
+      ->name('admin.restaurants.reject');
 
     // Status of Restaurants
     Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
@@ -156,7 +177,7 @@ Route::middleware(['auth', 'admin'])
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth', 'restaurant']], function () {
   Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
 
   // Reservation

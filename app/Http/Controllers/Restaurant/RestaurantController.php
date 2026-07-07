@@ -52,6 +52,31 @@ class RestaurantController extends Controller
 
         Notification::send($admins, new NewRestaurantApplication($restaurant));
 
+
+        // THIS WORKED:
+
+        // use App\Models\Restaurant;
+        // use App\Models\User;
+        // use App\Notifications\NewRestaurantApplication;
+        // use Illuminate\Support\Facades\Notification;
+
+        // $restaurant = Restaurant::create([
+        //     'user_id' => 15,
+        //     'restaurant_name' => 'name',
+        //     'postal_code' => '123-45667',
+        //     'prefecture' => 'Tokyo',
+        //     'city' => 'Shibuya',
+        //     'street_address_building' => '1-2-3 shibuya, shibuya building',
+        //     'phone_number' => '090-1234-5678',
+        //     'description' => 'hello world',
+        //     'business_license' => 'askdjfbwoiueh',
+        //     'status' => Restaurant::STATUS_PENDING,
+        // ]);
+
+        // $admins = User::where('role_id', User::ROLE_ADMIN)->get();
+
+        // Notification::send($admins, new NewRestaurantApplication($restaurant));
+
         return redirect()
             ->route('restaurant.thankyou')
             ->with('success', 'Your application has been submitted.');
