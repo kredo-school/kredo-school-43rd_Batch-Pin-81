@@ -42,6 +42,7 @@ class Restaurant extends Model
     // 配列やJSON形式のオブジェクトデータを自動変換する設定
     protected $casts = [
         'operating_hours' => 'array',
+        'hours'           => 'array',
     ];
 
     /**
@@ -50,6 +51,11 @@ class Restaurant extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function tables()
+    {
+        return $this->hasMany(Table::class);
     }
 
     /**

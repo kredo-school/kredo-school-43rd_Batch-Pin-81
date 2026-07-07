@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Restaurant; // 必要に応じて実際のモデル名に変更してください
+use App\Models\Restaurant;
+use App\Models\Category;
+use App\Models\Feature;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -14,43 +16,27 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        // 本来はログインしている店舗ユーザーの情報を取得します
-        // $restaurant = Auth::user()->restaurant; 
+        $restaurant = Auth::user()->restaurant; 
 
-        // フォームの初期表示用サンプルデータ
-        $restaurant = (object)[
-            'restaurant_name' => 'Sushi Masaru',
-            'description' => 'Traditional Edomae sushi in contemporary setting',
-            'cuisine_types' => ['Sushi'],
-            'address' => '3-8-15 Ginza, Chuo-ku, Tokyo',
-            'phone_number' => '+81-3-1234-5678',
-            'email' => 'info@sushimasaru.jp',
-            'website' => 'www.sushimasaru.jp',
-            'instagram' => 'https://instagram.com/yourrestaurant',
-            'facebook' => 'https://facebook.com/yourrestaurant',
-            'twitter' => 'https://x.com/yourrestaurant',
-            'capacity' => 8,
-            'features' => [
-                'english_menu' => true,
-                'credit_cards' => true,
-                'reservations_required' => true,
-                'english_speaking_staff' => true,
-                'vegetarian_options' => false,
-                'halal_options' => false,
-            ],
-            'hours' => [
-                'Monday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
-                'Tuesday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
-                'Wednesday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
-                'Thursday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
-                'Friday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
-                'Saturday' => ['open' => '17:00', 'close' => '22:00', 'closed' => false],
-                'Sunday' => ['open' => '', 'close' => '', 'closed' => true],
-            ],
-            'stay_duration' => 120
-        ];
+        if (!$restaurant) {
+            $restaurant = new Restaurant();
+            $restaurant->user_id = Auth::id();
+        }
+        // DBのマスターテーブルから選択肢をすべて取得
+        $allCategories = Category::all();
+        $allFeatures   = Feature::all();
 
-        return view('restaurants.profile', compact('restaurant'));
+        // 中間テーブルから、現在このお店が選択しているIDを配列形式で抽出
+        $selectedCategoryIds = $restaurant->categories()->pluck('categories.id')->toArray();
+        $selectedFeatureIds  = $restaurant->features()->pluck('features.id')->toArray();
+
+        return view('restaurants.profile', compact(
+            'restaurant', 
+            'allCategories', 
+            'allFeatures', 
+            'selectedCategoryIds', 
+            'selectedFeatureIds'
+        ));
     }
 
     /**
@@ -58,6 +44,52 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        return redirect()->route('restaurant.profile.edit')->with('success', 'Changes saved successfully.');
+        $restaurant = Auth::user()->restaurant;
+
+        if (!$restaurant) {
+            $restaurant = new Restaurant();  
+            $restaurant->user_id = Auth::id();
+        }
+
+        // バリデーション
+        $request->validate([
+            'restaurant_name' => 'required|string|max:255',
+            'description'     => 'nullable|string',
+            'address'         => 'nullable|string|max:255',
+            'phone_number'    => 'nullable|string|max:50',
+            'website'         => 'nullable|string|max:255',
+            'instagram'       => 'nullable|string|max:255',
+            'facebook'        => 'nullable|string|max:255',
+            'twitter'         => 'nullable|string|max:255',
+            'stay_duration'   => 'nullable|integer',
+            'capacity'        => 'nullable|integer|min:0',
+            'cuisine_types'   => 'nullable|array',
+            'features'        => 'nullable|array',
+            'hours'           => 'nullable|array',
+        ]);
+
+        // 基本情報の保存
+        $restaurant->restaurant_name = $request->restaurant_name;
+        $restaurant->description     = $request->description;
+        $restaurant->address         = $request->address;
+        $restaurant->phone_number    = $request->phone_number;
+        $restaurant->website         = $request->website;
+        $restaurant->instagram       = $request->instagram;
+        $restaurant->facebook        = $request->facebook;
+        $restaurant->twitter         = $request->twitter;
+        $restaurant->stay_duration   = $request->stay_duration;
+        $restaurant->capacity        = $request->capacity;
+        $restaurant->operating_hours = $request->input('hours', []);
+        $restaurant->save();
+
+        // Categoryの同期処理（syncにより、外されたチェックは自動消去）
+        $categoryIds = $request->input('cuisine_types', []);
+        $restaurant->categories()->sync($categoryIds);
+
+        // 🔗 Featureの同期処理（syncにより、外されたチェックは自動消去）
+        $featureIds = $request->input('features', []);
+        $restaurant->features()->sync($featureIds);
+
+        return redirect()->route('restaurant.profile.edit');
     }
 }

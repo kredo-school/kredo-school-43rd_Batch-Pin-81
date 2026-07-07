@@ -13,6 +13,16 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'username',
+        'email',
+        'password',
+        'avatar',
+        'role_id',
+        'is_active',
+    ];
 
     const ROLE_USER = 1;
     const ROLE_RESTAURANT = 2;
@@ -27,16 +37,6 @@ class User extends Authenticatable
     {
         return $this->role_id == self::ROLE_RESTAURANT;
     }
-
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'avatar',
-        'role_id',
-        'is_active',
-    ];
 
     protected $hidden = [
         'password',
@@ -63,5 +63,33 @@ class User extends Authenticatable
         }
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name ?: 'User') . '&color=7F9CF5&background=EBF4FF';
+    }
+    public function restaurant()
+    {
+        return $this->hasOne(Restaurant::class);
+    }
+
+    public function getDisplayIdAttribute(): string
+    {
+        if (!empty($this->username)) {
+            return $this->username;
+        }
+
+        return explode('@', $this->email)[0];
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
     }
 }
