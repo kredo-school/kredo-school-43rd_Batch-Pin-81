@@ -1,6 +1,5 @@
 <?php
 
-#Restaurant
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Customer\ContactController as CustomerContactController;
@@ -22,10 +21,11 @@ use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
+use App\Http\Controllers\Restaurant\DashboardController;
+
 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -57,7 +57,6 @@ Route::middleware('auth')->group(function () {
   Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])->name('my_reservations.update');
   Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])->name('my_reservations.notify-late');
   Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])->name('my_reservations.destroy');
-
 
   //POST
   Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
@@ -157,11 +156,16 @@ Route::middleware(['auth', 'admin'])
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
 Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
-  Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
+
+  // Index
+  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::post('/tables', [DashboardController::class, 'storeTable'])->name('tables.store');
+  Route::put('/tables/{table}', [DashboardController::class, 'updateTable'])->name('tables.update');
+  Route::delete('/tables/{table}', [DashboardController::class, 'destroyTable'])->name('tables.destroy');
 
   // Reservation
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
-  Route::patch('/reservations/{reservation}/stasus', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
+  Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
 
 
   // Menu
