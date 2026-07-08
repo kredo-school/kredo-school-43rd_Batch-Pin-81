@@ -2,16 +2,13 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use App\Models\Restaurant;
 
 class NewRestaurantApplication extends Notification
 {
-    use Queueable;
-
     protected Restaurant $restaurant;
 
     public function __construct(Restaurant $restaurant)
@@ -26,7 +23,7 @@ class NewRestaurantApplication extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database', 'broadcast'];
     }
 
     /**
@@ -42,15 +39,22 @@ class NewRestaurantApplication extends Notification
             ->line('Please review the application.');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
+    public function toDatabase(object $notifiable): array
     {
         return [
-            //
+            'restaurant_id' => $this->restaurant->id,
+            'restaurant_name' => $this->restaurant->restaurant_name,
+            'message' => $this->restaurant->restaurant_name . ' has submitted a restaurant application.',
+            'url' => route('admin.restaurants'),
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'restaurant_id' => $this->restaurant->id,
+            'restaurant_name' => $this->restaurant->restaurant_name,
+            'message' => $this->restaurant->restaurant_name . ' has submitted a restaurant application.',
+        ]);
     }
 }

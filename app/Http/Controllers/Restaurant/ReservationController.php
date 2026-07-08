@@ -13,6 +13,18 @@ class ReservationController extends Controller
 {
     public function __construct(private ReservationAvailabilityService $availability)
     {
+
+        $restaurant = auth()->user()->restaurant;
+
+        if (!$restaurant) {
+            abort(403);
+        }
+
+        if ($restaurant->status !== 'approved') {
+            abort(403, 'Your restaurant has not been approved yet.');
+        }
+
+        return view('restaurants.index', compact('restaurant'));
     }
 
     public function index(Request $request)
