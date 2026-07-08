@@ -47,6 +47,7 @@ class Restaurant extends Model
     protected $casts = [
         'cuisine_types' => 'array',
         'operating_hours' => 'array',
+        'hours'           => 'array',
         'features' => 'array',
     ];
     public function getHoursAttribute()
@@ -85,6 +86,11 @@ class Restaurant extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function tables()
+    {
+        return $this->hasMany(Table::class);
     }
 
     /**
