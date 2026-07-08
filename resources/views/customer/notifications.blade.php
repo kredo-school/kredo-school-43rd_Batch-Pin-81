@@ -83,6 +83,62 @@
                     @endforeach 
                 --}}
 
+                <!-- For test -->
+                @foreach($notifications as $notification) 
+
+                 <div class="card shadow-sm rounded-4 p-3 border-unread custom-notification-card bg-white">
+    <div class="d-flex align-items-start justify-content-between w-100">
+
+        <div class="d-flex align-items-center">
+
+            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm border border-pink"
+                 style="width:44px;height:44px;min-width:44px;background-color:#FCE7F3;">
+
+                @if(($notification->data['status'] ?? '') === 'approved')
+                    <i class="fa-solid fa-circle-check text-success"></i>
+                @elseif(($notification->data['status'] ?? '') === 'rejected')
+                    <i class="fa-solid fa-circle-xmark text-danger"></i>
+                @else
+                    <i class="fa-regular fa-bell style-pink-text"></i>
+                @endif
+
+            </div> 
+
+            <div>
+
+                <h6 class="fw-bold mb-1 text-dark" style="font-size:0.95rem;">
+                    {{ $notification->data['title'] }}
+                </h6>
+
+                <p class="text-secondary mb-2" style="font-size:0.85rem;">
+                    {{ $notification->data['message'] }}
+                </p>
+
+                @if(isset($notification->data['url']))
+                    <a href="{{ $notification->data['url'] }}"
+                       class="btn btn-primary btn-sm mb-2">
+                        {{ $notification->data['button_text'] }}
+                    </a>
+                @endif
+
+                <span class="text-muted small">
+                    {{ $notification->created_at->diffForHumans() }}
+                </span>
+
+            </div>
+        </div>
+
+        @if(is_null($notification->read_at))
+            <span class="badge badge-new fw-bold px-2 py-1 rounded-3">
+                New
+            </span>
+        @endif
+
+    </div>
+</div>
+
+@endforeach
+
             </div>
         </div>
     </div>
