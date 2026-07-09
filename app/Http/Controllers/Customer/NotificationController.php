@@ -13,6 +13,11 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        return view('customer.notifications');
+        $notifications = auth()->user()
+        ->notifications()
+        ->latest()
+        ->paginate(20);
+
+        return view('customer.notifications', compact('notifications'));
     }
 }
