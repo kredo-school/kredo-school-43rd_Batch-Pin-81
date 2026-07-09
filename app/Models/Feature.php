@@ -4,9 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Feature extends Model
 {
-    use HasFactory;
-    protected $fillable = ['features_name'];
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'features_name',
+    ];
+
+    public function restaurants()
+    {
+        return $this->belongsToMany(
+            Restaurant::class,
+            'feature_restaurant'
+        );
+    }
 }

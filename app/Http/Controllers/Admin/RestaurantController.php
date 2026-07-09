@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Restaurant;
+use App\Notifications\RestaurantApplicationStatus;
 use Illuminate\Support\Facades\Auth;
+
 
 
 class RestaurantController extends Controller
@@ -26,19 +28,80 @@ class RestaurantController extends Controller
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
-    public function active()
+    public function approve(Request $request, Restaurant $restaurant)
     {
-        $restaurants = Restaurant::where('status', 'active')->get();
+        $restaurant->update([
+            'status' => Restaurant::STATUS_APPROVED,
+        ]);
 
-        return view('admin.restaurants.index', compact('restaurants'));
+        // Change the user's role to Restaurant Owner
+        $restaurant->user->update([
+            'role_id' => 2,
+        ]);
+
+        // Notify restaurant owner
+        $restaurant->user->notify(
+            new RestaurantApplicationStatus(
+                'approved',
+                $restauran
+            )
+        );
+
+        // Mark admin notification as read
+        auth()
+            ->user()
+            ->notifications()
+            ->find($request->notification_id)
+            ?->markAsRead();
+
+        return back()->with('success', 'Restaurant approved.');
     }
 
-    public function rejected()
+    public function reject(Request $request, Restaurant $restaurant)
     {
-        $restaurants = Restaurant::where('status', 'rejected')->get();
+        $restaurant->update([
+            'status' => Restaurant::STATUS_REJECTED,
+        ]);
 
-        return view('admin.restaurants.index', compact('restaurants'));
+        // Notify restaurant owner
+        $restaurant->user->notify(
+            new RestaurantApplicationStatus(
+                'rejected',
+                $restaurant->restaurant_name
+            )
+        );
+
+        auth()
+            ->user()
+            ->notifications()
+            ->find($request->notification_id)
+            ?->markAsRead();
+
+        return back()->with('success', 'Restaurant rejected.');
     }
+
+    // private function markNotificationAsRead(?string $notificationId): void
+    // {
+    //     if (!$notificationId) {
+    //         return;
+    //     }
+
+    //     $notification = auth()
+    //         ->user()
+    //         ->notifications()
+    //         ->find($notificationId);
+
+    //     if ($notification) {
+    //         $notification->markAsRead();
+    //     }
+    // }
+
+    // public function active()
+    // {
+    //     $restaurants = Restaurant::where('status', 'active')->get();
+
+    //     return view('admin.restaurants.index', compact('restaurants'));
+    // }
 
     public function suspended()
     {

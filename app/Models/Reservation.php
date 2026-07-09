@@ -8,7 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reservation extends Model
 {
-    use HasFactory, SoftDeletes; 
+    use HasFactory, SoftDeletes;
+
+    public function scopeOccupying($query)
+    {
+        return $query->whereIn('status', ['pending', 'confirmed', 'completed']);
+    }
+
+    // データベースへの一括保存を許可するカラム
     protected $fillable = [
         'user_id',
         'restaurant_id',

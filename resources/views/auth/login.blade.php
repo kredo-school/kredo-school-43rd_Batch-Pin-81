@@ -67,9 +67,9 @@
                     </button>
 
                     <!-- Guest Login Button -->
-                    <button type="button" class="btn w-100 fw-semibold mb-3 custom-btn-b">
-                        {{ __('Login as a Guest') }}
-                    </button>
+                    <a href="{{ route('customer.search') }}" class="btn w-100 fw-semibold mb-3 custom-btn-b">
+                        {{ __('Continue as a Guest') }}
+                    </a>
 
                     <!-- Sign Up Link -->
                     <p class="text-center text-muted small mb-3">
@@ -150,6 +150,7 @@
         background-color: #0a2540;
         color: white;
         border-color: #0a2540;
+        text-decoration: none; 
     }
 
     /* Link decorations */

@@ -1,9 +1,5 @@
 <?php
 
-#Customer
-use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
-use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Customer\CommentController;
@@ -17,14 +13,24 @@ use App\Http\Controllers\Customer\PostController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\RestaurantSearchController;
 use App\Http\Controllers\Customer\UserController;
-use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
+use App\Http\Controllers\Customer\BookingController;
+
+use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
 use App\Http\Controllers\Restaurant\OwnerAccountController;
 use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
-use App\Http\Controllers\Restaurant\RestaurantController;
+use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
+use App\Http\Controllers\Restaurant\DashboardController;
+
+
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\CategoryFeatureController;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -71,8 +77,11 @@ Route::middleware('auth')->group(function () {
 
   // Register page for restaurant
   Route::get('/restaurant/register', [RestaurantController::class, 'create'])->name('register.restaurant');
-  Route::post('/restaurant/register', [RestaurantController::class, 'register'])
+  Route::post('/restaurant/register', [RestaurantController::class, 'store'])
     ->name('restaurant.store');
+  Route::get('/restaurant/thank-you', function () {
+    return view('customers.thankyou');
+  })->name('restaurant.thankyou');
 
   // Settings
   Route::prefix('customer')->name('customer.')->group(function () {
@@ -86,6 +95,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])
   ->prefix('admin')
   ->group(function () {
+
+    // Notifications
+    Route::get('/notifications', [AdminNotificationController::class, 'index'])
+      ->name('admin.notifications');
 
     // Users dashboard
     Route::get('/users', [AdminUserController::class, 'index'])
@@ -106,9 +119,16 @@ Route::middleware(['auth', 'admin'])
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
       ->name('admin.users.destroy');
 
-    // Restaurants dashboard
+    // Admin restaurants dashboard
     Route::get('/restaurants', [AdminRestaurantController::class, 'index'])
       ->name('admin.restaurants');
+
+    // Restaurants
+    Route::patch('/restaurants/{restaurant}/approve', [AdminRestaurantController::class, 'approve'])
+      ->name('admin.restaurants.approve');
+    Route::patch('/restaurants/{restaurant}/reject', [AdminRestaurantController::class, 'reject'])
+      ->name('admin.restaurants.reject');
+
     // Status of Restaurants
     Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
       ->name('admin.restaurants.pending');
@@ -120,6 +140,7 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.restaurants.suspended');
     Route::patch('/restaurants/{restaurant}/status', [AdminRestaurantController::class, 'updateStatus'])
       ->name('admin.restaurants.status');
+
     // Display restaurant details
     Route::get('/restaurants/{restaurant}', [AdminRestaurantController::class, 'show'])
       ->name('admin.restaurants.show');
@@ -144,23 +165,41 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.reviews.toggle');
 
     // Categories & Features dashboard
-    Route::get('/categories&features', [PostController::class, 'index'])
+    Route::get('/categories-features', [CategoryFeatureController::class, 'index'])
       ->name('admin.categories_features');
-  });
 
-  // 一時的に 'admin' を外して、誰でもログインしてれば見られるように
-Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('admin.reviews');
-});
+    Route::post('/categories', [CategoryFeatureController::class, 'storeCategory'])
+      ->name('admin.categories.store');
+
+    Route::patch('/categories/{category}', [CategoryFeatureController::class, 'updateCategory'])
+      ->name('admin.categories.update');
+
+    Route::delete('/categories/{category}', [CategoryFeatureController::class, 'destroyCategory'])
+      ->name('admin.categories.destroy');
+
+    Route::post('/features', [CategoryFeatureController::class, 'storeFeature'])
+      ->name('admin.features.store');
+
+    Route::patch('/features/{feature}', [CategoryFeatureController::class, 'updateFeature'])
+      ->name('admin.features.update');
+
+    Route::delete('/features/{feature}', [CategoryFeatureController::class, 'destroyFeature'])
+      ->name('admin.features.destroy');
+  });
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
-  Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth'/*, 'restaurant'*/]], function () {
+
+  // Index
+  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::post('/tables', [DashboardController::class, 'storeTable'])->name('tables.store');
+  Route::put('/tables/{table}', [DashboardController::class, 'updateTable'])->name('tables.update');
+  Route::delete('/tables/{table}', [DashboardController::class, 'destroyTable'])->name('tables.destroy');
 
   // Reservation
   Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
-  Route::patch('/reservations/{reservation}/stasus', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
+  Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
 
 
   // Menu
@@ -196,15 +235,15 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::delete('/contact/{id}', [RestaurantContactController::class, 'destroy'])->name('contact.destroy');
 });
 
-Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(function () {  
-  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');   
+Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(function () {
+  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
 });
 
 // Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'customer'*/], function () {
 
   Route::get('/search', [CustomerController::class, 'index'])->name('search');
-  
+
   // Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -241,12 +280,19 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
 });
 
 // Page for display restaurants after search
-Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])->name('restaurants.view');
+Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])
+  ->name('restaurants.view');
+// Restaurant Page
+Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show'])
+  ->name('restaurant.show');
 
-// Restaurant Page for customer
-Route::get('/restaurant/show', [RestaurantSearchController::class, 'show'])->name('restaurant.show');
-Route::get('/booking', [RestaurantSearchController::class, 'create'])->name('booking.create');
-Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])->name('booking.store');
-Route::get('/booking/confirmation', function () {
-  return view('customers.restaurants.booking_confirmation');
-})->name('booking.confirmation');
+// Display booking form page
+Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
+  ->name('booking.create');
+Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])
+  ->name('booking.store');
+  
+// Route::get('/booking/confirmation', function () {
+//   return view('customers.restaurants.booking_confirmation');
+// })
+//   ->name('booking.confirmation');

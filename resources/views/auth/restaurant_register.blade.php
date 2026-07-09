@@ -25,7 +25,7 @@
                         id="restaurant_name" 
                         type="text" 
                         class="form-control mb-3 @error('restaurant_name') is-invalid @enderror" 
-                        name="restaurant_name" 
+                          name="restaurant_name" 
                         value="{{ old('restaurant_name') }}" 
                         placeholder="Restaurant Name" 
                         required 
@@ -103,18 +103,18 @@
                             </div>
                         </div>
                         
-                        <label for="address" class="form-label fw-semibold">
-                            City & Street Address *
+                        <label for="ciry" class="form-label fw-semibold">
+                            City *
                         </label>
 
                         <input
-                            id="address"
+                            id="city"
                             type="text"
-                            class="form-control mb-3 @error('address') is-invalid @enderror"
-                            name="address"
-                            value="{{ old('address') }}"
-                            placeholder="Shibuya-ku, 1-2-3 Shibuya"
-                            autocomplete="street-address"
+                            class="form-control mb-3 @error('city') is-invalid @enderror"
+                            name="city"
+                            value="{{ old('city') }}"
+                            placeholder="Shibuya-ku"
+                            autocomplete="address_line1"
                             required>
 
                         @error('address')
@@ -123,20 +123,20 @@
                             </span>
                         @enderror
 
-                        <label for="building" class="form-label fw-semibold">
-                            Building
+                        <label for="street_address_building" class="form-label fw-semibold">
+                            Street Address & Building
                         </label>
 
                         <input
-                            id="building"
+                            id="street_address_building"
                             type="text"
-                            class="form-control mb-3 @error('building') is-invalid @enderror"
-                            name="building"
-                            value="{{ old('building') }}"
-                            placeholder="Sunshine Building 5F"
+                            class="form-control mb-3 @error('street_address_building') is-invalid @enderror"
+                            name="street_address_building"
+                            value="{{ old('street_address_building') }}"
+                            placeholder="1-2-3 Shibuya Sunshine Building 5F"
                             autocomplete="address-line2">
 
-                        @error('building')
+                        @error('street_address_building')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>

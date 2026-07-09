@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Restaurant extends Model
 {
@@ -26,7 +27,10 @@ class Restaurant extends Model
         'user_id',
         'restaurant_name',
         'description',
-        'address',
+        'postal_code',
+        'prefecture',
+        'city',
+        'street_address_building',
         'phone_number',
         'business_license',
         'website',
@@ -43,11 +47,37 @@ class Restaurant extends Model
     protected $casts = [
         'cuisine_types' => 'array',
         'operating_hours' => 'array',
+        'hours'           => 'array',
         'features' => 'array',
     ];
     public function getHoursAttribute()
     {
         return $this->operating_hours ?? [];
+    }
+
+    public function availableSlots()
+    {
+        $slots = [];
+
+        $start = Carbon::parse($this->open_time);
+        $end = Carbon::parse($this->close_time);
+
+        while ($start < $end) {
+            $slots[] = $start->format('H:i');
+            $start->addMinutes(15);
+        }
+
+        return $slots;
+    }
+
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+
+    public function menus()
+    {
+        return $this->hasMany(Reservation::class);
     }
 
     /**
@@ -56,6 +86,11 @@ class Restaurant extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function tables()
+    {
+        return $this->hasMany(Table::class);
     }
 
     /**
@@ -87,5 +122,10 @@ class Restaurant extends Model
     public function features()
     {
         return $this->belongsToMany(Feature::class, 'feature_restaurant', 'restaurant_id', 'feature_id');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }

@@ -222,11 +222,18 @@
 
                 <div class="d-flex align-items-center gap-3 bg-transparent ms-4">
 
-                    <a href="{{ route('admin.users') }}" class="nav-link text-decoration-none"
-                        style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" data-bs-title="Admin">
-                        <i class="bi bi-shield-check fs-5"></i>
-                    </a>
+                    @auth
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.users') }}"
+                            class="nav-link text-decoration-none"
+                            style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            data-bs-title="Admin">
+                                <i class="bi bi-shield-check fs-5"></i>
+                            </a>
+                        @endif
+                    @endauth
 
                     <a href="{{ route('customer.search') }}" class="nav-icon-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"

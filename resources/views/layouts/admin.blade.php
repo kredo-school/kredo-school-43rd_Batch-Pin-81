@@ -16,6 +16,37 @@
     <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.min.js"></script>
+
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        window.Pusher = Pusher;
+
+        window.Echo = new Echo({
+            broadcaster: 'reverb',
+
+            key: "{{ env('REVERB_APP_KEY') }}",
+            wsHost: "{{ env('REVERB_HOST') }}",
+            wsPort: "{{ env('REVERB_PORT') }}",
+            wssPort: "{{ env('REVERB_PORT') }}",
+
+            forceTLS: false,
+            enabledTransports: ['ws', 'wss'],
+
+            auth: {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            }
+        });
+    </script>
+
+
 <style>
 
         *{
@@ -128,34 +159,109 @@
                 <!-- Navigation -->
                 <div class="nav flex-column flex-grow-1 mt-3 flex-grow-1">
 
+                    <a href="{{ route('admin.notifications') }}"
+                    class="nav-link fw-bold d-flex justify-content-between align-items-center">
+
+                        <span>
+                            <i class="fa-solid fa-bell me-2"></i>
+                            Notifications
+                        </span>
+
+                        @php
+                            $unread = auth()->user()->unreadNotifications()->count();
+                        @endphp
+
+                        @if($unread)
+                            <span id="unread-notifications-count-badge" class="badge bg-danger rounded-pill" data-unread-count="{{ $unread }}">
+                                {{ $unread }}
+                            </span>
+                        @endif
+
+                    </a>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            window.Echo.private('App.Models.User.{{ auth()->id() }}')
+                                .notification((notification) => {
+                                    const badge = document.querySelector("#unread-notifications-count-badge");
+                                    const unreadCount = Number(badge?.getAttribute("data-unread-count"));
+                                    badge?.setAttribute("data-unread-count", unreadCount + 1);
+                                    badge.innerText = unreadCount;
+                                });
+                        });
+                    </script>
+
                     <a href="{{ route('admin.users') }}"
                        class="nav-link fw-bold">
-                        <i class="fa-solid fa-user-group me-2"></i>
-                        Users
+
+                        <span>
+                            <i class="fa-solid fa-user-group me-2"></i>
+                            Users
+
+                            {{-- @if($pendingUsers > 0)
+                                <span class="badge bg-danger rounded-pill">
+                                    {{ $pendingUsers }}
+                                </span>
+                            @endif --}}
+                        </span>
+                        
                     </a>
 
                     <a href="{{ route('admin.restaurants') }}"
                        class="nav-link fw-bold">
-                        <i class="fa-solid fa-store me-2"></i>
-                        Restaurants
+
+                        <span>
+                            <i class="fa-solid fa-store me-2"></i>
+                            Restaurants
+                        </span>
+
+                        {{-- @if($pendingRestaurants > 0)
+                            <span class="badge bg-danger rounded-pill">
+                                {{ $pendingRestaurants }}
+                            </span>
+                        @endif --}}
                     </a>
 
                     <a href="{{ route('admin.reservations') }}"
                        class="nav-link fw-bold">
-                        <i class="fa-solid fa-calendar me-2"></i>
-                        Reservations
+
+                        <span>
+                            <i class="fa-solid fa-calendar me-2"></i>
+                            Reservations
+                        </span>
+
+                        {{-- @if($pendingReservations > 0)
+                            <span class="badge bg-danger rounded-pill">
+                                {{ $pendingReservations }}
+                            </span>
+                        @endif --}}
+                                            
                     </a>
 
                     <a href="{{ route('admin.reviews') }}"
                        class="nav-link fw-bold">
-                        <i class="fa-solid fa-star me-2"></i>
-                        Reviews
+
+                        <span>
+                            <i class="fa-solid fa-star me-2"></i>
+                            Reviews
+                        </span>
+
+                        {{-- @if($reportedReviews > 0)
+                            <span class="badge bg-danger rounded-pill">
+                                {{ $reportedReviews }}
+                            </span>
+                        @endif --}}
+
+                        
                     </a>
 
                     <a href="{{ route('admin.categories_features') }}"
                        class="nav-link fw-bold">
-                        <i class="fa-solid fa-tag me-2"></i>
-                        Categories & Features
+
+                        <span>
+                            <i class="fa-solid fa-tag me-2"></i>
+                            Categories & Features
+                        </span>
                     </a>
 
                 </div>
