@@ -224,7 +224,7 @@
             color: #fabede !important;
         }
     </style>
-    <script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places">
         document.addEventListener('DOMContentLoaded', function() {
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(

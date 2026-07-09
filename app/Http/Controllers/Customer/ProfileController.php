@@ -18,13 +18,15 @@ class ProfileController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
+
         $request->validate([
-            'username' => 'required|string|max:255',
+            'username' => 'nullable|string|max:50|unique:users,username,' . $user->id,
             'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // ユーザー名
-        $user->username = $request->username;
+        $updateData = [
+            'username' => $request->username,
+        ];
 
         // プロフィール画像
         if ($request->hasFile('avatar')) {
@@ -34,13 +36,13 @@ class ProfileController extends Controller
             }
             // 新しい画像を storage/app/public/avatars に保存
             $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
+            $updateData['avatar'] = $path;
         }
 
         // データベースに保存
-        $user->save();
+        $user->update($updateData);
 
-        return redirect()->route('customer.profile');
+        return redirect()->route('customer.my_page');
     }
     public function destroy()
     {

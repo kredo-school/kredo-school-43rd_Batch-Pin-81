@@ -28,25 +28,20 @@ class Reservation extends Model
         'cancelled_by',
     ];
 
-    /**
-     * リレーション：この予約はどのユーザー（カスタマー）のものか
-     */
+    protected $casts = [
+        'reservation_date' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * リレーション：この予約はどのレストランのものか
-     */
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);
     }
 
-    /**
-     * リレーション：この予約はどの座席（テーブル）を確保しているか
-     */
     public function table()
     {
         return $this->belongsTo(Table::class);
