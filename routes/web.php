@@ -1,30 +1,30 @@
 <?php
 
-#Restaurant
+#Customer
+use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Customer\CommentController;
 use App\Http\Controllers\Customer\ContactController as CustomerContactController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\FavoriteController;
+use App\Http\Controllers\Customer\LikeController;
 use App\Http\Controllers\Customer\MyReservationController;
 use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
+use App\Http\Controllers\Customer\PostController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\RestaurantSearchController;
-use App\Http\Controllers\Customer\PostController;
 use App\Http\Controllers\Customer\UserController;
-
-use App\Http\Controllers\Restaurant\RestaurantController;
+use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
 use App\Http\Controllers\Restaurant\MenuController;
 use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotificationController;
 use App\Http\Controllers\Restaurant\OwnerAccountController;
 use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
 use App\Http\Controllers\Restaurant\ReservationController;
-use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
-
-use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
-
+use App\Http\Controllers\Restaurant\RestaurantController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -57,12 +57,12 @@ Route::middleware('auth')->group(function () {
   Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])->name('my_reservations.notify-late');
   Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])->name('my_reservations.destroy');
   
-  //POST
+  // Post
   Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
   Route::post('/restaurants/{restaurant_id}/post', [PostController::class, 'store'])->name('posts.store');
   Route::get('/restaurants/{restaurant_id}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews.index');
   
-  //Profile
+  // Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
 
   //Contact
@@ -127,7 +127,6 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.restaurants.edit');
     Route::patch('/restaurants/{restaurant}', [AdminRestaurantController::class, 'update'])
       ->name('admin.restaurants.update');
-
     // Delete restaurant
     Route::delete('/restaurants/{restaurant}', [AdminRestaurantController::class, 'destroy'])
       ->name('admin.restaurants.destroy');
@@ -137,14 +136,22 @@ Route::middleware(['auth', 'admin'])
     Route::get('/reservations', [ReservationController::class, 'index'])
       ->name('admin.reservations');
 
-    // Reviews dashboard
-    Route::get('/reviews', [PostController::class, 'index'])
-      ->name('admin.reviews');
+    // Reviews dashboard 本番　154参照
+    // Route::get('/reviews', [AdminReviewController::class, 'index'])
+    //   ->name('admin.reviews');
+    // Show / Hide
+    Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
+      ->name('admin.reviews.toggle');
 
     // Categories & Features dashboard
     Route::get('/categories&features', [PostController::class, 'index'])
       ->name('admin.categories_features');
   });
+
+  // 一時的に 'admin' を外して、誰でもログインしてれば見られるように
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('admin.reviews');
+});
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
@@ -193,8 +200,8 @@ Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(fu
   Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');   
 });
 
-//Customer
-Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'restaurant'*/], function () {
+// Customer
+Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'customer'*/], function () {
 
   Route::get('/search', [CustomerController::class, 'index'])->name('search');
   
@@ -203,13 +210,33 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 're
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
   
-  Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
-  Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
-  Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
-  Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
+  // Post & Review
+    Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
+    Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
+    
+    // Follow / User Profile
+    Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
+    Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
+    
+    // Like
+    Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])->name('posts.like');
+
+    // Comment
+    Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comments.comment');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
+
+  // Contact
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
   Route::delete('/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('contact.destroy');
+
+  // Notification
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 

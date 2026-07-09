@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->text('description');
             $table->longtext('image');
+            $table->integer('rating')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('restaurant_id')->nullable();
             $table->timestamps();
