@@ -116,25 +116,14 @@ Route::middleware(['auth', 'admin'])
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
       ->name('admin.users.destroy');
 
-
     // Admin restaurants dashboard
     Route::get('/restaurants', [AdminRestaurantController::class, 'index'])
       ->name('admin.restaurants');
 
-    // Notifications
-    Route::get('/notifications', [AdminNotificationController::class, 'index'])
-      ->name('admin.notifications');
-
     // Restaurants
-    Route::patch(
-      '/restaurants/{restaurant}/approve',
-      [AdminRestaurantController::class, 'approve']
-    )
+    Route::patch('/restaurants/{restaurant}/approve',[AdminRestaurantController::class, 'approve'])
       ->name('admin.restaurants.approve');
-    Route::patch(
-      '/restaurants/{restaurant}/reject',
-      [AdminRestaurantController::class, 'reject']
-    )
+    Route::patch('/restaurants/{restaurant}/reject',[AdminRestaurantController::class, 'reject'])
       ->name('admin.restaurants.reject');
 
     // Status of Restaurants
@@ -177,9 +166,7 @@ Route::middleware(['auth', 'admin'])
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth', 'restaurant']], function () {
-  Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth'/*, 'restaurant'*/]], function () {
 
   // Index
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -261,7 +248,7 @@ Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
   ->name('booking.create');
 Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])
   ->name('booking.store');
-Route::get('/booking/confirmation', function () {
-  return view('customers.restaurants.booking_confirmation');
-})
-  ->name('booking.confirmation');
+// Route::get('/booking/confirmation', function () {
+//   return view('customers.restaurants.booking_confirmation');
+// })
+//   ->name('booking.confirmation');
