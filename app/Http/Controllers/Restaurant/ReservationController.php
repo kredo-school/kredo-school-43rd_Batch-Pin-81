@@ -11,26 +11,16 @@ use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
-    public function __construct(private ReservationAvailabilityService $availability)
-    {
-
-        $restaurant = auth()->user()->restaurant;
-
-        if (!$restaurant) {
-            abort(403);
-        }
-
-        if ($restaurant->status !== 'approved') {
-            abort(403, 'Your restaurant has not been approved yet.');
-        }
-
-        return view('restaurants.index', compact('restaurant'));
+    public function __construct(
+        private ReservationAvailabilityService $availability
+    ) {
+        // ここでは auth()->user() を使わない
+        // php artisan route:list 実行時はログインユーザーがいないため
     }
 
     public function index(Request $request)
     {
         $restaurant = $this->currentRestaurant();
-        abort_if(!$restaurant, 404);
 
         $query = Reservation::where('restaurant_id', $restaurant->id)
             ->with(['user', 'table'])
@@ -38,12 +28,14 @@ class ReservationController extends Controller
             ->orderBy('reservation_time', 'asc');
 
         $selectedDate = $request->input('date');
+
         if ($selectedDate) {
             $query->whereDate('reservation_date', $selectedDate);
         }
 
         if ($request->filled('search_id')) {
             $cleanId = preg_replace('/[^0-9]/', '', $request->input('search_id'));
+
             if (!empty($cleanId)) {
                 $query->where('id', $cleanId);
             }
@@ -64,7 +56,10 @@ class ReservationController extends Controller
     public function updateStatus(Request $request, Reservation $reservation)
     {
         $restaurant = $this->currentRestaurant();
-        abort_if(!$restaurant || $reservation->restaurant_id !== $restaurant->id, 404);
+
+        if ($reservation->restaurant_id !== $restaurant->id) {
+            abort(404);
+        }
 
         $validated = $request->validate([
             'status' => ['required', 'in:confirmed,completed,cancelled'],
@@ -79,18 +74,29 @@ class ReservationController extends Controller
         $reservation->status = $validated['status'];
         $reservation->save();
 
-        return redirect()->back()->with('success', 'Reservation status updated successfully.');
+        return redirect()
+            ->back()
+            ->with('success', 'Reservation status updated successfully.');
     }
 
-    private function currentRestaurant(): ?Restaurant
+    private function currentRestaurant(): Restaurant
     {
-        if (Auth::check()) {
-            $restaurant = Restaurant::where('user_id', Auth::id())->first();
-            if ($restaurant) {
-                return $restaurant;
-            }
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403, 'Please login first.');
         }
 
-        return Restaurant::find(1) ?? Restaurant::first();
+        $restaurant = $user->restaurant;
+
+        if (!$restaurant) {
+            abort(403, 'Restaurant account is not found.');
+        }
+
+        if ($restaurant->status !== 'approved') {
+            abort(403, 'Your restaurant has not been approved yet.');
+        }
+
+        return $restaurant;
     }
 }

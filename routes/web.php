@@ -27,6 +27,7 @@ use App\Http\Controllers\Restaurant\DashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\CategoryFeatureController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -171,14 +172,31 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.reviews');
 
     // Categories & Features dashboard
-    Route::get('/categories&features', [PostController::class, 'index'])
+    Route::get('/categories-features', [CategoryFeatureController::class, 'index'])
       ->name('admin.categories_features');
+
+    Route::post('/categories', [CategoryFeatureController::class, 'storeCategory'])
+      ->name('admin.categories.store');
+
+    Route::patch('/categories/{category}', [CategoryFeatureController::class, 'updateCategory'])
+      ->name('admin.categories.update');
+
+    Route::delete('/categories/{category}', [CategoryFeatureController::class, 'destroyCategory'])
+      ->name('admin.categories.destroy');
+
+    Route::post('/features', [CategoryFeatureController::class, 'storeFeature'])
+      ->name('admin.features.store');
+
+    Route::patch('/features/{feature}', [CategoryFeatureController::class, 'updateFeature'])
+      ->name('admin.features.update');
+
+    Route::delete('/features/{feature}', [CategoryFeatureController::class, 'destroyFeature'])
+      ->name('admin.features.destroy');
   });
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth', 'restaurant']], function () {
-  Route::get('/dashboard', [ReservationController::class, 'dashboard'])->name('dashboard');
+
 Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', /*'middleware' => ['auth', 'restaurant']*/], function () {
 
   // Index
@@ -263,5 +281,4 @@ Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'
   ->name('booking.store');
 Route::get('/booking/confirmation', function () {
   return view('customers.restaurants.booking_confirmation');
-})
-  ->name('booking.confirmation');
+})->name('booking.confirmation');
