@@ -42,6 +42,10 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
+            if ($user->role_id == User::ROLE_RESTAURANT) {
+                return redirect()->route('restaurant.dashboard');
+            }
+
             return redirect()->route('customer.search');
         }
 

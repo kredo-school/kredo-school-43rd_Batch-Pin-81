@@ -6,16 +6,20 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Models\Restaurant;
 
 
 class RestaurantApplicationStatus extends Notification
 {
     use Queueable;
+    protected $status;
+    protected $restaurant;
 
-    public function __construct(
-        public string $status,
-        public string $restaurantName
-    ) {}
+    public function __construct(string $status, Restaurant $restaurant) 
+    {
+        $this->status = $status;
+        $this->restaurant = $restaurant;
+    }
 
     public function via($notifiable): array
     {
@@ -51,14 +55,14 @@ class RestaurantApplicationStatus extends Notification
                 : 'Restaurant Rejected',
 
             'message' => $this->status === 'approved'
-                ? "Your restaurant '{$this->restaurantName}' has been approved."
-                : "Your restaurant '{$this->restaurantName}' has been rejected.",
+                ? "Your restaurant '{$this->restaurant->restaurant_name}' has been approved."
+                : "Your restaurant '{$this->restaurant->restaurant_name}' has been rejected.",
 
             'status' => $this->status,
         ];
 
         if ($this->status === 'approved') {
-            $data['url'] = route('restaurant.dashboard');
+            $data['url'] = route('restaurant.dashboard', $this->restaurant->id);
             $data['button_text'] = 'Go to Restaurant Dashboard';
         }
 

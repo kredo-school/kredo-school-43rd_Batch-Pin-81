@@ -34,11 +34,16 @@ class RestaurantController extends Controller
             'status' => Restaurant::STATUS_APPROVED,
         ]);
 
+        // Change the user's role to Restaurant Owner
+        $restaurant->user->update([
+            'role_id' => 2,
+        ]);
+
         // Notify restaurant owner
         $restaurant->user->notify(
             new RestaurantApplicationStatus(
                 'approved',
-                $restaurant->restaurant_name
+                $restauran
             )
         );
 
@@ -66,7 +71,7 @@ class RestaurantController extends Controller
             )
         );
 
-        auth('admin')
+        auth()
             ->user()
             ->notifications()
             ->find($request->notification_id)
@@ -75,28 +80,28 @@ class RestaurantController extends Controller
         return back()->with('success', 'Restaurant rejected.');
     }
 
-    private function markNotificationAsRead(?string $notificationId): void
-    {
-        if (!$notificationId) {
-            return;
-        }
+    // private function markNotificationAsRead(?string $notificationId): void
+    // {
+    //     if (!$notificationId) {
+    //         return;
+    //     }
 
-        $notification = auth()
-            ->user()
-            ->notifications()
-            ->find($notificationId);
+    //     $notification = auth()
+    //         ->user()
+    //         ->notifications()
+    //         ->find($notificationId);
 
-        if ($notification) {
-            $notification->markAsRead();
-        }
-    }
+    //     if ($notification) {
+    //         $notification->markAsRead();
+    //     }
+    // }
 
-    public function active()
-    {
-        $restaurants = Restaurant::where('status', 'active')->get();
+    // public function active()
+    // {
+    //     $restaurants = Restaurant::where('status', 'active')->get();
 
-        return view('admin.restaurants.index', compact('restaurants'));
-    }
+    //     return view('admin.restaurants.index', compact('restaurants'));
+    // }
 
     public function suspended()
     {
