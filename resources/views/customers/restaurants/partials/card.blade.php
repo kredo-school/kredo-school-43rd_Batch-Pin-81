@@ -72,21 +72,22 @@
                             Available time
                         </p>
 
+                        {{-- This is for test --}}
                         @php
-    $now = now();
-$endTime = $now->copy()->addHour();
+                        $now = now();
+                        $endTime = $now->copy()->addHour();
 
-$minutes = ceil($now->minute / 15) * 15;
+                        $minutes = ceil($now->minute / 15) * 15;
 
-$slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
+                        $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
 
-$availableSlots = [];
+                        $availableSlots = [];
 
-while ($slot <= $endTime) {
-    $availableSlots[] = $slot->format('H:i');
-    $slot->addMinutes(15);
-}
-@endphp
+                        while ($slot <= $endTime) {
+                            $availableSlots[] = $slot->format('H:i');
+                            $slot->addMinutes(15);
+                        }
+                        @endphp
 
                         {{-- Mobile --}}
                         <div class="d-md-none">
@@ -152,13 +153,14 @@ while ($slot <= $endTime) {
 
                     {{-- Features --}}
                     <div class="d-flex flex-wrap gap-1 ">
-                      @foreach ($restaurant->features as $feature)
-                        <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                              style="background-color: #e8ebf1; font-size: 10px;">{{ $feature->feature_name }}</span>
-                              {{-- Navy --}}
-                              {{-- <span class="badge rounded-pill fw-normal px-2 py-1"
-                              style="background-color: #eff6fd; color:#0a2540; font-size: 10px;">{{ $feature }}</span> --}}
-                      @endforeach
+                        @if($restaurant->features)
+                            @foreach($restaurant->features as $feature)
+                                <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
+                                    style="background-color:#e8ebf1;font-size:10px;">
+                                    {{ $feature->feature_name }}
+                                </span>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>

@@ -43,10 +43,5 @@ class RestaurantSearchController extends Controller
         return view('customers.restaurants.show', compact('restaurant', 'availableSlots'));
     }
 
-    public function store(Request $request)
-    {
-        // Save booking to database
-
-        return redirect()->route('booking.confirmation');
-    }
+    
 }
