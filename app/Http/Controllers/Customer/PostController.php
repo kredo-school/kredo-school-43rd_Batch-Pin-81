@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Like;
 use App\Models\Post;
 use App\Models\Reservation;
 use App\Models\Restaurant;
@@ -13,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    // 👤 customer/my_page.blade.php用
+    /**
+     * 👤 Display Customer My Page
+     */
     public function myPage()
     {
         $user = Auth::user();
@@ -21,19 +22,23 @@ class PostController extends Controller
         if (!$user) {
             return redirect()->route('login');
         }
-
+        // Get unique restaurants visited within the last 7 days
         $todayStr = Carbon::now()->toDateString();
         $oneWeekAgoStr = Carbon::now()->subDays(7)->toDateString();
+
         $visitedRestaurants = Reservation::where('user_id', $user->id)
             ->where('status', 'Visited')
-            ->whereBetween('reservation_date', [$oneWeekAgoStr, $todayStr])
+            ->whereDate('reservation_date', '>=', $oneWeekAgoStr)
+            ->whereDate('reservation_date', '<=', $todayStr)
             ->with('restaurant')
             ->get()
-            ->pluck('restaurant')
+            ->map(function ($reservation) {
+                return $reservation->restaurant;
+            })
             ->filter()
             ->unique('id');
 
-        // 【最適化】likesのリレーションも一緒にEager Loadしておきます
+        // Eager load related comments, user, and likes for optimization
         $posts = Post::with(['comments.user', 'user', 'likes'])
             ->withCount('likes')
             ->where('user_id', $user->id)
@@ -46,16 +51,21 @@ class PostController extends Controller
         return view('customer.my_page', compact('user', 'posts', 'visitedRestaurants', 'followers', 'followings'));
     }
 
-    // 💬 レストランの口コミ一覧ページを表示 (restaurant/reviews.blade.php 用)
+    /**
+     * 💬 Display Restaurant Reviews List
+     */
     public function showRestaurantReviews($restaurant_id)
     {
-        $realReviews = Post::with(['user', 'star', 'comments.user'])
+        // Fetch posts directly with rating column stored in posts table
+        $realReviews = Post::with(['user', 'comments.user'])
             ->where('restaurant_id', $restaurant_id)
             ->latest()
             ->get();
 
         $totalCount = $realReviews->count();
-        $averageRating = $totalCount > 0 ? $realReviews->avg('star.rating') : 4.8;
+
+        // Default values for initial state (if no reviews exist yet)
+        $averageRating = $totalCount > 0 ? round($realReviews->avg('rating'), 1) : 4.8;
         $starsData = [
             5 => ['count' => 172, 'percentage' => 70],
             4 => ['count' => 49,  'percentage' => 20],
@@ -64,10 +74,11 @@ class PostController extends Controller
             1 => ['count' => 12,  'percentage' => 5],
         ];
 
+        // Recalculate if there are real operational reviews
         if ($totalCount > 0) {
             $counts = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
             foreach ($realReviews as $r) {
-                $rating = optional($r->star)->rating ?? 5;
+                $rating = $r->rating ?? 5;
                 if (isset($counts[$rating])) {
                     $counts[$rating]++;
                 }
@@ -78,51 +89,50 @@ class PostController extends Controller
                     'percentage' => round(($count / $totalCount) * 100)
                 ];
             }
+            $statsTotalReviews = $totalCount;
+            $reviewCollection = $realReviews;
+        } else {
+            $statsTotalReviews = 0;
+            $reviewCollection = collect([]);
         }
+
+        $reportedCount = Post::where('restaurant_id', $restaurant_id)
+            ->where('is_reported', true)
+            ->count();
 
         $stats = [
             'average_rating' => $averageRating,
-            'total_reviews'  => $totalCount > 0 ? $totalCount : 245,
+            'total_reviews'  => $statsTotalReviews,
             'stars'          => $starsData,
-            'reported_count' => 0
+            'reported_count' => $reportedCount
         ];
 
-        if ($totalCount > 0) {
-            $reviewCollection = $realReviews;
-        } else {
-            $dummyReview = (object)[
-                'id'          => 1,
-                'description' => 'Amazing experience! The chef\'s omakase was incredible. Will definitely come back.',
-                'image'       => null,
-                'created_at'  => '2026-05-10',
-                'is_reported' => false,
-                'user' => (object)[
-                    'name' => 'John Smith'
-                ],
-                'star' => (object)[
-                    'rating' => 5
-                ],
-                'comments' => collect([])
-            ];
-            $reviewCollection = [$dummyReview];
-        }
+        // Paginating combined collection safely
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $currentItems = $reviewCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
 
         $reviews = new \Illuminate\Pagination\LengthAwarePaginator(
-            $reviewCollection,
-            $totalCount > 0 ? $totalCount : 1,
-            10,
-            10,
-            ['path' => request()->url()]
+            $currentItems,
+            $reviewCollection->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('customers.restaurants.reviews', compact('reviews', 'stats'));
+        return view('restaurants.reviews', compact('reviews', 'stats'));
     }
 
+    /**
+     * 📥 Store a New Review Post
+     */
     public function store(Request $request, $restaurant_id = null)
     {
+        // 1. Strictly validate the incoming parameters (including the live rating)
         $request->validate([
             'restaurant_id' => 'required|exists:restaurants,id',
-            'description'   => 'nullable|string|max:1000',
+            'rating'        => 'required|integer|between:1,5',
+            'description'   => 'required|string|max:1000',
             'media'         => 'nullable|array',
             'media.*'       => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,ogg,qt|max:51200',
         ]);
@@ -135,10 +145,11 @@ class PostController extends Controller
         $finalRestaurantId = $request->input('restaurant_id', $restaurant_id);
         $mediaPaths = [];
 
+        // 2. Handle multiple media attachments uploads safely
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
                 if ($file->isValid()) {
-                    $extension = $file->getClientOriginalExtension();
+                    $extension = strtolower($file->getClientOriginalExtension());
                     $folder = in_array($extension, ['mp4', 'mov', 'ogg', 'qt']) ? 'posts/videos' : 'posts/images';
                     $path = $file->store($folder, 'public');
                     $mediaPaths[] = 'storage/' . $path;
@@ -148,7 +159,8 @@ class PostController extends Controller
 
         $finalMediaPath = !empty($mediaPaths) ? implode(',', $mediaPaths) : null;
 
-        $post = Post::create([
+        // 3. Save directly to the Database
+        Post::create([
             'user_id'       => $user->id,
             'restaurant_id' => $finalRestaurantId,
             'rating'        => $request->rating,
@@ -159,17 +171,18 @@ class PostController extends Controller
         return redirect()->route('customer.my_page')->with('success', 'Review posted successfully!');
     }
 
+    /**
+     * 🔍 General Routing Stubs
+     */
     public function index(Request $request)
     {
         $restaurants = Restaurant::all();
         return view('customers.restaurants.index', compact('restaurants'));
     }
 
-    public function search()
-    {
-        return view('customer.mypage');
-    }
-
+    /**
+     * 📝 Update an existing description
+     */
     public function update(Request $request, Post $post)
     {
         if ($post->user_id !== Auth::id()) {
@@ -177,7 +190,7 @@ class PostController extends Controller
         }
 
         $request->validate([
-            'description'  => 'required|string|max:5000', 
+            'description' => 'required|string|max:5000',
         ]);
 
         $post->update([
@@ -187,27 +200,39 @@ class PostController extends Controller
         return redirect()->back()->with('success', 'Post updated successfully.');
     }
 
+    /**
+     * 🗑️ Delete Post
+     */
     public function destroy(Post $post)
     {
         if ($post->user_id !== Auth::id()) {
             return redirect()->back()->with('error', 'Unauthorized action.');
         }
+
         $post->delete();
 
         return redirect()->route('customer.my_page')->with('success', 'Post deleted successfully.');
     }
 
+    /**
+     * 🚨 Report Malicious Content
+     */
     public function report(Post $post)
     {
-        if ($post->user_id === Auth::id()) {
-            return redirect()->back()->with('error', 'You cannot report your own post.');
-        }
-        
-        $post->update([
-            'is_reported' => true,
-        ]);
+        try {
+            $post->is_reported = true;
+            $post->save();
 
-        return redirect()->back()->with('success', 'Post has been reported.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Reported successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
 
