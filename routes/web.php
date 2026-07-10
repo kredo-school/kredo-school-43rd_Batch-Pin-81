@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CategoryFeatureController;
+use App\Http\Controllers\Admin\ReviewController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -158,10 +159,10 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.reservations');
 
     // Reviews dashboard 本番　154参照
-    // Route::get('/reviews', [AdminReviewController::class, 'index'])
-    //   ->name('admin.reviews');
+    Route::get('/reviews', [ReviewController::class, 'index'])
+      ->name('admin.reviews');
     // Show / Hide
-    Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
+    Route::patch('/reviews/{id}/toggle', [ReviewController::class, 'toggleStatus'])
       ->name('admin.reviews.toggle');
 
     // Categories & Features dashboard
@@ -238,6 +239,9 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
 Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(function () {
   Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
 });
+
+// Restaurant Reviews
+Route::get('/restaurant/{restaurant}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews');
 
 // Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'customer'*/], function () {
