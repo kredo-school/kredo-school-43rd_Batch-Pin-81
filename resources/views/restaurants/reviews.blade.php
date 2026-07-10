@@ -134,39 +134,64 @@
                         {{ $review->description }}
                     </p>
 
-                    {{-- 📸 画像表示ロジック（Postモデルの単数形imageに対応） --}}
-                    @if($review->image)
-                        <div class="d-flex gap-2 mb-2">
-                            <img src="{{ asset($review->image) }}" alt="Review Image" class="review-img" style="cursor: pointer;"
-                                data-bs-toggle="modal" data-bs-target="#imageModal-{{ $loop->index }}">
-                        </div>
+                    {{-- ==========================================================
+     🆕 複数画像・動画（カンマ区切り）対応の表示ロジック
+     ========================================================== --}}
+     @if($review->image)
+         {{-- 💡 解説: カンマで区切って配列にし、ループで1枚ずつ処理 --}}
+         <div class="d-flex flex-wrap gap-2 mb-2">
+             @foreach(explode(',', $review->image) as $index => $filePath)
+                 @php
+                     // 💡 拡張子を取得して画像か動画かを判別
+                     $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+                     $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'ogg', 'qt']);
+                     
+                     // 💡 IDの一意性を保つために、ループのインデックス（$index）を付与
+                     $uniqueModalId = 'reviewModal-' . $review->id . '-' . $index;
+                 @endphp
 
-                        {{-- 拡大モーダル本体 --}}
-                        <div class="modal fade" id="imageModal-{{ $loop->index }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content bg-transparent border-0">
-                                    <div class="modal-body p-0 position-relative">
-                                        <button type="button"
-                                            class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
-                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                 @if($isVideo)
+                                          <video src="{{ asset($filePath) }}" class="review-img" style="cursor: pointer;"
+                         data-bs-toggle="modal" data-bs-target="#{{ $uniqueModalId }}"></video>
+                 @else
+                                          <img src="{{ asset($filePath) }}" alt="Review Image" class="review-img" style="cursor: pointer; object-fit: cover;"
+                         data-bs-toggle="modal" data-bs-target="#{{ $uniqueModalId }}">
+                 @endif
 
-                                        <div class="text-center bg-dark rounded p-2">
-                                            <img src="{{ asset($review->image) }}" class="img-fluid rounded"
-                                                alt="Enlarged Review Image"
-                                                style="max-height: 80vh; object-fit: contain;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @else
-                        {{-- 画像がない場合はプレースホルダーか、あるいは非表示（今回はプレースホルダーを表示） --}}
-                        <div class="review-img-placeholder mb-2">
-                            <i class="bi bi-image fs-3"></i>
-                        </div>
-                    @endif
-                </div>
-            @endforeach
+                 {{-- 💡 ファイルごとに拡大モーダル本体を生成 --}}
+                 <div class="modal fade" id="{{ $uniqueModalId }}" tabindex="-1" aria-hidden="true">
+                     <div class="modal-dialog modal-dialog-centered modal-lg">
+                         <div class="modal-content bg-transparent border-0">
+                             <div class="modal-body p-0 position-relative">
+                                 <button type="button"
+                                     class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
+                                     data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                 <div class="text-center bg-dark rounded p-2">
+                                     @if($isVideo)
+                                                                                  <video src="{{ asset($filePath) }}" class="img-fluid rounded" controls
+                                             style="max-height: 80vh; object-fit: contain;"></video>
+                                     @else
+                                                                                  <img src="{{ asset($filePath) }}" class="img-fluid rounded"
+                                             alt="Enlarged Review Image"
+                                             style="max-height: 80vh; object-fit: contain;">
+                                     @endif
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             @endforeach
+         </div>
+     @else
+         {{-- メディアがない場合は非表示（今回はプレースホルダーをコメントアウトします） --}}
+         {{--
+         <div class="review-img-placeholder mb-2">
+             <i class="bi bi-image fs-3"></i>
+         </div>
+         --}}
+     @endif
+{{-- ========================================================== --}}
 
             {{-- ▼ 2. 追加した口コミ：Maria Garcia (固定表示) --}}
             <div class="review-card p-4">

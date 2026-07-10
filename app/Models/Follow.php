@@ -11,3 +11,14 @@ class Follow extends Model
     public $timestamps = false;
     protected $fillable = ['follower_id', 'following_id'];
 }
+
+    // To get the info of follower
+//     public function follower(){
+//         return $this->belongsTo(User::class, 'follower_id')->withTrashed();
+//     }
+
+//     // To get the info of the user being followed
+//     public function following(){
+//         return $this->belongsTo(User::class, 'following_id')->withTrashed();
+//     }
+// }
