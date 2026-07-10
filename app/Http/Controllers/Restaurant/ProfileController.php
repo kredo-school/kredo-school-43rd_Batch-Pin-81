@@ -16,7 +16,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        $restaurant = Auth::user()->restaurant; 
+        $restaurant = Auth::user()->restaurant;
 
         if (!$restaurant) {
             $restaurant = new Restaurant();
@@ -31,10 +31,10 @@ class ProfileController extends Controller
         $selectedFeatureIds  = $restaurant->features()->pluck('features.id')->toArray();
 
         return view('restaurants.profile', compact(
-            'restaurant', 
-            'allCategories', 
-            'allFeatures', 
-            'selectedCategoryIds', 
+            'restaurant',
+            'allCategories',
+            'allFeatures',
+            'selectedCategoryIds',
             'selectedFeatureIds'
         ));
     }
@@ -47,7 +47,7 @@ class ProfileController extends Controller
         $restaurant = Auth::user()->restaurant;
 
         if (!$restaurant) {
-            $restaurant = new Restaurant();  
+            $restaurant = new Restaurant();
             $restaurant->user_id = Auth::id();
         }
 
@@ -55,7 +55,7 @@ class ProfileController extends Controller
         $request->validate([
             'restaurant_name' => 'required|string|max:255',
             'description'     => 'nullable|string',
-            'address'         => 'nullable|string|max:255',
+            // 'address'         => 'nullable|string|max:255',
             'phone_number'    => 'nullable|string|max:50',
             'website'         => 'nullable|string|max:255',
             'instagram'       => 'nullable|string|max:255',
@@ -66,12 +66,16 @@ class ProfileController extends Controller
             'cuisine_types'   => 'nullable|array',
             'features'        => 'nullable|array',
             'hours'           => 'nullable|array',
+            'postal_code' => 'required|string|max:255',
+            'prefecture' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'street_address_building' => 'required|string|max:255',
         ]);
 
         // 基本情報の保存
         $restaurant->restaurant_name = $request->restaurant_name;
         $restaurant->description     = $request->description;
-        $restaurant->address         = $request->address;
+        // $restaurant->address         = $request->address;
         $restaurant->phone_number    = $request->phone_number;
         $restaurant->website         = $request->website;
         $restaurant->instagram       = $request->instagram;
@@ -80,6 +84,10 @@ class ProfileController extends Controller
         $restaurant->stay_duration   = $request->stay_duration;
         $restaurant->capacity        = $request->capacity;
         $restaurant->operating_hours = $request->input('hours', []);
+        $restaurant->postal_code = $request->postal_code;
+        $restaurant->prefecture = $request->prefecture;
+        $restaurant->city = $request->city;
+        $restaurant->street_address_building = $request->street_address_building;
         $restaurant->save();
 
         // Categoryの同期処理（syncにより、外されたチェックは自動消去）

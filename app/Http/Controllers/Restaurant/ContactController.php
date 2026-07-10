@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
 {
-    //一覧・問い合わせ画面表示
     public function index()
     {
-        $contacts = Contact::with('replies')
+        $restaurant = $this->currentRestaurant();
+
+        $contacts = Contact::with(['user', 'restaurant', 'replies.user', 'replies.restaurant'])
             ->where('user_id', Auth::id())
+            ->where('restaurant_id', $restaurant->id)
             ->whereNull('parent_id')
             ->latest()
             ->get();
@@ -22,91 +24,127 @@ class ContactController extends Controller
         return view('restaurants.settings.contact', compact('contacts'));
     }
 
-    //新規送信処理
     public function send(Request $request)
     {
-        $request->validate([
-            'message' => 'required|string',
-            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        $restaurant = $this->currentRestaurant();
+
+        $validated = $request->validate([
+            'message' => ['required', 'string'],
+            'attachments.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        $contact = new Contact();
-        $contact->user_id = Auth::id(); 
-        $contact->message = $request->message;
-        $contact->parent_id = null; 
-        $contact->status = 'open';
-
-        $paths = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $paths[] = $file->store('attachments', 'public'); 
-            }
-        }
-        $contact->attachments = !empty($paths) ? $paths : null;
-        $contact->save();
+        Contact::create([
+            'user_id' => Auth::id(),
+            'restaurant_id' => $restaurant->id,
+            'parent_id' => null,
+            'title' => null,
+            'message' => $validated['message'],
+            'attachments' => $this->storeAttachments($request),
+            'status' => 'open',
+        ]);
 
         return redirect()->back()->with('success', 'Message sent successfully!');
     }
 
-     //返信（フォローアップ）送信処理
+    public function show($id)
+    {
+        $restaurant = $this->currentRestaurant();
+
+        $contact = Contact::with(['user', 'restaurant', 'replies.user', 'replies.restaurant'])
+            ->where('user_id', Auth::id())
+            ->where('restaurant_id', $restaurant->id)
+            ->whereNull('parent_id')
+            ->findOrFail($id);
+
+        return view('restaurants.settings.contact', [
+            'contacts' => collect([$contact]),
+        ]);
+    }
+
     public function reply(Request $request, $id)
     {
-        $request->validate([
-            'message' => 'required|string',
-            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        $restaurant = $this->currentRestaurant();
+
+        $validated = $request->validate([
+            'message' => ['required', 'string'],
+            'attachments.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        $parentContact = Contact::findOrFail($id);
+        $parentContact = Contact::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->where('restaurant_id', $restaurant->id)
+            ->whereNull('parent_id')
+            ->firstOrFail();
 
-        $reply = new Contact();
-        $reply->user_id = Auth::id();
-        $reply->message = $request->message;
-        $reply->parent_id = $parentContact->id;
-        $reply->status = 'open';
+        Contact::create([
+            'user_id' => Auth::id(),
+            'restaurant_id' => $restaurant->id,
+            'parent_id' => $parentContact->id,
+            'title' => $parentContact->title,
+            'message' => $validated['message'],
+            'attachments' => $this->storeAttachments($request),
+            'status' => 'open',
+        ]);
 
-        $paths = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $paths[] = $file->store('attachments', 'public'); 
-            }
-        }
-        $reply->attachments = !empty($paths) ? $paths : null;
-        $reply->save();
+        $parentContact->update(['status' => 'open']);
 
         return redirect()->back()->with('success', 'Follow-up message sent successfully!');
     }
 
-    //削除処理（過去の古い形式のデータが来ても絶対にクラッシュしない安全版）
     public function destroy($id)
     {
-        $contact = Contact::where('user_id', Auth::id())->findOrFail($id);
+        $restaurant = $this->currentRestaurant();
 
-        // 子メッセージのループ削除
+        $contact = Contact::where('user_id', Auth::id())
+            ->where('restaurant_id', $restaurant->id)
+            ->whereNull('parent_id')
+            ->with('replies')
+            ->findOrFail($id);
+
         foreach ($contact->replies as $reply) {
             $this->deletePhysicalFiles($reply->attachments);
         }
 
-        // 親メッセージのループ削除
         $this->deletePhysicalFiles($contact->attachments);
 
-        Contact::where('parent_id', $id)->delete();
         $contact->delete();
 
         return redirect()->back()->with('success', 'Message deleted successfully.');
     }
 
-     //📁 古いデータが混ざっても絶対に落ちない安全な削除ヘルパー
-    private function deletePhysicalFiles($attachmentsData)
+    private function currentRestaurant()
     {
-        if (empty($attachmentsData)) return;
+        $restaurant = Auth::user()?->restaurant;
 
-        // 配列か文字列（JSON）かを自動判定して安全に1つの配列にする魔法の処理
-        if (is_array($attachmentsData)) {
-            $attachments = $attachmentsData;
-        } else {
-            $decoded = json_decode($attachmentsData, true);
-            $attachments = is_array($decoded) ? $decoded : [$attachmentsData];
+        if (!$restaurant) {
+            abort(403, 'Restaurant account is not found.');
         }
+
+        return $restaurant;
+    }
+
+    private function storeAttachments(Request $request): ?array
+    {
+        $paths = [];
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $paths[] = $file->store('attachments', 'public');
+            }
+        }
+
+        return !empty($paths) ? $paths : null;
+    }
+
+    private function deletePhysicalFiles($attachmentsData): void
+    {
+        if (empty($attachmentsData)) {
+            return;
+        }
+
+        $attachments = is_array($attachmentsData)
+            ? $attachmentsData
+            : (json_decode($attachmentsData, true) ?: [$attachmentsData]);
 
         foreach ($attachments as $path) {
             if (!empty($path) && is_string($path)) {

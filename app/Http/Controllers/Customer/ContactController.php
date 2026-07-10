@@ -14,39 +14,43 @@ class ContactController extends Controller
     {
         $contacts = Contact::where('user_id', Auth::id())
             ->whereNull('parent_id')
-            ->with('replies')
+            ->with(['user', 'restaurant', 'replies.user', 'replies.restaurant'])
+            ->latest()
             ->get();
 
         return view('customer.contact', compact('contacts'));
     }
+
     public function send(Request $request)
     {
-        // 👑 バリデーションに parent_id の存在チェックを追加して堅牢化
-        $request->validate([
-            'message' => 'required|string',
-            'parent_id' => 'nullable|exists:contacts,id',
-            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        $validated = $request->validate([
+            'message' => ['required', 'string'],
+            'parent_id' => ['nullable', 'exists:contacts,id'],
+            'attachments.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        // メッセージの保存
-        $contact = new Contact();
-        $contact->user_id = Auth::id();
-        $contact->message = $request->message;
+        $parentContact = null;
 
-        // 👑 input() を使い、親IDがあればセット、なければnull
-        $contact->parent_id = $request->input('parent_id');
-
-        // 📸 画像のアップロード処理
-        $paths = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('attachments', 'public');
-                $paths[] = $path;
-            }
+        if ($request->filled('parent_id')) {
+            $parentContact = Contact::where('id', $validated['parent_id'])
+                ->where('user_id', Auth::id())
+                ->whereNull('parent_id')
+                ->firstOrFail();
         }
 
-        $contact->attachments = !empty($paths) ? $paths : null;
-        $contact->save();
+        Contact::create([
+            'user_id' => Auth::id(),
+            'restaurant_id' => $parentContact?->restaurant_id,
+            'parent_id' => $parentContact?->id,
+            'title' => $parentContact?->title,
+            'message' => $validated['message'],
+            'attachments' => $this->storeAttachments($request),
+            'status' => 'open',
+        ]);
+
+        if ($parentContact) {
+            $parentContact->update(['status' => 'open']);
+        }
 
         return redirect()->back()->with('success', 'Message sent successfully!');
     }
@@ -58,31 +62,49 @@ class ContactController extends Controller
 
     public function destroy($id)
     {
-        // 👑 引数を $id に変更し、確実にレコードを取得（なければ404）
-        $contact = Contact::findOrFail($id);
+        $contact = Contact::where('user_id', Auth::id())
+            ->whereNull('parent_id')
+            ->with('replies')
+            ->findOrFail($id);
 
-        // 所有者チェック（他人の問い合わせを削除できないように防衛）
-        if ($contact->user_id !== auth()->id()) {
-            abort(403);
+        foreach ($contact->replies as $reply) {
+            $this->deletePhysicalFiles($reply->attachments);
         }
 
-        // 📁 添付ファイルがある場合はストレージからも物理削除
-        if (!empty($contact->attachments)) {
-            // 💡 過去の古いデータ（文字列）が来ても、エラーにならないよう配列に安全変換
-            if (is_array($contact->attachments)) {
-                $attachments = $contact->attachments;
-            } else {
-                $decoded = json_decode($contact->attachments, true);
-                $attachments = is_array($decoded) ? $decoded : [$contact->attachments];
-            }foreach ($attachments as $path) {
-                if (!empty($path) && is_string($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
-        }
+        $this->deletePhysicalFiles($contact->attachments);
 
         $contact->delete();
 
         return redirect()->back()->with('success', 'Message deleted successfully.');
+    }
+
+    private function storeAttachments(Request $request): ?array
+    {
+        $paths = [];
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $paths[] = $file->store('attachments', 'public');
+            }
+        }
+
+        return !empty($paths) ? $paths : null;
+    }
+
+    private function deletePhysicalFiles($attachmentsData): void
+    {
+        if (empty($attachmentsData)) {
+            return;
+        }
+
+        $attachments = is_array($attachmentsData)
+            ? $attachmentsData
+            : (json_decode($attachmentsData, true) ?: [$attachmentsData]);
+
+        foreach ($attachments as $path) {
+            if (!empty($path) && is_string($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
     }
 }

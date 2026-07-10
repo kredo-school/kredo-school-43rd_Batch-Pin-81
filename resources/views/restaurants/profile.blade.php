@@ -141,6 +141,7 @@
             background-color: #0f2d4a;
             color: #fff;
         }
+
         .btn-navy-confirm:hover {
             background-color: #173b5e;
             color: #fff;
@@ -199,10 +200,34 @@
             <div class="profile-card">
                 <div class="section-title">Contact Information</div>
 
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
                     <input type="text" class="form-control" id="address" name="address"
                         value="{{ $restaurant->address }}">
+                </div> --}}
+
+                <div class="mb-3">
+                    <label for="postal_code" class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="postal_code" name="postal_code"
+                        value="{{ old('postal_code', $restaurant->postal_code) }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="prefecture" class="form-label">Prefecture</label>
+                    <input type="text" class="form-control" id="prefecture" name="prefecture"
+                        value="{{ old('prefecture', $restaurant->prefecture) }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city"
+                        value="{{ old('city', $restaurant->city) }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="street_address_building" class="form-label">Street Address & Building</label>
+                    <input type="text" class="form-control" id="street_address_building" name="street_address_building"
+                        value="{{ old('street_address_building', $restaurant->street_address_building) }}">
                 </div>
 
                 <div class="row mb-3">
@@ -271,8 +296,8 @@
 
                         <div class="col-md-8 col-8">
                             <div class="time-inputs-container" id="{{ $dayLower }}-time-container">
-                                
-                                @foreach($shifts as $index => $shift)
+
+                                @foreach ($shifts as $index => $shift)
                                     <div class="time-input-row d-flex align-items-center gap-3 mb-2">
                                         <div class="col-auto" style="min-width: 55px;">
                                             <span class="text-muted small shift-label">Shift {{ $index + 1 }}</span>
@@ -290,7 +315,8 @@
                                             <div class="time-picker-wrapper">
                                                 <input type="time" class="form-control time-input"
                                                     name="hours[{{ $day }}][{{ $index }}][close]"
-                                                    value="{{ $shift['close'] ?? '' }}" {{ $isClosed ? 'disabled' : '' }}>
+                                                    value="{{ $shift['close'] ?? '' }}"
+                                                    {{ $isClosed ? 'disabled' : '' }}>
                                                 <i class="fa-regular fa-clock clock-icon"></i>
                                             </div>
                                         </div>
@@ -314,8 +340,7 @@
                             <div class="form-check d-inline-block">
                                 <input class="form-check-input closed-switch" type="checkbox"
                                     name="hours[{{ $day }}][closed]" value="1"
-                                    id="closed-{{ $day }}"
-                                    {{ $isClosed ? 'checked' : '' }}>
+                                    id="closed-{{ $day }}" {{ $isClosed ? 'checked' : '' }}>
                                 <label class="form-check-label text-navy small fw-semibold"
                                     for="closed-{{ $day }}">
                                     Closed
@@ -331,10 +356,12 @@
                         <option value="60" {{ $restaurant->stay_duration == 60 ? 'selected' : '' }}>1 Hour</option>
                         <option value="90" {{ $restaurant->stay_duration == 90 ? 'selected' : '' }}>1.5 Hours</option>
                         <option value="120" {{ $restaurant->stay_duration == 120 ? 'selected' : '' }}>2 Hours</option>
-                        <option value="150" {{ $restaurant->stay_duration == 150 ? 'selected' : '' }}>2.5 Hours</option>
+                        <option value="150" {{ $restaurant->stay_duration == 150 ? 'selected' : '' }}>2.5 Hours
+                        </option>
                         <option value="180" {{ $restaurant->stay_duration == 180 ? 'selected' : '' }}>3 Hours</option>
                     </select>
-                    <small class="text-muted d-block mt-1">Select the default time slot allocated for each customer group.</small>
+                    <small class="text-muted d-block mt-1">Select the default time slot allocated for each customer
+                        group.</small>
                 </div>
             </div>
 
@@ -372,7 +399,8 @@
     </div>
 
     {{-- 💡 削除確認用のBootstrapモーダルを追加 --}}
-    <div class="modal fade" id="deleteShiftModal" tabindex="-1" aria-labelledby="deleteShiftModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteShiftModal" tabindex="-1" aria-labelledby="deleteShiftModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
                 <div class="modal-body p-4 text-center">
@@ -380,10 +408,13 @@
                         <i class="fa-solid fa-circle-exclamation fs-1"></i>
                     </div>
                     <h5 class="fw-bold text-navy mb-2" id="deleteShiftModalLabel">Are you sure?</h5>
-                    <p class="text-muted small mb-4">Do you really want to delete this shift slot? This action cannot be undone.</p>
+                    <p class="text-muted small mb-4">Do you really want to delete this shift slot? This action cannot be
+                        undone.</p>
                     <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-light fw-semibold px-4 py-2" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>
-                        <button type="button" id="confirmDeleteBtn" class="btn btn-danger fw-semibold px-4 py-2" style="border-radius: 8px;">Delete</button>
+                        <button type="button" class="btn btn-light fw-semibold px-4 py-2" data-bs-dismiss="modal"
+                            style="border-radius: 8px;">Cancel</button>
+                        <button type="button" id="confirmDeleteBtn" class="btn btn-danger fw-semibold px-4 py-2"
+                            style="border-radius: 8px;">Delete</button>
                     </div>
                 </div>
             </div>
@@ -417,8 +448,8 @@
                     const container = document.getElementById(`${dayKey}-time-container`);
 
                     const currentRows = container.querySelectorAll('.time-input-row').length;
-                    const nextIndex = currentRows; 
-                    const shiftNumber = currentRows + 1; 
+                    const nextIndex = currentRows;
+                    const shiftNumber = currentRows + 1;
 
                     const newRow = document.createElement('div');
                     newRow.className = 'time-input-row d-flex align-items-center gap-3 mb-2';
@@ -479,7 +510,7 @@
                     // シフトが2つ以上ある場合のみ、削除確認モーダルを表示させる
                     if (allRows.length > 1) {
                         activeRowToDelete = row; // 削除対象を一時退避
-                        deleteModal.show();      // モーダルオープン
+                        deleteModal.show(); // モーダルオープン
                     } else {
                         // 最後の1つの場合はモーダルを出さず、値を空にするクリア処理に留める
                         row.querySelectorAll('input[type="time"]').forEach(input => input.value = '');
@@ -499,7 +530,7 @@
                     reindexShifts(container, dayName);
 
                     activeRowToDelete = null; // リセット
-                    deleteModal.hide();       // モーダルを閉じる
+                    deleteModal.hide(); // モーダルを閉じる
                 }
             });
 

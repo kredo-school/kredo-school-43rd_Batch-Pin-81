@@ -30,6 +30,8 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CategoryFeatureController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -157,12 +159,21 @@ Route::middleware(['auth', 'admin'])
     Route::get('/reservations', [ReservationController::class, 'index'])
       ->name('admin.reservations');
 
-    // Reviews dashboard 本番　154参照
-    // Route::get('/reviews', [AdminReviewController::class, 'index'])
-    //   ->name('admin.reviews');
-    // Show / Hide
-    // Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
-    //   ->name('admin.reviews.toggle');
+    // Reviews dashboard
+    Route::get('/reviews', [AdminReviewController::class, 'index'])
+      ->name('admin.reviews');
+    Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
+      ->name('admin.reviews.toggle');
+
+    // Contact dashboard
+    Route::get('/contacts', [AdminContactController::class, 'index'])
+      ->name('admin.contacts.index');
+    Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])
+      ->name('admin.contacts.reply');
+    Route::patch('/contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])
+      ->name('admin.contacts.status');
+    Route::delete('/contacts/{contact}', [AdminContactController::class, 'destroy'])
+      ->name('admin.contacts.destroy');
 
     // Categories & Features dashboard
     Route::get('/categories-features', [CategoryFeatureController::class, 'index'])
