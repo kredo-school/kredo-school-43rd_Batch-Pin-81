@@ -82,6 +82,7 @@ class RestaurantController extends Controller
             ->with('success', 'Your application has been submitted.');
     }
 
+    
     public function update(Request $request, Restaurant $restaurant)
     {
         $restaurant->update([

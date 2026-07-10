@@ -15,22 +15,36 @@
 
             <form action="{{ route('booking.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="restaurant_id" value="{{$reservation->reservationCode }}">
+
+                @if ($errors->any())
+                    <div class="alert alert-danger py-2 small mb-3">
+                        <ul class="mb-0 ps-3">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label for="date" class="form-label fw-semibold text-navy small">Date</label>
+                        <label for="reservation_date" class="form-label fw-semibold text-navy small">Date</label>
                         <input type="date"
-                            class="form-control custom-input"
-                            id="date"
-                            name="date"
-                            value="{{ old('date', $selectedDate) }}"
+                            class="form-control custom-input @error('reservation_date') is-invalid @enderror"
+                            id="reservation_date"
+                            name="reservation_date"
+                            value="{{ old('reservation_date', $selectedDate) }}"
                             min="{{ date('Y-m-d') }}"
                             required>
+                        @error('reservation_date')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-md-6">
-                        <label for="time" class="form-label fw-semibold text-navy small">Time</label>
-                        <select class="form-select custom-input" id="reservation_time" name="reservation_time" required>
+                        <label for="reservation_time" class="form-label fw-semibold text-navy small">Time</label>
+                        <select class="form-select custom-input @error('reservation_time') is-invalid @enderror" id="reservation_time" name="reservation_time" required>
                             @if($selectedTime)
                                 <option value="{{ $selectedTime }}" selected>
                                     {{ $selectedTime }}
@@ -49,19 +63,25 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('reservation_time')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <label for="guests" class="form-label fw-semibold text-navy small">Number of Guests</label>
-                    <select class="form-select custom-input" id="guests" name="guests" required>
+                    <label for="num_of_people" class="form-label fw-semibold text-navy small">Number of Guests</label>
+                    <select class="form-select custom-input @error('num_of_people') is-invalid @enderror" id="num_of_people" name="num_of_people" required>
                         <option value="" selected disabled>Select guests</option>
                         <option value="1">1 Person</option>
                         <option value="2">2 People</option>
                         <option value="3">3 People</option>
                         <option value="4">4 People</option>
-                        <option value="5+">5+ People</option>
+                        <option value="5">5+ People</option>
                     </select>
+                    @error('num_of_people')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <hr class="text-muted my-4 opacity-25">

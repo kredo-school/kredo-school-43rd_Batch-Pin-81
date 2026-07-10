@@ -15,9 +15,9 @@
 
     <div class="card-custom shadow-sm bg-white" >
         <div class="card-custom-header" style="color: #fff;">
-            <h4 class="mb-1 fw-bold" >Restaurant 1</h4>
+            <h4 class="mb-1 fw-bold" >{{ $reservation->restaurant->restaurant_name ?? 'Restaurant' }}</h4>
             <div class="confirmation-label">
-                Reservation Code: <span class="confirmation-code" style="color: #fff;">{{ $reservation->reservastion_code ?? 'RMED8W7P05I' }}</span>
+                Reservation Code: <span class="confirmation-code" style="color: #fff;">{{ $reservationCode }}</span>
             </div>
         </div>
 
@@ -28,28 +28,28 @@
                     <i class="bi bi-calendar3 me-2 detail-icon fs-5"></i>
                     <div>
                         <div class="detail-label text-secondary">Date</div>
-                        <div class="fw-semibold">{{ $reservation->date ?? 'N/A' }}</div>
+                        <div class="fw-semibold">{{ $reservation->reservation_date }}</div>
                     </div>
                 </div>
                 <div class="col-4 d-flex align-items-start">
                     <i class="bi bi-clock me-2 fs-5 detail-icon"></i>
                     <div>
                         <div class="detail-label text-secondary">Time</div>
-                        <div class="fw-semibold">{{ $reservation->time ?? 'N/A' }}</div>
+                        <div class="fw-semibold">{{ $reservation->reservation_time }}</div>
                     </div>
                 </div>
                 <div class="col-4 d-flex align-items-start">
                     <i class="bi bi-people me-2 detail-icon fs-5"></i>
                     <div>
                         <div class="detail-label text-secondary">Guests</div>
-                        <div class="fw-semibold">{{ $reservation->guests ?? 'N/A' }}</div>
+                        <div class="fw-semibold">{{ $reservation->num_of_people }}</div>
                     </div>
                 </div>
             </div>
             
             <div class="email-alert mb-4 d-flex align-items-center">
                 <i class="bi bi-check2 me-2"></i>
-                <span>A confirmation email has been sent to {{ $reservation->guest_email ?? 'test@gamil.com' }}</span>
+                <span>A confirmation email has been sent to {{ $reservation->user->email }}</span>
             </div>
 
             <div class="whats-next-box mb-4"  style="color: #0a2540;">

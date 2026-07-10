@@ -287,12 +287,13 @@ Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show
   ->name('restaurant.show');
 
 // Display booking form page
+  
+Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
+    ->name('booking.confirmation');
+    
 Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
   ->name('booking.create');
-Route::post('/booking/confirmation', [RestaurantSearchController::class, 'store'])
-  ->name('booking.store');
   
-// Route::get('/booking/confirmation', function () {
-//   return view('customers.restaurants.booking_confirmation');
-// })
-//   ->name('booking.confirmation');
+Route::post('/booking', [BookingController::class, 'store'])
+  ->name('booking.store');
+

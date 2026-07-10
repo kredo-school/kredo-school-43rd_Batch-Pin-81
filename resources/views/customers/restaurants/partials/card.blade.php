@@ -70,6 +70,7 @@
                             Available time
                         </p>
 
+                        {{-- This is for test --}}
                         @php
                             $now = now();
                             $endTime = $now->copy()->addHour();
@@ -140,13 +141,14 @@
 
                     {{-- Features --}}
                     <div class="d-flex flex-wrap gap-1 ">
-                        @foreach ($restaurant->features as $feature)
-                            <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                style="background-color: #e8ebf1; font-size: 10px;">{{ $feature->features_name }}</span>
-                            {{-- Navy --}}
-                            {{-- <span class="badge rounded-pill fw-normal px-2 py-1"
-                              style="background-color: #eff6fd; color:#0a2540; font-size: 10px;">{{ $feature }}</span> --}}
-                        @endforeach
+                        @if($restaurant->features)
+                            @foreach($restaurant->features as $feature)
+                                <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
+                                    style="background-color:#e8ebf1;font-size:10px;">
+                                    {{ $feature->feature_name }}
+                                </span>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>

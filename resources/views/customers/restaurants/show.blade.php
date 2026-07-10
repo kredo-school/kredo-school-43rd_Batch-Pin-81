@@ -84,18 +84,18 @@
                         {{ $restaurant->description }}
                     </p>
 
-                    {{-- Features --}}
-                    <div class="d-flex flex-wrap gap-1 ">
-                        @foreach ($restaurant->features as $feature)
+                {{-- Features --}}
+                <div class="d-flex flex-wrap gap-1 ">
+                    @if($restaurant->features)
+                        @foreach($restaurant->features as $feature)
                             <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                style="background-color: #e8ebf1; font-size: 12px;">
-                                {{ $feature->features_name }}</span>
-                            {{-- Navy --}}
-                            {{-- <span class="badge rounded-pill fw-normal px-2 py-1"
-                          style="background-color: #eff6fd; color:#0a2540; font-size: 10px;">{{ $feature }}</span> --}}
+                                style="background-color:#e8ebf1;font-size:10px;">
+                                {{ $feature->feature_name }}
+                            </span>
                         @endforeach
-                    </div>
+                    @endif
                 </div>
+            </div>
 
                 {{-- MAIN TRACK PILL TABS SYSTEM --}}
                 <div class="custom-tabs-container mb-4">
