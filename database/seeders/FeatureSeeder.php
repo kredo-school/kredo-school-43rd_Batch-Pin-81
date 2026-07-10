@@ -10,18 +10,18 @@ class FeatureSeeder extends Seeder
     public function run(): void
     {
         $features = [
-            ['features_name' => 'English Menu Available'],
-            ['features_name' => 'Credit Cards Accepted'],
-            ['features_name' => 'Cash Only'],
-            ['features_name' => 'Reservations Required'],
-            ['features_name' => 'English Speaking Staff'],
-            ['features_name' => 'Vegetarian Options'],
-            ['features_name' => 'Halal Options'],
+            ['feature_name' => 'English Menu Available'],
+            ['feature_name' => 'Credit Cards Accepted'],
+            ['feature_name' => 'Cash Only'],
+            ['feature_name' => 'Reservations Required'],
+            ['feature_name' => 'English Speaking Staff'],
+            ['feature_name' => 'Vegetarian Options'],
+            ['feature_name' => 'Halal Options'],
         ];
 
         foreach ($features as $feature) {
             Feature::updateOrCreate(
-                ['features_name' => $feature['features_name']],
+                ['feature_name' => $feature['feature_name']],
                 $feature
             );
         }

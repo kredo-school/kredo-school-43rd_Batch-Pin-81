@@ -62,12 +62,12 @@ Route::middleware('auth')->group(function () {
   Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])->name('my_reservations.update');
   Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])->name('my_reservations.notify-late');
   Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])->name('my_reservations.destroy');
-  
+
   // Post
   Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
   Route::post('/restaurants/{restaurant_id}/post', [PostController::class, 'store'])->name('posts.store');
   Route::get('/restaurants/{restaurant_id}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews.index');
-  
+
   // Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
 
@@ -161,8 +161,8 @@ Route::middleware(['auth', 'admin'])
     // Route::get('/reviews', [AdminReviewController::class, 'index'])
     //   ->name('admin.reviews');
     // Show / Hide
-    Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
-      ->name('admin.reviews.toggle');
+    // Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
+    //   ->name('admin.reviews.toggle');
 
     // Categories & Features dashboard
     Route::get('/categories-features', [CategoryFeatureController::class, 'index'])
@@ -248,27 +248,27 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
   Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
-  
-  // Post & Review
-    Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
-    Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
-    
-    // Follow / User Profile
-    Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
-    Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
-    
-    // Like
-    Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])->name('posts.like');
 
-    // Comment
-    Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comments.comment');
-    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-    Route::post('/comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
+  // Post & Review
+  Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
+  Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
+  Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+  Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+  Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+  Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
+
+  // Follow / User Profile
+  Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
+  Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
+
+  // Like
+  Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])->name('posts.like');
+
+  // Comment
+  Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comments.comment');
+  Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+  Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+  Route::post('/comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
 
   // Contact
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
@@ -287,13 +287,12 @@ Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show
   ->name('restaurant.show');
 
 // Display booking form page
-  
+
 Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
-    ->name('booking.confirmation');
-    
+  ->name('booking.confirmation');
+
 Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
   ->name('booking.create');
-  
+
 Route::post('/booking', [BookingController::class, 'store'])
   ->name('booking.store');
-
