@@ -386,7 +386,7 @@
                 <div class="form-group fw-bold" style="color: #0a2540;">
                     <label>Rating <span style="color: red;">*Required</span></label>
                     <div class="rating-group">
-                        @for ($i = 1; $i <= 5; $i++)
+                        @for ($i = 5; $i >= 1; $i--)
                             <input type="radio" name="rating" value="{{ $i }}"
                                 id="star{{ $i }}" class="rating-input">
                             <label for="star{{ $i }}">★</label>

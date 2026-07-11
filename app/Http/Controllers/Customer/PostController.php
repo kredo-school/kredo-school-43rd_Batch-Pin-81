@@ -28,7 +28,7 @@ class PostController extends Controller
 
         $visitedRestaurants = Reservation::where('user_id', $user->id)
             ->where('status', 'Visited')
-            ->whereDate('reservation_date', '>=', $oneWeekAgoStr)
+            //->whereDate('reservation_date', '>=', $oneWeekAgoStr) TEST時のみ無効化
             ->whereDate('reservation_date', '<=', $todayStr)
             ->with('restaurant')
             ->get()
@@ -132,7 +132,7 @@ class PostController extends Controller
         $request->validate([
             'restaurant_id' => 'required|exists:restaurants,id',
             'rating'        => 'required|integer|between:1,5',
-            'description'   => 'required|string|max:1000',
+            'comment'   => 'required|string|max:1000',
             'media'         => 'nullable|array',
             'media.*'       => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,ogg,qt|max:51200',
         ]);
@@ -164,11 +164,13 @@ class PostController extends Controller
             'user_id'       => $user->id,
             'restaurant_id' => $finalRestaurantId,
             'rating'        => $request->rating,
-            'description'   => $request->description,
+            'description'   => $request->comment,
             'image'         => $finalMediaPath,
+            'status'        => 'visible',
         ]);
 
-        return redirect()->route('customer.my_page')->with('success', 'Review posted successfully!');
+        return redirect('/restaurant/' . $finalRestaurantId . '/reviews')
+            ->with('success', 'Review posted successfully!');
     }
 
     /**

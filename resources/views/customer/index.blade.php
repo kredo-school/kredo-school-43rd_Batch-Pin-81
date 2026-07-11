@@ -8,12 +8,9 @@
     <div style="background-color: #fffefc;">
         <div class="container py-3">
             <div class="position-relative rounded-4 overflow-hidden shadow-sm" style="height: 350px;">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d103706.74411130098!2d139.704051!3d35.676192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b8576282355%3A0xc324620e31575651!2z5p2x5Lqs!5e0!3m2!1sen!2sjp!4v1717040000000!5m2!1sen!2sjp&language=en"
-                    class="w-100 h-100 border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+                <div id="map" class="w-100 h-100"></div>
                 <div class="position-absolute bottom-0 start-0 m-3 p-3 bg-dark bg-opacity-75 rounded-3 text-white"
-                    style="max-width: 250px; pointer-events: none;">
+                    style="max-width: 250px; pointer-events: none; z-index: 999;">
                     <h3 class="fw-bold mb-1 h6 text-white">Explore Tokyo</h3>
                     <p class="small m-0 opacity-75" style="font-size: 10px;">Interactive Restaurant Discovery</p>
                 </div>
@@ -122,7 +119,8 @@
                     <h3 class="fw-bold m-0 h5 text-color: #0a2540">All Restaurants</h3>
                     <p class="text-muted small m-0">Browse our complete collection</p>
                 </div>
-                <a href="{{ route('restaurants.view') }}" class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
+                <a href="{{ route('restaurants.view') }}"
+                    class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
             </div>
 
             @php
@@ -224,11 +222,112 @@
             color: #fabede !important;
         }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places">
-        document.addEventListener('DOMContentLoaded', function() {
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(
-                tooltipTriggerEl))
-        });
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places">
     </script>
+
+    <script>
+    let map;
+    let infoWindow;
+    // 💡 マーカーとInfoWindowのコンテンツを紐づけて管理するオブジェクト
+    const markersMap = {}; 
+
+    const restaurants = @json($all_restaurants ?? []);
+
+    function initMap() {
+        let centerLocation = { lat: 35.658581, lng: 139.745433 };
+
+        if (restaurants.length > 0 && restaurants[0].latitude && restaurants[0].longitude) {
+            centerLocation = { 
+                lat: parseFloat(restaurants[0].latitude), 
+                lng: parseFloat(restaurants[0].longitude) 
+            };
+        }
+
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 14, 
+            center: centerLocation,
+            mapTypeControl: false,
+        });
+
+        infoWindow = new google.maps.InfoWindow();
+
+        restaurants.forEach(restaurant => {
+            if (!restaurant.latitude || !restaurant.longitude) return;
+
+            const marker = new google.maps.Marker({
+                map: map,
+                position: { 
+                    lat: parseFloat(restaurant.latitude), 
+                    lng: parseFloat(restaurant.longitude) 
+                },
+                title: restaurant.restaurant_name,
+                animation: google.maps.Animation.DROP 
+            });
+
+            const contentString = `
+                <div style="color: #333; padding: 5px; min-width: 150px;">
+                    <h6 style="font-weight: bold; margin-bottom: 5px;">${restaurant.restaurant_name}</h6>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 5px;">${restaurant.city}</p>
+                    <a href="/restaurants/${restaurant.id}" class="btn btn-sm text-white" style="background-color: #0d233a; font-size: 11px; padding: 2px 8px; display: inline-block;">View Details</a>
+                </div>
+            `;
+
+            // 💡 後から外（HTML）から呼び出せるように、店舗IDをキーにして保存しておく
+            markersMap[restaurant.id] = {
+                marker: marker,
+                content: contentString
+            };
+
+            // ピンをクリックしたときの通常の動き
+            marker.addListener("click", () => {
+                infoWindow.setContent(contentString);
+                infoWindow.open(map, marker);
+            });
+        });
+
+        // 現在地取得処理（既存のまま）
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
+                new google.maps.Marker({
+                    position: pos, map: map, title: "Your Location",
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                });
+            });
+        }
+    }
+
+    // 🚀【新機能】店舗リストがクリックされた時に、地図をスッと移動させる関数
+    function focusRestaurant(id, lat, lng) {
+        if (!map || !lat || !lng) return;
+
+        const targetLatLng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+        // 1. 指定された緯度経度へスッと滑らかに移動（パノラマ移動）
+        map.panTo(targetLatLng);
+        map.setZoom(16); // 少し拡大して見やすくする
+
+        // 2. もしその店舗のピンが存在すれば、自動で吹き出しを開く
+        if (markersMap[id]) {
+            const data = markersMap[id];
+            infoWindow.setContent(data.content);
+            infoWindow.open(map, data.marker);
+            
+            // ピンをちょっと跳ねさせる演出
+            data.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(() => { data.marker.setAnimation(null); }, 1400);
+        }
+
+        // 3. 地図がある場所まで画面を自動スクロールさせる（マップが見えない位置にいる場合用）
+        document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initMap();
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    });
+</script>
 @endsection

@@ -23,7 +23,9 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
     {{-- Font awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
@@ -206,30 +208,31 @@
                 <div class="d-flex align-items-center gap-3 flex-grow-1">
                     <a class="navbar-brand fw-bold text-navy m-0" href="#">Pin+81</a>
 
-                    <div class="bg-white rounded-3 shadow-sm d-flex align-items-center border px-3 py-1 ms-2 custom-search-container"
-                        style="max-width: 380px; flex-grow: 1;">
-                        <div class="d-flex align-items-center flex-grow-1 text-secondary me-2">
-                            <i class="bi bi-search me-2"></i>
-                            <input type="text" class="form-control border-0 bg-transparent shadow-none text-dark p-0"
-                                placeholder="Where do you want to eat?" style="font-size: 0.9rem;">
+                    <form action="{{ route('restaurants.search') }}" method="GET"
+                        class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 450px;">
+                        <div class="bg-white rounded-3 shadow-sm d-flex align-items-center border px-3 py-1 ms-2 custom-search-container"
+                            style="flex-grow: 1; height: 35px;">
+                            <div class="d-flex align-items-center flex-grow-1 text-secondary me-2">
+                                <i class="bi bi-search me-2"></i>
+                                <input type="text" name="keyword" value="{{ request('keyword') }}"
+                                    class="form-control border-0 bg-transparent shadow-none text-dark p-0"
+                                    placeholder="Where do you want to eat?" style="font-size: 0.9rem;">
+                            </div>
                         </div>
-                    </div>
-                    <button class="btn fw-bold custom-search-btn shadow-sm"
-                        style="height: 35px; px-4; border-radius: 8px; font-size: 0.85rem; transition: all 0.2s ease-in-out;">
-                        Search
-                    </button>
+                        <button type="submit" class="btn fw-bold custom-search-btn shadow-sm"
+                            style="height: 35px; padding-left: 1.5rem; padding-right: 1.5rem; border-radius: 8px; font-size: 0.85rem; transition: all 0.2s ease-in-out; white-space: nowrap;">
+                            Search
+                        </button>
+                    </form>
                 </div>
 
                 <div class="d-flex align-items-center gap-3 bg-transparent ms-4">
 
                     @auth
-                        @if(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.users') }}"
-                            class="nav-link text-decoration-none"
-                            style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            data-bs-title="Admin">
+                        @if (auth()->user()->isAdmin())
+                            <a href="{{ route('admin.users') }}" class="nav-link text-decoration-none"
+                                style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom" data-bs-title="Admin">
                                 <i class="bi bi-shield-check fs-5"></i>
                             </a>
                         @endif
@@ -289,19 +292,23 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm border-0 d-md-none sticky-top py-2">
             <div class="container-fluid px-3 d-flex align-items-center gap-1">
 
-                <div class="bg-white rounded-3 shadow-sm d-flex align-items-center border px-2 py-1 custom-search-container"
-                    style="max-width: 180px; width: 180px; height: 35px;">
-                    <div class="d-flex align-items-center flex-grow-1 text-secondary me-1">
-                        <i class="bi bi-search me-1" style="font-size: 0.85rem;"></i>
-                        <input type="text" class="form-control border-0 bg-transparent shadow-none text-dark p-0"
-                            placeholder="Where to eat?" style="font-size: 0.8rem;">
+                <form action="{{ route('restaurants.search') }}" method="GET"
+                    class="d-flex align-items-center gap-1">
+                    <div class="bg-white rounded-3 shadow-sm d-flex align-items-center border px-2 py-1 custom-search-container"
+                        style="max-width: 180px; width: 180px; height: 35px;">
+                        <div class="d-flex align-items-center flex-grow-1 text-secondary me-1">
+                            <i class="bi bi-search me-1" style="font-size: 0.85rem;"></i>
+                            <input type="text" name="keyword" value="{{ request('keyword') }}"
+                                class="form-control border-0 bg-transparent shadow-none text-dark p-0"
+                                placeholder="Where to eat?" style="font-size: 0.8rem;">
+                        </div>
                     </div>
-                </div>
 
-                <button class="btn rounded-3 px-2 py-1 fw-bold custom-search-btn"
-                    style="font-size: 0.75rem; height: 35px; flex-shrink: 0;">
-                    Search
-                </button>
+                    <button type="submit" class="btn rounded-3 px-2 py-1 fw-bold custom-search-btn"
+                        style="font-size: 0.75rem; height: 35px; flex-shrink: 0;">
+                        Search
+                    </button>
+                </form>
 
                 <button class="navbar-toggler border-0 shadow-none p-0 text-navy fs-1 flex-shrink-0 ms-auto"
                     type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuOffcanvas"

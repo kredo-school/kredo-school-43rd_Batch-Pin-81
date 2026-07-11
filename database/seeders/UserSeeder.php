@@ -159,11 +159,11 @@ class UserSeeder extends Seeder
 
         // --- 2. 後から必要になった5名の追加データ (IDも固定化) ---
         $additionalUsers = [
-            ['id' => 15, 'first_name' => 'Motoko', 'last_name' => 'kanazawa', 'username' => 'Pin+81', 'email' => 'motoko12345@gmail.com', 'role_id' => 1],
+            ['id' => 15, 'first_name' => 'Motoko', 'last_name' => 'kanazawa', 'username' => 'Pin+81', 'email' => 'motoko@gmail.com', 'role_id' => 1],
             ['id' => 16, 'first_name' => 'Sara', 'last_name' => 'Park', 'username' => 'sara', 'email' => 'sara@gmail.com', 'role_id' => 1],
             ['id' => 17, 'first_name' => 'Mina', 'last_name' => 'Kim', 'username' => 'mina37', 'email' => 'mina@gmail.com', 'role_id' => 1],
             ['id' => 18, 'first_name' => 'Mari', 'last_name' => 'Ono', 'username' => 'mari5', 'email' => 'mari@gmail.com', 'role_id' => 1],
-            ['id' => 20, 'first_name' => 'Kana', 'last_name' => 'Park', 'username' => null, 'email' => 'kana@gmail.com', 'role_id' => 1],
+            ['id' => 19, 'first_name' => 'Kana', 'last_name' => 'Park', 'username' => null, 'email' => 'kana@gmail.com', 'role_id' => 3],
         ];
 
         foreach ($additionalUsers as $user) {
