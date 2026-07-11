@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use App\Models\Restaurant;
 
 
@@ -17,14 +18,27 @@ class NotificationController extends Controller
             ->paginate(20);
 
         $notifications->getCollection()->transform(function ($notification) {
+            $notificationType = $notification->data['type'] ?? 'restaurant';
 
-            $restaurant = Restaurant::with('user')->find($notification->data['restaurant_id']);
+            if ($notificationType === 'restaurant') {
 
-            $notification->restaurant = $restaurant;
-            $notification->restaurant_status = $restaurant?->status ?? 'pending';
+                $restaurant = Restaurant::with('user')
+                    ->find($notification->data['restaurant_id']);
+
+                $notification->restaurant = $restaurant;
+                $notification->restaurant_status = $restaurant?->status ?? 'pending';
+            }
+
+            if ($notificationType === 'contact') {
+                $contact = Contact::with('user')
+                    ->find($notification->data['contact_id'] ?? null);
+
+                $notification->contact = $contact;
+            }
 
             return $notification;
         });
+            
 
         return view('admin.notifications.index', compact('notifications'));
     }

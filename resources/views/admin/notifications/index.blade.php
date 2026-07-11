@@ -8,54 +8,168 @@
 
 @forelse($notifications as $notification)
 
-<button
-    type="button"
-    class="notification-item"
-    data-bs-toggle="modal"
-    data-bs-target="#notificationModal-{{ $notification->id }}">
+    @switch($notification->data['type'] ?? 'restaurant')
 
-    <div class="notification-content px-4">
+        {{-- =========================
+            Restaurant Notification
+        ========================== --}}
+        @case('restaurant')
 
-        <div class="d-flex justify-content-between align-items-center">
+            <button
+                type="button"
+                class="notification-item"
+                data-bs-toggle="modal"
+                data-bs-target="#restaurantApplicationNotificationModal-{{ $notification->id }}">
 
-            <h5 class="mb-1">
-                {{ $notification->data['restaurant_name'] }}
-            </h5>
+                <div class="notification-content px-4">
 
-            <span class="status-badge ms-auto
-                @if($notification->restaurant_status === \App\Models\Restaurant::STATUS_PENDING)
-                    status-pending
-                @elseif($notification->restaurant_status === \App\Models\Restaurant::STATUS_APPROVED)
-                    status-approved
-                @elseif($notification->restaurant_status === \App\Models\Restaurant::STATUS_REJECTED)
-                    status-rejected
-                @elseif($notification->restaurant_status === \App\Models\Restaurant::STATUS_SUSPENDED)
-                    status-suspended
-                @endif">
-                {{ ucfirst($notification->restaurant_status) }}
-            </span>
+                    <div class="d-flex justify-content-between align-items-center">
 
-        </div>
+                        <h5 class="mb-1">
+                            {{ $notification->data['restaurant_name'] }}
+                        </h5>
 
-        <div class="d-flex justify-content-between align-items-center">
+                        <span class="status-badge ms-auto
+                            @if($notification->restaurant_status === \App\Models\Restaurant::STATUS_PENDING)
+                                status-pending
+                            @elseif($notification->restaurant_status === \App\Models\Restaurant::STATUS_APPROVED)
+                                status-approved
+                            @elseif($notification->restaurant_status === \App\Models\Restaurant::STATUS_REJECTED)
+                                status-rejected
+                            @elseif($notification->restaurant_status === \App\Models\Restaurant::STATUS_SUSPENDED)
+                                status-suspended
+                            @endif">
 
-            <p class="mb-2 text-muted">
-                {{ $notification->data['message'] }}
-            </p>
+                            {{ ucfirst($notification->restaurant_status) }}
 
-            <small class="text-muted">
-                    {{ $notification->created_at->diffForHumans() }}
-            </small>
+                        </span>
 
-        </div>
+                    </div>
 
-    </div>
+                    <div class="d-flex justify-content-between align-items-center">
 
-</button>
+                        <p class="mb-2 text-muted">
+                            {{ $notification->data['message'] }}
+                        </p>
 
-@include('admin.modals.notification_details', [
-    'notification' => $notification
-])
+                        <small class="text-muted">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </button>
+
+            @include('admin.modals.restaurant_application_notification_details', [
+                'notification' => $notification
+            ])
+
+        @break
+
+
+        {{-- =========================
+            Contact Notification
+        ========================== --}}
+        @case('contact')
+
+            <button
+                type="button"
+                class="notification-item"
+                data-bs-toggle="modal"
+                data-bs-target="#contactNotificationModal-{{ $notification->id }}">
+
+                <div class="notification-content px-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-1">
+                            {{ $notification->data['title'] }}
+                        </h5>
+
+                        <span class="status-badge status-pending ms-auto">
+                            New Contact
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <p class="mb-2 text-muted">
+                            {{ $notification->data['user_name'] }} sent a contact message.
+                        </p>
+
+                        <small class="text-muted">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </button>
+
+            @include('admin.modals.contact_notification_details', [
+                'notification' => $notification
+            ])
+
+        @break
+
+
+        {{-- =========================
+            Reservation Notification
+            (Future)
+        ========================== --}}
+        {{-- @case('reservation')
+
+            <button
+                type="button"
+                class="notification-item"
+                data-bs-toggle="modal"
+                data-bs-target="#reservationNotificationModal-{{ $notification->id }}">
+
+                <div class="notification-content px-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-1">
+                            Reservation
+                        </h5>
+
+                        <span class="status-badge status-approved ms-auto">
+                            New Reservation
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <p class="mb-2 text-muted">
+                            {{ $notification->data['customer_name'] }}
+                            booked
+                            {{ $notification->data['restaurant_name'] }}
+                        </p>
+
+                        <small class="text-muted">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </button> --}}
+
+            {{-- Create this modal later --}}
+            {{-- @include('admin.modals.reservation_notification_details', [
+                'notification' => $notification
+            ]) --}}
+
+            {{-- @break --}}
+
+    @endswitch
+
 
 @empty
 
