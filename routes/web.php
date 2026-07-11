@@ -30,11 +30,14 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CategoryFeatureController;
-use App\Http\Controllers\Admin\ContactController as AdminContactController;
-use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\ContactController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+# Main Search (app.blade.php)
+Route::get('/restaurants/search', [RestaurantController::class, 'search'])->name('restaurants.search'); // For everyone
 
 Route::middleware('guest')->group(function () {
 
@@ -160,20 +163,21 @@ Route::middleware(['auth', 'admin'])
     Route::get('/reservations', [ReservationController::class, 'index'])
       ->name('admin.reservations');
 
-    // Reviews dashboard
-    Route::get('/reviews', [AdminReviewController::class, 'index'])
+    // Reviews dashboard 
+    Route::get('/reviews', [ReviewController::class, 'index'])
       ->name('admin.reviews');
-    Route::patch('/reviews/{id}/toggle', [AdminReviewController::class, 'toggleStatus'])
+    // Show / Hide
+    Route::patch('/reviews/{id}/toggle', [ReviewController::class, 'toggleStatus'])
       ->name('admin.reviews.toggle');
 
     // Contact dashboard
-    Route::get('/contacts', [AdminContactController::class, 'index'])
+    Route::get('/contacts', [ContactController::class, 'index'])
       ->name('admin.contacts.index');
-    Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])
+    Route::post('/contacts/{contact}/reply', [ContactController::class, 'reply'])
       ->name('admin.contacts.reply');
-    Route::patch('/contacts/{contact}/status', [AdminContactController::class, 'updateStatus'])
+    Route::patch('/contacts/{contact}/status', [ContactController::class, 'updateStatus'])
       ->name('admin.contacts.status');
-    Route::delete('/contacts/{contact}', [AdminContactController::class, 'destroy'])
+    Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])
       ->name('admin.contacts.destroy');
 
     // Categories & Features dashboard
@@ -250,6 +254,9 @@ Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.set
   Route::patch('/contact/{id}/resolve', [RestaurantContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/contact/{id}', [RestaurantContactController::class, 'destroy'])->name('contact.destroy');
 });
+
+// Restaurant Reviews
+Route::get('/restaurant/{restaurant}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews');
 
 // Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'customer'*/], function () {
