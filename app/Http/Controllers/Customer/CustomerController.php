@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Restaurant;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
     public function index()
     {
-        // 1. 人気エリアのダミーデータ
+        // 1. 人気エリアのデータ（Food Categoriesなどでお使いのものです）
         $chartData = [
             ['name' => 'Ginza', 'count' => '234 restaurants', 'desc' => 'Upscale dining & luxury'],
             ['name' => 'Shibuya', 'count' => '189 restaurants', 'desc' => 'Trendy & vibrant'],
@@ -19,17 +18,52 @@ class CustomerController extends Controller
             ['name' => 'Roppongi', 'count' => '156 restaurants', 'desc' => 'International cuisine']
         ];
 
-        // 2. レストランのダミーデータ
-        $restaurantData = [
-            ['name' => 'Sushi Masaru', 'type' => 'Sushi', 'rating' => '4.8', 'reviews' => '245', 'loc' => 'Ginza, Tokyo', 'tags' => ['English Menu', 'Available Now']],
-            ['name' => 'Ramen Ichiban', 'type' => 'Ramen', 'rating' => '4.6', 'reviews' => '892', 'loc' => 'Shibuya, Tokyo', 'tags' => ['Walk-ins Welcome', 'English Menu']],
-            ['name' => 'Yakitori Tori', 'type' => 'Yakitori', 'rating' => '4.7', 'reviews' => '421', 'loc' => 'Shinjuku, Tokyo', 'tags' => ['Available Now', 'English Speaking']]
-        ];
-
+        // 2. 本物の店舗データをDBから取得
         $all_restaurants = Restaurant::all();
 
-        return view('customer.index', compact('chartData', 'restaurantData', 'all_restaurants'));
+        // 💡 補正ポイント: もしDBが空の場合の保険（マップがエラーを吐かないようダミーを詰める）
+        if ($all_restaurants->isEmpty()) {
+            $all_restaurants = collect([
+                (object)[
+                    'id' => 1,
+                    'restaurant_name' => 'Sushi Masaru',
+                    'city' => 'Ginza, Tokyo',
+                    'latitude' => 35.6724,
+                    'longitude' => 139.7649,
+                    'rating' => '4.8',
+                    'reviews' => '245',
+                    'type' => 'Sushi',
+                    'tags' => ['English Menu', 'Available Now']
+                ],
+                (object)[
+                    'id' => 2,
+                    'restaurant_name' => 'Ramen Ichiban',
+                    'city' => 'Shibuya, Tokyo',
+                    'latitude' => 35.6580,
+                    'longitude' => 139.7016,
+                    'rating' => '4.6',
+                    'reviews' => '892',
+                    'type' => 'Ramen',
+                    'tags' => ['Walk-ins Welcome', 'English Menu']
+                ],
+                (object)[
+                    'id' => 3,
+                    'restaurant_name' => 'Yakitori Tori',
+                    'city' => 'Shinjuku, Tokyo',
+                    'latitude' => 35.6938,
+                    'longitude' => 139.7034,
+                    'rating' => '4.7',
+                    'reviews' => '421',
+                    'type' => 'Yakitori',
+                    'tags' => ['Available Now', 'English Speaking']
+                ]
+            ]);
+        }
+
+        // Bladeで使われなくなった古い配列 $restaurantData は綺麗に削除しました。
+        return view('customer.index', compact('chartData', 'all_restaurants'));
     }
+
     public function search()
     {
         return view('customer.search');

@@ -129,68 +129,86 @@
                     'Ramen Ichiban' => 'https://images.unsplash.com/photo-1681270496598-13c5365730c8?w=600',
                     'Yakitori Tori' => 'https://images.unsplash.com/photo-1601351841251-766245326eee?w=600',
                 ];
-                $allTags = ['Sushi Masaru', 'Ramen Ichiban', 'Yakitori Tori'];
-
-                $displayTags = array_slice($allTags, 0, 3);
+                $defaultImage = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600';
             @endphp
 
             <div class="row row-cols-1 row-cols-md-3 g-3 g-md-4">
-                @foreach ($restaurantData as $res)
-                    <div class="col">
+                @foreach ($all_restaurants->take(3) as $res)
+                    <div class="col" style="cursor: pointer;"
+                        onclick="focusRestaurant('{{ $res->id }}', {{ $res->latitude ?? 0 }}, {{ $res->longitude ?? 0 }}); 
+                      setTimeout(() => { 
+                          let url = '{{ route('restaurant.show', ':id') }}'.replace(':id', '{{ $res->id }}');
+                          window.location.href = url;
+                      }, 1500);">
+
                         <div
                             class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden d-flex justify-content-between flex-row flex-md-column bg-white card-effect">
+
                             <div class="col-4 col-md-12"
-                                style="background: url('{{ $restaurantImages[$res['name']] ?? 'https://via.placeholder.com/300x200' }}') center/cover; min-height: 140px;">
+                                style="background: url('{{ $restaurantImages[$res->restaurant_name] ?? $defaultImage }}') center/cover; min-height: 140px;">
                             </div>
+
                             <div class="card-body p-3 col-8 col-md-12">
 
+                                {{-- Web VER --}}
                                 <div class="d-none d-md-block">
                                     <div class="d-flex justify-content-between align-items-start w-100 mb-1"
                                         style="min-width: 0;">
                                         <div class="flex-grow-1 text-truncate me-2" style="min-width: 0;">
                                             <h6 class="fw-bold card-title m-0 text-truncate" style="color: #0a2540;">
-                                                {{ $res['name'] }}
+                                                {{ $res->restaurant_name }}
                                             </h6>
                                         </div>
                                         <div class="d-flex align-items-center flex-shrink-0 ms-auto pt-0.5"
                                             style="line-height: 1;">
                                             <span class="text-warning me-1"><i class="bi bi-star-fill"></i></span>
-                                            <span class="fw-bold text-dark me-1"
-                                                style="font-size: 13px;">{{ $res['rating'] }}</span>
-                                            <span class="text-muted" style="font-size: 11px;">({{ $res['reviews'] }})</span>
+                                            <span class="fw-bold text-dark me-1" style="font-size: 13px;">
+                                                {{ $res->rating ?? '4.7' }}
+                                            </span>
+                                            <span class="text-muted" style="font-size: 11px;">
+                                                ({{ $res->reviews ?? '120' }})
+                                            </span>
                                         </div>
                                     </div>
-
-                                    <p class="text-muted small mb-1" style="font-size: 12px;">{{ $res['type'] }}</p>
+                                    <p class="text-muted small mb-1" style="font-size: 12px;">
+                                        {{ $res->type ?? 'Restaurant' }}</p>
                                 </div>
 
-
+                                {{-- Mobile VER --}}
                                 <div class="d-block d-md-none">
                                     <h6 class="fw-bold card-title mb-1 text-truncate" style="color: #0a2540;">
-                                        {{ $res['name'] }}
+                                        {{ $res->restaurant_name }}
                                     </h6>
-
                                     <p class="text-muted small mb-1" style="font-size: 12px;">
-                                        {{ $res['type'] }}
+                                        {{ $res->type ?? 'Restaurant' }}
                                     </p>
-
                                     <div class="mb-2" style="line-height: 1;">
                                         <span class="text-warning me-1"><i class="bi bi-star-fill"></i></span>
-                                        <span class="fw-bold me-1" style="font-size: 13px;">{{ $res['rating'] }}</span>
-                                        <span class="text-muted" style="font-size: 11px;">({{ $res['reviews'] }})</span>
+                                        <span class="fw-bold me-1"
+                                            style="font-size: 13px;">{{ $res->rating ?? '4.7' }}</span>
+                                        <span class="text-muted"
+                                            style="font-size: 11px;">({{ $res->reviews ?? '120' }})</span>
                                     </div>
                                 </div>
 
-
+                                {{-- Info od Location --}}
                                 <div class="text-muted small mb-2 d-flex flex-wrap gap-1" style="font-size: 12px;">
-                                    <i class="bi bi-geo-alt me-1 location-icon"></i>{{ $res['loc'] }}
+                                    <i class="bi bi-geo-alt me-1 location-icon"></i>{{ $res->city }}
                                 </div>
 
+                                {{-- Info of Tag --}}
                                 <div class="d-flex flex-wrap gap-1">
-                                    @foreach ($res['tags'] as $t)
+                                    @if (isset($res->tags) && is_array($res->tags))
+                                        @foreach ($res->tags as $t)
+                                            <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
+                                                style="background-color: #e8ebf1; font-size: 10px;">{{ $t }}</span>
+                                        @endforeach
+                                    @else
                                         <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                            style="background-color: #e8ebf1; font-size: 10px;">{{ $t }}</span>
-                                    @endforeach
+                                            style="background-color: #e8ebf1; font-size: 10px;">English Menu</span>
+                                        <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
+                                            style="background-color: #e8ebf1; font-size: 10px;">Available Now</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -199,6 +217,7 @@
             </div>
         </div>
     </div>
+
     <style>
         .card-effect {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -224,49 +243,53 @@
     </style>
 
     <script
-        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places">
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&language=en">
+        // 💡 Laravelの現在の言語設定(enやja)をそのままGoogle Mapsに渡す = 多言語（中国語、韓国語、フランス語、スペイン語、アラビア語など）に対応
+        //src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&language={{ str_replace('_', '-', app()->getLocale()) }}">
     </script>
 
     <script>
-    let map;
-    let infoWindow;
-    // 💡 マーカーとInfoWindowのコンテンツを紐づけて管理するオブジェクト
-    const markersMap = {}; 
+        let map;
+        let infoWindow;
+        const markersMap = {};
 
-    const restaurants = @json($all_restaurants ?? []);
+        const restaurants = @json($all_restaurants ?? []);
 
-    function initMap() {
-        let centerLocation = { lat: 35.658581, lng: 139.745433 };
-
-        if (restaurants.length > 0 && restaurants[0].latitude && restaurants[0].longitude) {
-            centerLocation = { 
-                lat: parseFloat(restaurants[0].latitude), 
-                lng: parseFloat(restaurants[0].longitude) 
+        function initMap() {
+            let centerLocation = {
+                lat: 35.658581,
+                lng: 139.745433
             };
-        }
 
-        map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 14, 
-            center: centerLocation,
-            mapTypeControl: false,
-        });
+            if (restaurants.length > 0 && restaurants[0].latitude && restaurants[0].longitude) {
+                centerLocation = {
+                    lat: parseFloat(restaurants[0].latitude),
+                    lng: parseFloat(restaurants[0].longitude)
+                };
+            }
 
-        infoWindow = new google.maps.InfoWindow();
-
-        restaurants.forEach(restaurant => {
-            if (!restaurant.latitude || !restaurant.longitude) return;
-
-            const marker = new google.maps.Marker({
-                map: map,
-                position: { 
-                    lat: parseFloat(restaurant.latitude), 
-                    lng: parseFloat(restaurant.longitude) 
-                },
-                title: restaurant.restaurant_name,
-                animation: google.maps.Animation.DROP 
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 14,
+                center: centerLocation,
+                mapTypeControl: false,
             });
 
-            const contentString = `
+            infoWindow = new google.maps.InfoWindow();
+
+            restaurants.forEach(restaurant => {
+                if (!restaurant.latitude || !restaurant.longitude) return;
+
+                const marker = new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: parseFloat(restaurant.latitude),
+                        lng: parseFloat(restaurant.longitude)
+                    },
+                    title: restaurant.restaurant_name,
+                    animation: google.maps.Animation.DROP
+                });
+
+                const contentString = `
                 <div style="color: #333; padding: 5px; min-width: 150px;">
                     <h6 style="font-weight: bold; margin-bottom: 5px;">${restaurant.restaurant_name}</h6>
                     <p style="font-size: 12px; color: #666; margin-bottom: 5px;">${restaurant.city}</p>
@@ -274,60 +297,74 @@
                 </div>
             `;
 
-            // 💡 後から外（HTML）から呼び出せるように、店舗IDをキーにして保存しておく
-            markersMap[restaurant.id] = {
-                marker: marker,
-                content: contentString
-            };
+                // 💡 後から外（HTML）から呼び出せるように、店舗IDをキーにして保存しておく
+                markersMap[String(restaurant.id)] = {
+                    marker: marker,
+                    content: contentString
+                };
 
-            // ピンをクリックしたときの通常の動き
-            marker.addListener("click", () => {
-                infoWindow.setContent(contentString);
-                infoWindow.open(map, marker);
-            });
-        });
-
-        // 現在地取得処理（既存のまま）
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
-                new google.maps.Marker({
-                    position: pos, map: map, title: "Your Location",
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                // ピンをクリックしたときの通常の動き
+                marker.addListener("click", () => {
+                    infoWindow.setContent(contentString);
+                    infoWindow.open(map, marker);
                 });
             });
-        }
-    }
 
-    // 🚀【新機能】店舗リストがクリックされた時に、地図をスッと移動させる関数
-    function focusRestaurant(id, lat, lng) {
-        if (!map || !lat || !lng) return;
-
-        const targetLatLng = { lat: parseFloat(lat), lng: parseFloat(lng) };
-
-        // 1. 指定された緯度経度へスッと滑らかに移動（パノラマ移動）
-        map.panTo(targetLatLng);
-        map.setZoom(16); // 少し拡大して見やすくする
-
-        // 2. もしその店舗のピンが存在すれば、自動で吹き出しを開く
-        if (markersMap[id]) {
-            const data = markersMap[id];
-            infoWindow.setContent(data.content);
-            infoWindow.open(map, data.marker);
-            
-            // ピンをちょっと跳ねさせる演出
-            data.marker.setAnimation(google.maps.Animation.BOUNCE);
-            setTimeout(() => { data.marker.setAnimation(null); }, 1400);
+            // 現在地取得処理（既存のまま）
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: "Your Location",
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    });
+                });
+            }
         }
 
-        // 3. 地図がある場所まで画面を自動スクロールさせる（マップが見えない位置にいる場合用）
-        document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+        // 🚀【新機能】店舗リストがクリックされた時に、地図をスッと移動させる関数
+        function focusRestaurant(id, lat, lng) {
+            if (!map || !lat || !lng) return;
 
-    document.addEventListener("DOMContentLoaded", () => {
-        initMap();
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-    });
-</script>
+            const targetLatLng = {
+                lat: parseFloat(lat),
+                lng: parseFloat(lng)
+            };
+
+            // 1. 指定された緯度経度へスッと滑らかに移動（パノラマ移動）
+            map.panTo(targetLatLng);
+            map.setZoom(16); // 少し拡大して見やすくする
+
+            // 2. もしその店舗のピンが存在すれば、自動で吹き出しを開く
+            const stringId = String(id);
+            if (markersMap[stringId]) {
+                const data = markersMap[stringId];
+                infoWindow.setContent(data.content);
+                infoWindow.open(map, data.marker);
+
+                data.marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(() => {
+                    data.marker.setAnimation(null);
+                }, 1400);
+            }
+
+            // 3. 地図がある場所まで画面を自動スクロールさせる（マップが見えない位置にいる場合用）
+            document.getElementById('map').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initMap();
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(
+                tooltipTriggerEl))
+        });
+    </script>
 @endsection
