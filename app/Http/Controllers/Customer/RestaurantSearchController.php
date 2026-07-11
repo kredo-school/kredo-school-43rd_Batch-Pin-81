@@ -16,7 +16,7 @@ class RestaurantSearchController extends Controller
             'photos',
             'categories',
             'features'
-        ])->withAvg('posts', 'rating')->get();
+        ])->approved()->withAvg('posts', 'rating')->get(); // Approvedされたレストランのみを取得するために->approved()を追加ーリカコ
 
 
         return view('customers.restaurants.index', compact('restaurants'));
@@ -24,6 +24,7 @@ class RestaurantSearchController extends Controller
 
     public function show(Restaurant $restaurant)
     {
+        // abort_unless($restaurant->status === Restaurant::STATUS_APPROVED, 404); // レストランがApprovedされていない場合、万が一カスタマーがURLからレストランページへアクセスしようとした場合は404エラーを返す
 
         $restaurant->load([
             'photos',
