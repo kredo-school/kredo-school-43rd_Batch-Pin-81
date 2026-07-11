@@ -48,10 +48,28 @@
                       class="form-control mb-2 input-box"
                       placeholder="Description">{{ $restaurant->description }}</textarea>
 
-            <input type="text" name="address"
-                  value="{{ $restaurant->address }}"
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="postal_code"
+                          value="{{ $restaurant->postal_code }}"
+                          class="form-control mb-2 input-box"
+                          placeholder="Postal Code">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="prefecture"
+                          value="{{ $restaurant->prefecture }}"
+                          class="form-control mb-2 input-box"
+                          placeholder="Prefecture">
+                </div>
+            </div>
+            <input type="text" name="city"
+                  value="{{ $restaurant->city }}"
                   class="form-control mb-2 input-box"
-                  placeholder="Address">
+                  placeholder="City">
+            <input type="text" name="street_address_building"
+                  value="{{ $restaurant->street_address_building }}"
+                  class="form-control mb-2 input-box"
+                  placeholder="Street Address & Building">
 
             <input type="text" name="phone_number"
                   value="{{ $restaurant->phone_number }}"

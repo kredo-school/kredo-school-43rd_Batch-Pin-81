@@ -102,20 +102,20 @@
 
 
                 <a href="{{ route('restaurant.profile.edit') }}"
-                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.info') ? '' : 'bg-transparent text-white-50' }}"
-                    style="{{ request()->routeIs('restaurant.info') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
+                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.profile.*') ? '' : 'bg-transparent text-white-50' }}"
+                    style="{{ request()->routeIs('restaurant.profile.*') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-solid fa-circle-info me-3" style="width: 20px;"></i>Restaurant information
                 </a>
 
                 <a href="{{ route('restaurant.menu.index') }}"
-                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.menu') ? '' : 'bg-transparent text-white-50' }}"
-                    style="{{ request()->routeIs('restaurant.menu') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
+                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.menu.*') ? '' : 'bg-transparent text-white-50' }}"
+                    style="{{ request()->routeIs('restaurant.menu.*') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-solid fa-bars me-3" style="width: 20px;"></i>Menu
                 </a>
 
                 <a href="{{ route('restaurant.photos.index') }}"
-                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.photos') ? '' : 'bg-transparent text-white-50' }}"
-                    style="{{ request()->routeIs('restaurant.photos') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
+                    class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.photos.*') ? '' : 'bg-transparent text-white-50' }}"
+                    style="{{ request()->routeIs('restaurant.photos.*') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
                     <i class="fa-regular fa-image me-3" style="width: 20px;"></i>Photos
                 </a>
 

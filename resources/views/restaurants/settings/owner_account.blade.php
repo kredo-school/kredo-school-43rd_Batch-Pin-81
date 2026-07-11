@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.restaurant')
+
 
 @section('title', 'Restaurant Owner Account')
 
@@ -317,8 +318,7 @@
                     <div class="col-md-12">
                         <label class="form-label small fw-bold" style="color: #0f2c59;">Account Holder Name
                             (Katakana)</label>
-                        <input type="text" name="account_holder_name" class="form-control"
-                            placeholder="Full Name"
+                        <input type="text" name="account_holder_name" class="form-control" placeholder="Full Name"
                             value="{{ old('account_holder_name', $restaurant->account_holder_name ?? '') }}"
                             style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
                     </div>

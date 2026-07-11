@@ -77,9 +77,10 @@ class Restaurant extends Model
         return $this->hasMany(Photo::class);
     }
 
+    // reservation::をmenuに変えた
     public function menus()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Menu::class);
     }
 
     /**
