@@ -29,7 +29,7 @@ class RegisterController extends Controller
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
-            'password' => $validated['password'], //Hash::make($validated['password']),
+            'password' => Hash::make($validated['password']),
             'avatar' => null,
             'introduction' => null,
             'role_id' => 1,

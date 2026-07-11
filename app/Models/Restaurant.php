@@ -40,6 +40,8 @@ class Restaurant extends Model
         'capacity',
         'stay_duration',
         'operating_hours',
+        'latitude',
+        'longitude',
         'status',
     ];
 

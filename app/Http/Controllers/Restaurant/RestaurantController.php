@@ -35,6 +35,20 @@ class RestaurantController extends Controller
         $licensePath = $request->file('business_license')
             ->store('business_licenses', 'public');
 
+        $fullAddress = $validated['prefecture'] . ' ' . $validated['city'] . ' ' . $validated['street_address_building'];
+        $apiKey = config('services.google_maps.api_key');
+
+        $lat = null;
+        $lng = null;
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($fullAddress) . "&key=" . $apiKey;
+        $response = file_get_contents($url);
+        $geoData = json_decode($response, true);
+
+        if ($geoData['status'] === 'OK') {
+            $lat = $geoData['results'][0]['geometry']['location']['lat'];
+            $lng = $geoData['results'][0]['geometry']['location']['lng'];
+        }
+
         $restaurant = Restaurant::create([
             'user_id' => Auth::id(),
             'restaurant_name' => $validated['restaurant_name'],
@@ -45,6 +59,8 @@ class RestaurantController extends Controller
             'phone_number' => $validated['phone_number'] ?? null,
             'description' => $validated['description'] ?? null,
             'business_license' => $licensePath,
+            'latitude' => $lat,
+            'longitude' => $lng,
             'status' => Restaurant::STATUS_PENDING,
         ]);
 
@@ -82,7 +98,7 @@ class RestaurantController extends Controller
             ->with('success', 'Your application has been submitted.');
     }
 
-    
+
     public function update(Request $request, Restaurant $restaurant)
     {
         $restaurant->update([
@@ -137,5 +153,44 @@ class RestaurantController extends Controller
 
         // 店舗用のレビューBlade（restaurants/reviews.blade.php）にデータを渡して表示
         return view('restaurants.reviews', compact('reviews', 'stats'));
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $query = Restaurant::query();
+
+        // 承認済みの店舗のみ検索対象にする場合は、必要に応じて以下のスコープ等を追加
+        // $query->where('status', Restaurant::STATUS_APPROVED);
+
+        if (!empty($keyword)) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('restaurant_name', 'LIKE', "%{$keyword}%")
+                    ->orWhere('prefecture', 'LIKE', "%{$keyword}%")
+                    ->orWhere('city', 'LIKE', "%{$keyword}%")
+                    ->orWhere('street_address_building', 'LIKE', "%{$keyword}%")
+                    ->orWhere('description', 'LIKE', "%{$keyword}%");
+
+                // カテゴリ（多対多、または1対多のリレーション）がある場合
+                // ※もしCategoryモデル側との関連付けが未実装なら、一旦ここをコメントアウトするか削除してください
+                // if (method_exists(Restaurant::class, 'category') || method_exists(Restaurant::class, 'categories')) {
+                //     $q->orWhereHas('category', function($c) use ($keyword) {
+                //         $c->where('name', 'LIKE', "%{$keyword}%");
+                //     });
+                // }
+            });
+        }
+
+        $restaurants = $query->paginate(12);
+
+        return view('restaurants.search', compact('restaurants', 'keyword'));
+    }
+
+    public function index()
+    {
+        $all_restaurants = Restaurant::all();
+
+        return view('customer.index', compact('all_restaurants'));
     }
 }

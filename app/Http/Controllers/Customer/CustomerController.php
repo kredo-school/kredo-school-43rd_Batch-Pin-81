@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Restaurant;
 
 class CustomerController extends Controller
 {
@@ -25,9 +26,10 @@ class CustomerController extends Controller
             ['name' => 'Yakitori Tori', 'type' => 'Yakitori', 'rating' => '4.7', 'reviews' => '421', 'loc' => 'Shinjuku, Tokyo', 'tags' => ['Available Now', 'English Speaking']]
         ];
 
-        return view('customer.index', compact('chartData', 'restaurantData'));
-    }
+        $all_restaurants = Restaurant::all();
 
+        return view('customer.index', compact('chartData', 'restaurantData', 'all_restaurants'));
+    }
     public function search()
     {
         return view('customer.search');

@@ -35,6 +35,9 @@ use App\Http\Controllers\Admin\ReviewController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+# Main Search (app.blade.php)
+Route::get('/restaurants/search', [RestaurantController::class, 'search'])->name('restaurants.search'); // For everyone
+
 Route::middleware('guest')->group(function () {
 
   Route::get('/register', [RegisterController::class, 'create'])
