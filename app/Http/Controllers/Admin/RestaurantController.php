@@ -67,7 +67,7 @@ class RestaurantController extends Controller
         $restaurant->user->notify(
             new RestaurantApplicationStatus(
                 'rejected',
-                $restaurant->restaurant_name
+                $restaurant
             )
         );
 

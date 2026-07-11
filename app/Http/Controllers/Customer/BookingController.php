@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Restaurant;
+use App\Models\User;
+use App\Notifications\ReservationSubmittedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
+
 
     public function create(Request $request, Restaurant $restaurant)
     {
@@ -34,27 +37,55 @@ class BookingController extends Controller
             'reservation_date' => ['required', 'date'],
             'reservation_time' => ['required'],
             'num_of_people' => ['required', 'integer', 'min:1'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'requests' => ['nullable', 'string'],
         ]);
 
-        do {
-            $reservationCode = strtoupper(Str::random(10));
-        } while (Reservation::where('reservation_code', $reservationCode)->exists());
-        
-        
+        $guestNameParts = preg_split('/\s+/', trim($validated['name']), 2);
+        $firstName = $guestNameParts[0] ?? 'Guest';
+        $lastName = $guestNameParts[1] ?? '';
+
+        $user = auth()->user() ?? User::firstOrCreate(
+            ['email' => $validated['email']],
+            [
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'password' => bcrypt(Str::random(32)),
+                'role_id' => User::ROLE_USER,
+            ]
+        );
+
         $reservation = Reservation::create([
-            'user_id' => auth()->check() ? auth()->id() : null,
+            'user_id' => $user->id,
             'restaurant_id' => $validated['restaurant_id'],
             'reservation_date' => $validated['reservation_date'],
             'reservation_time' => $validated['reservation_time'],
             'num_of_people' => $validated['num_of_people'],
-            'reservation_code' => $reservationCode,
         ]);
+
+        $reservation->update([
+            'reservation_code' => Reservation::formatReservationCode($reservation->id),
+        ]);
+
+         // 👇 Send the notification here
+        {        
+            $restaurantOwner = $reservation->restaurant->user;
+
+            if ($restaurantOwner) {
+                $restaurantOwner->notify(
+                    new ReservationSubmittedNotification($reservation)
+                );
+            }
+        }
 
         return redirect()->route('booking.confirmation', ['reservation' => $reservation]);
     }
 
     public function confirmation(Reservation $reservation)
     {
+
         return view('customers.restaurants.booking_confirmation', compact('reservation'));
     }
 }

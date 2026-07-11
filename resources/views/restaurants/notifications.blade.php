@@ -83,6 +83,25 @@
                     @endforeach 
                 --}}
 
+                {{-- For test --}}
+                @foreach($notifications as $notification)
+                <div class="card shadow-sm rounded-4 p-3 border-unread custom-notification-card bg-white">
+                    <div class="d-flex align-items-start justify-content-between w-100">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3 shadow-sm border" style="width: 44px; height: 44px; min-width: 44px;">
+                                <i class="fa-regular fa-calendar text-navy" style="font-size: 1.1rem;"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1 text-navy" style="font-size: 0.95rem;">New Reservation</h6>
+                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">John Smith booked a table for 2 guests at 19:00</p>
+                                <span class="text-muted small" style="font-size: 0.75rem;">5 minutes ago</span>
+                            </div>
+                        </div>
+                        <span class="badge badge-new fw-bold px-2 py-1 rounded-3">New</span>
+                    </div>
+                </div>
+                @endforeach
+
             </div>
         </div>
     </div>
