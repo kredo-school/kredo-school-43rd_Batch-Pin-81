@@ -17,7 +17,7 @@
         <div class="card-custom-header" style="color: #fff;">
             <h4 class="mb-1 fw-bold" >{{ $reservation->restaurant->restaurant_name ?? 'Restaurant' }}</h4>
             <div class="confirmation-label">
-                Reservation Code: <span class="confirmation-code" style="color: #fff;">{{ $reservationCode }}</span>
+                Reservation Code: <span class="confirmation-code" style="color: #fff;">{{ $reservation->reservation_code }}</span>
             </div>
         </div>
 
@@ -63,7 +63,7 @@
 
             <div class="row g-3">
                 <div class="col-sm-6">
-                    <a href="#" class="btn btn-home w-100 fw-semibold custom-btn-b">
+                    <a href="{{ route('customer.search') }}" class="btn btn-home w-100 fw-semibold custom-btn-b">
                         <i class="fa-solid fa-chevron-left"></i>
                         Back to Home
                     </a>

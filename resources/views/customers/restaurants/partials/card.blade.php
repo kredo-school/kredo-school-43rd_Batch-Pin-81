@@ -50,7 +50,7 @@
                     {{-- Category --}}
                     <div class="d-flex justify-content-start category">
                         @foreach ($restaurant->categories as $category)
-                            <span>{{ $category->categories_name }}</span>
+                            <span>{{ $category->category_name }}</span>
                         @endforeach
                     </div>
 
@@ -141,14 +141,15 @@
 
                     {{-- Features --}}
                     <div class="d-flex flex-wrap gap-1 ">
-                        @if($restaurant->features)
+                        @if($restaurant->features && $restaurant->features->isNotEmpty())
                             @foreach($restaurant->features as $feature)
                                 <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                    style="background-color:#e8ebf1;font-size:10px;">
+                                    style="background-color: #e8ebf1; font-size: 10px;">
                                     {{ $feature->feature_name }}
                                 </span>
                             @endforeach
                         @endif
+                        
                     </div>
                 </div>
             </div>

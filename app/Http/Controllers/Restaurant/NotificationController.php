@@ -9,6 +9,11 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        return view('restaurants.notifications');
+         $notifications = auth()->user()
+        ->notifications()
+        ->latest()
+        ->paginate(20);
+
+        return view('restaurants.notifications', compact('notifications'));
     }
 }

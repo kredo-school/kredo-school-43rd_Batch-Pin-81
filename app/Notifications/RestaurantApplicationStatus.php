@@ -32,7 +32,7 @@ class RestaurantApplicationStatus extends Notification
             return (new MailMessage)
                 ->subject('Restaurant Application Approved')
                 ->greeting('Congratulations!')
-                ->line("Your restaurant '{$this->restaurantName}' has been approved.")
+                ->line("Your restaurant '{$this->restaurant->restaurant_name}' has been approved.")
                 ->line('You can now log in and start managing your restaurant.')
                 ->action('View Dashboard', url('/restaurant/dashboard'))
                 ->line('Thank you for joining Pin+81!');
@@ -41,7 +41,7 @@ class RestaurantApplicationStatus extends Notification
         return (new MailMessage)
             ->subject('Restaurant Application Rejected')
             ->greeting('Hello,')
-            ->line("We're sorry, but your restaurant '{$this->restaurantName}' was not approved.")
+            ->line("We're sorry, but your restaurant '{$this->restaurant->restaurant_name}' was not approved.")
             ->line('If you believe this is a mistake or would like to reapply, please contact us.')
             ->action('Contact Support', url('/contact'))
             ->line('Thank you for your interest in Pin+81.');

@@ -13,11 +13,11 @@ class CategoryFeatureController extends Controller
   public function index()
   {
     $categories = Category::withCount('restaurants')
-      ->orderBy('categories_name')
+      ->orderBy('category_name')
       ->get();
 
     $features = Feature::withCount('restaurants')
-      ->orderBy('features_name')
+      ->orderBy('feature_name')
       ->get();
 
     return view('admin.categories_features.index', compact('categories', 'features'));
@@ -26,11 +26,11 @@ class CategoryFeatureController extends Controller
   public function storeCategory(Request $request)
   {
     $validated = $request->validate([
-      'categories_name' => [
+      'category_name' => [
         'required',
         'string',
         'max:255',
-        Rule::unique('categories', 'categories_name')->whereNull('deleted_at'),
+        Rule::unique('categories', 'category_name')->whereNull('deleted_at'),
       ],
     ]);
 
@@ -42,11 +42,11 @@ class CategoryFeatureController extends Controller
   public function updateCategory(Request $request, Category $category)
   {
     $validated = $request->validate([
-      'categories_name' => [
+      'category_name' => [
         'required',
         'string',
         'max:255',
-        Rule::unique('categories', 'categories_name')
+        Rule::unique('categories', 'category_name')
           ->ignore($category->id)
           ->whereNull('deleted_at'),
       ],
@@ -67,11 +67,11 @@ class CategoryFeatureController extends Controller
   public function storeFeature(Request $request)
   {
     $validated = $request->validate([
-      'features_name' => [
+      'feature_name' => [
         'required',
         'string',
         'max:255',
-        Rule::unique('features', 'features_name')->whereNull('deleted_at'),
+        Rule::unique('features', 'feature_name')->whereNull('deleted_at'),
       ],
     ]);
 
@@ -83,11 +83,11 @@ class CategoryFeatureController extends Controller
   public function updateFeature(Request $request, Feature $feature)
   {
     $validated = $request->validate([
-      'features_name' => [
+      'feature_name' => [
         'required',
         'string',
         'max:255',
-        Rule::unique('features', 'features_name')
+        Rule::unique('features', 'feature_name')
           ->ignore($feature->id)
           ->whereNull('deleted_at'),
       ],

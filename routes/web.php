@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CategoryFeatureController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\ContactController;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -65,17 +66,19 @@ Route::middleware('auth')->group(function () {
   Route::put('/my_reservations/{reservation}', [MyReservationController::class, 'update'])->name('my_reservations.update');
   Route::post('/my_reservations/{reservation}/notify-late', [MyReservationController::class, 'notifyLate'])->name('my_reservations.notify-late');
   Route::delete('/my_reservations/{reservation}', [MyReservationController::class, 'destroy'])->name('my_reservations.destroy');
-  
+
   // Post
   Route::get('/my_page', [PostController::class, 'myPage'])->name('customer.mypage');
   Route::post('/restaurants/{restaurant_id}/post', [PostController::class, 'store'])->name('posts.store');
   Route::get('/restaurants/{restaurant_id}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews.index');
-  
+
   // Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('customer.profile');
 
   //Contact
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
+  Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
+  Route::patch('/contact/{contact}/resolve', [CustomerContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/customer/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('customer.contact.destroy');
 
   // Register page for restaurant
@@ -155,17 +158,26 @@ Route::middleware(['auth', 'admin'])
     Route::delete('/restaurants/{restaurant}', [AdminRestaurantController::class, 'destroy'])
       ->name('admin.restaurants.destroy');
 
-
     // Reservations dashboard
     Route::get('/reservations', [ReservationController::class, 'index'])
       ->name('admin.reservations');
 
-    // Reviews dashboard 本番　154参照
+    // Reviews dashboard 
     Route::get('/reviews', [ReviewController::class, 'index'])
       ->name('admin.reviews');
     // Show / Hide
     Route::patch('/reviews/{id}/toggle', [ReviewController::class, 'toggleStatus'])
       ->name('admin.reviews.toggle');
+
+    // Contact dashboard
+    Route::get('/contacts', [ContactController::class, 'index'])
+      ->name('admin.contacts.index');
+    Route::post('/contacts/{contact}/reply', [ContactController::class, 'reply'])
+      ->name('admin.contacts.reply');
+    Route::patch('/contacts/{contact}/status', [ContactController::class, 'updateStatus'])
+      ->name('admin.contacts.status');
+    Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])
+      ->name('admin.contacts.destroy');
 
     // Categories & Features dashboard
     Route::get('/categories-features', [CategoryFeatureController::class, 'index'])
@@ -221,12 +233,15 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
 
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
 
+  // Reviews
+  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
+
   // Profile
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
 });
 
-Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
+Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
   Route::get('owner_account', [OwnerAccountController::class, 'edit'])->name('owner_account.edit');
   Route::any('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
   Route::post('owner_account/verify', [OwnerAccountController::class, 'verifyCode'])->name('owner_account.verify');
@@ -235,11 +250,8 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::post('/contact', [RestaurantContactController::class, 'send'])->name('contact.send');
   Route::get('/contact/{id}', [RestaurantContactController::class, 'show'])->name('contact.show');
   Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'reply'])->name('contact.reply');
+  Route::patch('/contact/{id}/resolve', [RestaurantContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/contact/{id}', [RestaurantContactController::class, 'destroy'])->name('contact.destroy');
-});
-
-Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(function () {
-  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
 });
 
 // Restaurant Reviews
@@ -254,31 +266,32 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
   Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
   Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
-  
-  // Post & Review
-    Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
-    Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
-    
-    // Follow / User Profile
-    Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
-    Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
-    
-    // Like
-    Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])->name('posts.like');
 
-    // Comment
-    Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comments.comment');
-    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-    Route::post('/comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
+  // Post & Review
+  Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
+  Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
+  Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+  Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+  Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+  Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
+
+  // Follow / User Profile
+  Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
+  Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
+
+  // Like
+  Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])->name('posts.like');
+
+  // Comment
+  Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->name('comments.comment');
+  Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+  Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+  Route::post('/comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
 
   // Contact
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
+  Route::patch('/contact/{contact}/resolve', [CustomerContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('contact.destroy');
 
   // Notification
@@ -293,13 +306,12 @@ Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show
   ->name('restaurant.show');
 
 // Display booking form page
-  
+
 Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
-    ->name('booking.confirmation');
-    
+  ->name('booking.confirmation');
+
 Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
   ->name('booking.create');
-  
+
 Route::post('/booking', [BookingController::class, 'store'])
   ->name('booking.store');
-

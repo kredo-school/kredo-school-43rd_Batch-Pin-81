@@ -108,7 +108,7 @@
                                     <tr>
                                         <td>#{{ $category->id }}</td>
                                         <td>
-                                            <span class="item-badge">{{ $category->categories_name }}</span>
+                                            <span class="item-badge">{{ $category->category_name }}</span>
                                         </td>
                                         <td>{{ $category->restaurants_count }}</td>
                                         <td class="text-end">
@@ -167,7 +167,7 @@
                                     <tr>
                                         <td>#{{ $feature->id }}</td>
                                         <td>
-                                            <span class="item-badge">{{ $feature->features_name }}</span>
+                                            <span class="item-badge">{{ $feature->feature_name }}</span>
                                         </td>
                                         <td>{{ $feature->restaurants_count }}</td>
                                         <td class="text-end">
@@ -209,8 +209,8 @@
                     </div>
                     <div class="modal-body">
                         <label class="form-label fw-bold">Category Name</label>
-                        <input type="text" name="categories_name" class="form-control" placeholder="e.g. Japanese"
-                            value="{{ old('categories_name') }}" required>
+                        <input type="text" name="category_name" class="form-control" placeholder="e.g. Japanese"
+                            value="{{ old('category_name') }}" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary rounded-pill"
@@ -234,8 +234,8 @@
                     </div>
                     <div class="modal-body">
                         <label class="form-label fw-bold">Feature Name</label>
-                        <input type="text" name="features_name" class="form-control"
-                            placeholder="e.g. Vegan Friendly" value="{{ old('features_name') }}" required>
+                        <input type="text" name="feature_name" class="form-control" placeholder="e.g. Vegan Friendly"
+                            value="{{ old('feature_name') }}" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary rounded-pill"
@@ -260,8 +260,8 @@
                         </div>
                         <div class="modal-body">
                             <label class="form-label fw-bold">Category Name</label>
-                            <input type="text" name="categories_name" class="form-control"
-                                value="{{ old('categories_name', $category->categories_name) }}" required>
+                            <input type="text" name="category_name" class="form-control"
+                                value="{{ old('category_name', $category->category_name) }}" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill"
@@ -284,7 +284,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to delete <strong>{{ $category->categories_name }}</strong>?
+                            Are you sure you want to delete <strong>{{ $category->category_name }}</strong>?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill"
@@ -310,8 +310,8 @@
                         </div>
                         <div class="modal-body">
                             <label class="form-label fw-bold">Feature Name</label>
-                            <input type="text" name="features_name" class="form-control"
-                                value="{{ old('features_name', $feature->features_name) }}" required>
+                            <input type="text" name="feature_name" class="form-control"
+                                value="{{ old('feature_name', $feature->feature_name) }}" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill"
@@ -334,7 +334,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to delete <strong>{{ $feature->features_name }}</strong>?
+                            Are you sure you want to delete <strong>{{ $feature->feature_name }}</strong>?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill"
