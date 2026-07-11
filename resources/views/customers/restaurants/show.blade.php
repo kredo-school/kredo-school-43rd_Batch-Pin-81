@@ -15,14 +15,15 @@
                     class="carousel slide position-relative w-100 bg-black rounded-4 overflow-hidden mb-4 shadow-sm"
                     data-bs-touch="true" data-bs-interval="false">
 
-                    @if ($restaurant->photos->isNotEmpty())
-
+                    @if ($restaurant->photos && $restaurant->photos->isNotEmpty())
                         <div class="carousel-inner">
                             @foreach ($restaurant->photos as $photo)
                                 <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                    <div class="d-flex justify-content-center align-items-center image-container">
-                                        <img src="{{ asset('storage/' . $photo->photo_path) }}" class="restaurant-image"
-                                            alt="Restaurant Photo">
+                                    <div class="d-flex justify-content-center align-items-center image-container"
+                                        style="background-color: #000; min-height: 400px; max-height: 500px; overflow: hidden;">
+                                        <img src="{{ asset('storage/' . $photo->photo_path) }}"
+                                            class="d-block w-100 h-100 object-fit-cover restaurant-image"
+                                            alt="{{ $restaurant->restaurant_name }} Photo">
                                     </div>
                                 </div>
                             @endforeach
@@ -42,20 +43,19 @@
                         <div class="carousel-indicators custom-indicators">
                             @foreach ($restaurant->photos as $index => $photo)
                                 <button type="button" data-bs-target="#restaurantCarousel"
-                                    data-bs-slide-to="{{ $index }}"
-                                    class="{{ $loop->first ? 'active' : '' }}"></button>
+                                    data-bs-slide-to="{{ $index }}" class="{{ $loop->first ? 'active' : '' }}"
+                                    aria-current="{{ $loop->first ? 'true' : 'false' }}"></button>
                             @endforeach
                         </div>
                     @else
-                        <div class="d-flex justify-content-center align-items-center image-container">
-                            <div class="text-center text-white">
-                                <i class="fa-regular fa-image fa-4x mb-3"></i>
-                                <p class="mb-0">No photos available</p>
+                        <div class="d-flex justify-content-center align-items-center image-container"
+                            style="background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200') center/cover; min-height: 400px; border-radius: 8px; position: relative;">
+                            <div class="text-center text-white px-3 py-2 rounded" style="background: rgba(0, 0, 0, 0.5);">
+                                <i class="bi bi-image fa-2x mb-2"></i>
+                                <p class="mb-0 small">No photos available (Showing default view)</p>
                             </div>
                         </div>
-
                     @endif
-
                 </div>
 
                 {{-- Main Restaurant Header Specs --}}
@@ -76,7 +76,7 @@
                                 ★★★★★
                             </div>
                             <span class="fs-6 mx-1">{{ number_format($averageRating, 1) }}</span>
-                            <span class="small text-secondary">({{ $restaurant->posts_count }})</span>
+                            <span class="small text-secondary">({{ $restaurant->posts_count ?? 0 }})</span>
                         </div>
                     </div>
 
@@ -84,18 +84,18 @@
                         {{ $restaurant->description }}
                     </p>
 
-                {{-- Features --}}
-                <div class="d-flex flex-wrap gap-1 ">
-                    @if($restaurant->features)
-                        @foreach($restaurant->features as $feature)
-                            <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                style="background-color:#e8ebf1;font-size:10px;">
-                                {{ $feature->feature_name }}
-                            </span>
-                        @endforeach
-                    @endif
+                    {{-- Features --}}
+                    <div class="d-flex flex-wrap gap-1">
+                        @if ($restaurant->features)
+                            @foreach ($restaurant->features as $feature)
+                                <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
+                                    style="background-color:#e8ebf1;font-size:10px;">
+                                    {{ $feature->feature_name }}
+                                </span>
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
-            </div>
 
                 {{-- MAIN TRACK PILL TABS SYSTEM --}}
                 <div class="custom-tabs-container mb-4">
@@ -133,10 +133,8 @@
 
                             <div class="mt-4">
                                 <div class="row g-4">
-
                                     {{-- LEFT COLUMN: Location, Phone, Party Size --}}
                                     <div class="col-md-6 d-flex flex-column gap-4 overview">
-
                                         {{-- Location --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-geo-alt fs-4 mt-1 icon"></i>
@@ -172,12 +170,10 @@
                                                 <p class="text-muted mb-0">Up to {{ $restaurant->capacity }} guests</p>
                                             </div>
                                         </div>
-
                                     </div>
 
                                     {{-- RIGHT COLUMN: Hours, Website & SNS Links --}}
                                     <div class="col-md-6 d-flex flex-column gap-4 overview">
-
                                         {{-- Hours --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-clock fs-4 mt-1 icon"></i>
@@ -220,9 +216,7 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -246,16 +240,18 @@
                         <div class="tab-content" id="menuSubTabsContent">
                             <div class="tab-pane fade show active" id="menu-food" role="tabpanel">
                                 <div class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
-                                    @foreach ($restaurant->menus as $menu)
+                                    @forelse ($restaurant->menus as $menu)
                                         <div class="d-flex justify-content-between align-items-start border-bottom pb-3">
                                             <div>
-                                                <h5 class="fw-bold text-navy mb-1">{{ $restaurant->menus->menu_name }}
-                                                </h5>
-                                                <p class="text-muted mb-0 small">{{ $restaurant->menus->description }}</p>
+                                                {{-- 💡 更生ポイント: $restaurant->menus->... から $menu->... へ修正 --}}
+                                                <h5 class="fw-bold text-navy mb-1">{{ $menu->menu_name }}</h5>
+                                                <p class="text-muted mb-0 small">{{ $menu->description }}</p>
                                             </div>
-                                            <span class="fw-bold text-navy fs-5">{{ $restaurant->menus->price }}</span>
+                                            <span class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <p class="text-muted mb-0">No menu items available.</p>
+                                    @endforelse
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="menu-drink" role="tabpanel">
@@ -283,44 +279,65 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="photo-all" role="tabpanel">
                                 <div class="row g-3">
-                                    @foreach ($restaurant->photos as $photo)
+                                    @forelse ($restaurant->photos as $photo)
                                         <div class="col-md-4 col-6">
                                             <div class="ratio ratio-1x1 rounded-4 overflow-hidden shadow-sm">
                                                 <img src="{{ asset('storage/' . $photo->photo_path) }}"
                                                     alt="Gallery Image" class="w-100 h-100 object-fit-cover">
                                             </div>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="col-11 text-center py-4 text-muted">No photos available.</div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- 4. REVIEWS --}}
+                    {{-- 4. REVIEWS (💡 更生ポイント: ここをダミーから本物のループ画像対応に変更) --}}
                     <div class="tab-pane fade" id="reviews" role="tabpanel">
-                        <div class="card bg-white border-0 shadow-sm rounded-4 p-4">
+                        <div class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
 
-                            {{-- User Profile Header --}}
-                            <div class="d-flex align-items-center gap-3 mb-3">
-                                <img src="https://i.pravatar.cc/150?img=32" alt="Avatar" class="rounded-circle"
-                                    style="width: 48px; height: 48px;">
-                                <div>
-                                    <h6 class="fw-bold text-navy mb-0">Sarah J. <span class="text-muted fw-normal fs-7">·
-                                            2 days ago</span></h6>
-                                    <div class="text-warning fs-7">★★★★★</div>
+                            @forelse ($restaurant->posts as $post)
+                                <div class="review-item border-bottom pb-4 mb-2">
+                                    {{-- User Profile Header --}}
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <img src="https://i.pravatar.cc/150?img={{ $post->user_id ?? 1 }}" alt="Avatar"
+                                            class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="fw-bold text-navy mb-0">
+                                                {{ $post->user->name ?? 'Anonymous User' }}
+                                                <span class="text-muted fw-normal fs-7">·
+                                                    {{ $post->created_at ? $post->created_at->diffForHumans() : '' }}</span>
+                                            </h6>
+                                            <div class="text-warning fs-7">
+                                                {{ str_repeat('★', $post->rating) }}{{ str_repeat('☆', 5 - $post->rating) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Review Content Row --}}
+                                    <div class="row g-3 align-items-start">
+                                        {{-- 💡 ユーザーが投稿した写真の表示エリア --}}
+                                        @if ($post->image)
+                                            <div class="col-md-4 col-12">
+                                                <img src="{{ asset('storage/' . $post->image) }}" alt="Review Image"
+                                                    class="img-fluid rounded-4 shadow-sm w-100 object-fit-cover"
+                                                    style="max-height: 180px; cursor: pointer;"
+                                                    onclick="window.open(this.src)">
+                                            </div>
+                                        @endif
+
+                                        {{-- Review Text Comment --}}
+                                        <div class="col text-muted mb-0 fs-6">
+                                            {{ $post->description }}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            {{-- Review Food Image (Matches your design layout) --}}
-                            <div class="row">
-                                <div class="col">
-                                    <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=600&auto=format&fit=crop"
-                                        alt="Review Image" class="review-uploaded-img rounded-4">
-                                </div>
-
-                                {{-- Review Text Comment --}}
-                                <p class="col text-muted mb-0">Absolutely amazing! Best sushi I've ever had.</p>
-                            </div>
+                            @empty
+                                <p class="text-muted mb-0 text-center py-3">No reviews yet. Be the first to leave a review!
+                                </p>
+                            @endforelse
 
                         </div>
                     </div>
@@ -374,11 +391,8 @@
                             <select name="reservation_time" class="form-select border rounded-3 py-2 text-muted input-box"
                                 required>
                                 <option value="" selected disabled>Select time</option>
-
                                 @foreach ($availableSlots as $time)
-                                    <option value="{{ $time }}">
-                                        {{ $time }}
-                                    </option>
+                                    <option value="{{ $time }}">{{ $time }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -416,7 +430,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 

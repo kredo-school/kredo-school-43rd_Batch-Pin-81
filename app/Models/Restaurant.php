@@ -79,7 +79,7 @@ class Restaurant extends Model
 
     public function menus()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Menu::class);
     }
 
     /**

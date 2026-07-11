@@ -25,7 +25,6 @@ use App\Http\Controllers\Restaurant\ReservationController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
 use App\Http\Controllers\Restaurant\DashboardController;
 
-
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;

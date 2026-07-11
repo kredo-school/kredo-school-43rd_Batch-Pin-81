@@ -382,7 +382,7 @@
                 } else {
                     console.error("Bootstrap body could not be loaded.");
                 }
-            }, 100); // 0.1秒だけ待つことで読込エラーを防ぐ
+            }, 100);
         });
     </script>
 </body>
