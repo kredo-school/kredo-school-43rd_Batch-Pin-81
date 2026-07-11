@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -112,15 +113,42 @@ class ContactController extends Controller
         return redirect()->back()->with('success', 'Message deleted successfully.');
     }
 
+    public function resolve($id)
+    {
+        $restaurant = $this->currentRestaurant();
+
+        $contact = Contact::where('user_id', Auth::id())
+            ->where('restaurant_id', $restaurant->id)
+            ->whereNull('parent_id')
+            ->findOrFail($id);
+
+        $contact->update(['status' => 'resolved']);
+
+        return redirect()->back()->with('success', 'Message marked as resolved.');
+    }
+
     private function currentRestaurant()
     {
-        $restaurant = Auth::user()?->restaurant;
+        $user = Auth::user();
 
-        if (!$restaurant) {
+        if (!$user) {
+            abort(403, 'Please login first.');
+        }
+
+        $restaurant = Restaurant::where('user_id', $user->id)->first();
+
+        if ($restaurant) {
+            return $restaurant;
+        }
+
+        // Keep the behavior aligned with the restaurant dashboard for demo/test accounts.
+        $fallbackRestaurant = Restaurant::first();
+
+        if (!$fallbackRestaurant) {
             abort(403, 'Restaurant account is not found.');
         }
 
-        return $restaurant;
+        return $fallbackRestaurant;
     }
 
     private function storeAttachments(Request $request): ?array

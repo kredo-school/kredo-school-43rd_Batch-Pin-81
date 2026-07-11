@@ -24,6 +24,20 @@
             border-color: #0b2238;
         }
 
+        .nav-pills .nav-link:hover,
+        .nav-pills .nav-link:focus {
+            background-color: #0b2238 !important;
+            color: #fff !important;
+            border-color: #0b2238 !important;
+        }
+
+        .nav-pills .nav-link:hover .badge,
+        .nav-pills .nav-link:focus .badge,
+        .nav-pills .nav-link.active .badge {
+            background-color: #fff !important;
+            color: #0b2238 !important;
+        }
+
         .support-card {
             background: #fff;
             border-radius: 12px;
@@ -63,11 +77,26 @@
         }
 
         .status-badge {
-            background-color: #d1e7dd;
-            color: #0f5132;
             font-size: 0.75rem;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .status-open {
+            background-color: #dcecff;
+            color: #2367ff;
+        }
+
+        .status-replied {
+            background-color: #dff6e9;
+            color: #14743b;
+        }
+
+        .status-resolved {
+            background-color: #e9ecef;
+            color: #495057;
         }
 
         .text-navy {
@@ -162,6 +191,37 @@
         .btn-delete-hover:hover {
             color: #dc3545 !important;
         }
+
+
+        .contact-modal .modal-content {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 18px 45px rgba(15, 45, 74, 0.18);
+        }
+
+        .contact-modal .modal-header {
+            border-bottom: 1px solid #edf1f5;
+            color: #0f2d4a;
+        }
+
+        .contact-modal .modal-footer {
+            border-top: none;
+        }
+
+        .btn-modal-navy {
+            background-color: #0b2238;
+            border-color: #0b2238;
+            color: #fff;
+            border-radius: 999px;
+            font-weight: 700;
+            padding: .45rem 1.2rem;
+        }
+
+        .btn-modal-navy:hover {
+            background-color: #143554;
+            border-color: #143554;
+            color: #fff;
+        }
     </style>
 
     <div class="container py-5" style="max-width: 800px;">
@@ -184,7 +244,7 @@
                 <button class="nav-link fw-bold" id="message-history-tab" data-bs-toggle="pill"
                     data-bs-target="#message-history" type="button" role="tab">
                     Message History <span class="badge bg-secondary rounded-circle ms-1" style="font-size: 0.7rem;">
-                        {{ $contacts->count() }}
+                        {{ $activeContactsCount ?? $contacts->where('status', '!=', 'resolved')->count() }}
                     </span>
                 </button>
             </li>
@@ -287,6 +347,16 @@
                             </div>
                         @endif
                         <div class="mb-3">
+                            <label for="title" class="form-label fw-semibold">Title</label>
+                            <input type="text" id="title" name="title"
+                                class="form-control @error('title') is-invalid @enderror"
+                                placeholder="Please enter a short title" value="{{ old('title') }}" required>
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="message" class="form-label fw-semibold">Message</label>
                             <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="4"
                                 placeholder="Please describe your issue in detail..." required>{{ old('message') }}</textarea>
@@ -341,34 +411,94 @@
                                     </div>
                                     <div>
                                         <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">
-                                            {{ $contact->title ?? 'Inquiry' }}
+                                            {{ $contact->title ?: 'Inquiry' }}
                                         </div>
                                         <div class="d-flex align-items-center gap-2 small text-muted">
                                             <span><i
                                                     class="bi bi-clock me-1"></i>{{ $contact->created_at->format('Y-m-d H:i') }}</span>
-                                            <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill"
-                                                style="font-size: 0.75rem; font-weight: 500;">{{ $contact->status }}</span>
+                                            <span
+                                                class="status-badge status-{{ $contact->status }}">{{ $contact->status }}</span>
                                         </div>
                                     </div>
                                 </a>
 
                                 <div class="d-flex align-items-center gap-3 ms-3" style="flex-shrink: 0;">
-                                    <form action="{{ route('customer.contact.destroy', $contact->id) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this message?');"
-                                        class="m-0 p-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        {{-- 👑 ボタン要素の不要なクラスをクリーンアップし、カスタムCSSを適用 --}}
-                                        <button type="submit" class="btn btn-link btn-delete-hover p-0 m-0"
-                                            title="Delete" style="line-height: 1;">
-                                            <i class="bi bi-trash" style="font-size: 1.2rem;"></i>
+                                    @if ($contact->status !== 'resolved')
+                                        <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#resolveContactModal-{{ $contact->id }}">
+                                            Mark as resolved
                                         </button>
-                                    </form>
+                                    @endif
+
+                                    <button type="button" class="btn btn-link btn-delete-hover p-0 m-0" title="Delete"
+                                        style="line-height: 1;" data-bs-toggle="modal"
+                                        data-bs-target="#deleteContactModal-{{ $contact->id }}">
+                                        <i class="bi bi-trash" style="font-size: 1.2rem;"></i>
+                                    </button>
 
                                     <i class="bi bi-chevron-right text-muted small align-middle"
                                         style="font-size: 1.1rem;"></i>
                                 </div>
 
+                            </div>
+
+                            @if ($contact->status !== 'resolved')
+                                <div class="modal fade contact-modal" id="resolveContactModal-{{ $contact->id }}"
+                                    tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">Mark as resolved?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-muted">
+                                                This message will be marked as resolved and removed from the active history
+                                                count.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{{ route('customer.contact.resolve', $contact->id) }}"
+                                                    method="POST" class="m-0">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-modal-navy">Mark as
+                                                        resolved</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div class="modal fade contact-modal" id="deleteContactModal-{{ $contact->id }}"
+                                tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title fw-bold text-danger">Delete this message?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-muted">
+                                            This will delete the message thread and its replies. This action cannot be
+                                            undone.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <form action="{{ route('customer.contact.destroy', $contact->id) }}"
+                                                method="POST" class="m-0">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="btn btn-danger rounded-pill px-4 fw-bold">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @empty
                             <div class="text-center text-muted py-4">No message history found.</div>

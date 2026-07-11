@@ -43,7 +43,7 @@ class RestaurantController extends Controller
         $restaurant->user->notify(
             new RestaurantApplicationStatus(
                 'approved',
-                $restauran
+                $restaurant
             )
         );
 

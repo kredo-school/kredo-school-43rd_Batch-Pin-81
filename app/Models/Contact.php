@@ -43,6 +43,25 @@ class Contact extends Model
         return $this->hasMany(Contact::class, 'parent_id')->oldest();
     }
 
+    public function getAttachmentsListAttribute(): array
+    {
+        if (empty($this->attachments)) {
+            return [];
+        }
+
+        if (is_array($this->attachments)) {
+            return array_filter($this->attachments);
+        }
+
+        $decoded = json_decode($this->attachments, true);
+
+        if (is_array($decoded)) {
+            return array_filter($decoded);
+        }
+
+        return [$this->attachments];
+    }
+
     public function getSenderLabelAttribute(): string
     {
         if ($this->user && $this->user->isAdmin()) {

@@ -23,6 +23,7 @@ class ContactController extends Controller
             'restaurant' => (clone $baseQuery)->whereNotNull('restaurant_id')->count(),
             'open' => (clone $baseQuery)->where('status', 'open')->count(),
             'replied' => (clone $baseQuery)->where('status', 'replied')->count(),
+            'resolved' => (clone $baseQuery)->where('status', 'resolved')->count(),
         ];
 
         $contactsQuery = Contact::with(['user', 'restaurant', 'replies.user', 'replies.restaurant'])
@@ -36,7 +37,7 @@ class ContactController extends Controller
             $contactsQuery->whereNotNull('restaurant_id');
         }
 
-        if (in_array($currentStatus, ['open', 'replied'], true)) {
+        if (in_array($currentStatus, ['open', 'replied', 'resolved'], true)) {
             $contactsQuery->where('status', $currentStatus);
         }
 
@@ -94,7 +95,7 @@ class ContactController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => ['required', 'in:open,replied'],
+            'status' => ['required', 'in:open,replied,resolved'],
         ]);
 
         $contact->update(['status' => $validated['status']]);

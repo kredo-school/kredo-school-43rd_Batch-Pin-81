@@ -75,6 +75,8 @@ Route::middleware('auth')->group(function () {
 
   //Contact
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
+  Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
+  Route::patch('/contact/{contact}/resolve', [CustomerContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/customer/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('customer.contact.destroy');
 
   // Register page for restaurant
@@ -154,7 +156,6 @@ Route::middleware(['auth', 'admin'])
     Route::delete('/restaurants/{restaurant}', [AdminRestaurantController::class, 'destroy'])
       ->name('admin.restaurants.destroy');
 
-
     // Reservations dashboard
     Route::get('/reservations', [ReservationController::class, 'index'])
       ->name('admin.reservations');
@@ -229,12 +230,15 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
 
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
 
+  // Reviews
+  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
+
   // Profile
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [RestaurantProfileController::class, 'update'])->name('profile.update');
 });
 
-Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
+Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
   Route::get('owner_account', [OwnerAccountController::class, 'edit'])->name('owner_account.edit');
   Route::any('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
   Route::post('owner_account/verify', [OwnerAccountController::class, 'verifyCode'])->name('owner_account.verify');
@@ -243,11 +247,8 @@ Route::prefix('restaurant/settings')->name('restaurant.settings.')->group(functi
   Route::post('/contact', [RestaurantContactController::class, 'send'])->name('contact.send');
   Route::get('/contact/{id}', [RestaurantContactController::class, 'show'])->name('contact.show');
   Route::post('/contact/{id}/reply', [RestaurantContactController::class, 'reply'])->name('contact.reply');
+  Route::patch('/contact/{id}/resolve', [RestaurantContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/contact/{id}', [RestaurantContactController::class, 'destroy'])->name('contact.destroy');
-});
-
-Route::middleware(['auth'])->prefix('restaurant')->name('restaurant.')->group(function () {
-  Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
 });
 
 // Customer
@@ -284,6 +285,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
   // Contact
   Route::get('/contact', [CustomerContactController::class, 'index'])->name('contact.index');
   Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
+  Route::patch('/contact/{contact}/resolve', [CustomerContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('contact.destroy');
 
   // Notification

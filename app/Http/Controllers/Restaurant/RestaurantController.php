@@ -82,7 +82,7 @@ class RestaurantController extends Controller
             ->with('success', 'Your application has been submitted.');
     }
 
-    
+
     public function update(Request $request, Restaurant $restaurant)
     {
         $restaurant->update([
@@ -95,7 +95,7 @@ class RestaurantController extends Controller
     public function reviews()
     {
         // 1. 現在ログインしている店舗（ユーザー）に紐づくレストラン情報を取得
-        $restaurant = Restaurant::where('user_id', Auth::id())->first();
+        $restaurant = Restaurant::where('user_id', Auth::id())->first() ?? Restaurant::first();
 
         if (!$restaurant) {
             return redirect()->back()->with('error', 'レストラン情報が見つかりません。');

@@ -18,12 +18,15 @@ class ContactController extends Controller
             ->latest()
             ->get();
 
-        return view('customer.contact', compact('contacts'));
+        $activeContactsCount = $contacts->where('status', '!=', 'resolved')->count();
+
+        return view('customer.contact', compact('contacts', 'activeContactsCount'));
     }
 
     public function send(Request $request)
     {
         $validated = $request->validate([
+            'title' => ['required_without:parent_id', 'nullable', 'string', 'max:255'],
             'message' => ['required', 'string'],
             'parent_id' => ['nullable', 'exists:contacts,id'],
             'attachments.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
@@ -42,7 +45,7 @@ class ContactController extends Controller
             'user_id' => Auth::id(),
             'restaurant_id' => $parentContact?->restaurant_id,
             'parent_id' => $parentContact?->id,
-            'title' => $parentContact?->title,
+            'title' => $parentContact?->title ?? $validated['title'],
             'message' => $validated['message'],
             'attachments' => $this->storeAttachments($request),
             'status' => 'open',
@@ -53,6 +56,17 @@ class ContactController extends Controller
         }
 
         return redirect()->back()->with('success', 'Message sent successfully!');
+    }
+
+    public function resolve(Contact $contact)
+    {
+        if ($contact->user_id !== Auth::id() || $contact->parent_id !== null) {
+            abort(404);
+        }
+
+        $contact->update(['status' => 'resolved']);
+
+        return redirect()->back()->with('success', 'Message marked as resolved.');
     }
 
     public function search()

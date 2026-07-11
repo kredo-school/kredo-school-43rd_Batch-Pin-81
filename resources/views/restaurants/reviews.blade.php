@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.restaurant')
+
 
 @section('title', 'Reviews & Ratings')
 
@@ -75,7 +76,8 @@
                     <h1 class="display-4 fw-bold text-navy mb-1">{{ number_format($stats['average_rating'] ?? 4.5, 1) }}</h1>
                     <div class="mb-2">
                         @for ($i = 1; $i <= 5; $i++)
-                            <i class="bi bi-star-fill {{ $i <= round($stats['average_rating'] ?? 4.5) ? 'star-rating' : 'star-rating-muted' }} fs-5"></i>
+                            <i
+                                class="bi bi-star-fill {{ $i <= round($stats['average_rating'] ?? 4.5) ? 'star-rating' : 'star-rating-muted' }} fs-5"></i>
                         @endfor
                     </div>
                     <small class="text-muted">{{ $reviews->count() + 2 }} reviews</small> {{-- 動的投稿数 + 固定2件 --}}
@@ -119,10 +121,12 @@
                                 <div class="star-rating small">
                                     @php $rating = $review->star->rating ?? 5; @endphp
                                     @for ($i = 1; $i <= 5; $i++)
-                                        <i class="bi bi-star-fill {{ $i <= $rating ? 'star-rating' : 'star-rating-muted' }}"></i>
+                                        <i
+                                            class="bi bi-star-fill {{ $i <= $rating ? 'star-rating' : 'star-rating-muted' }}"></i>
                                     @endfor
                                 </div>
-                                <small class="text-muted">{{ $review->created_at ? \Carbon\Carbon::parse($review->created_at)->format('Y-m-d') : '2026-05-10' }}</small>
+                                <small
+                                    class="text-muted">{{ $review->created_at ? \Carbon\Carbon::parse($review->created_at)->format('Y-m-d') : '2026-05-10' }}</small>
                             </div>
                         </div>
                         <a href="#" class="btn-report d-flex align-items-center gap-1">
@@ -137,61 +141,64 @@
                     {{-- ==========================================================
      🆕 複数画像・動画（カンマ区切り）対応の表示ロジック
      ========================================================== --}}
-     @if($review->image)
-         {{-- 💡 解説: カンマで区切って配列にし、ループで1枚ずつ処理 --}}
-         <div class="d-flex flex-wrap gap-2 mb-2">
-             @foreach(explode(',', $review->image) as $index => $filePath)
-                 @php
-                     // 💡 拡張子を取得して画像か動画かを判別
-                     $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-                     $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'ogg', 'qt']);
-                     
-                     // 💡 IDの一意性を保つために、ループのインデックス（$index）を付与
-                     $uniqueModalId = 'reviewModal-' . $review->id . '-' . $index;
-                 @endphp
+                    @if ($review->image)
+                        {{-- 💡 解説: カンマで区切って配列にし、ループで1枚ずつ処理 --}}
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            @foreach (explode(',', $review->image) as $index => $filePath)
+                                @php
+                                    // 💡 拡張子を取得して画像か動画かを判別
+                                    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                    $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'ogg', 'qt']);
 
-                 @if($isVideo)
-                                          <video src="{{ asset($filePath) }}" class="review-img" style="cursor: pointer;"
-                         data-bs-toggle="modal" data-bs-target="#{{ $uniqueModalId }}"></video>
-                 @else
-                                          <img src="{{ asset($filePath) }}" alt="Review Image" class="review-img" style="cursor: pointer; object-fit: cover;"
-                         data-bs-toggle="modal" data-bs-target="#{{ $uniqueModalId }}">
-                 @endif
+                                    // 💡 IDの一意性を保つために、ループのインデックス（$index）を付与
+                                    $uniqueModalId = 'reviewModal-' . $review->id . '-' . $index;
+                                @endphp
 
-                 {{-- 💡 ファイルごとに拡大モーダル本体を生成 --}}
-                 <div class="modal fade" id="{{ $uniqueModalId }}" tabindex="-1" aria-hidden="true">
-                     <div class="modal-dialog modal-dialog-centered modal-lg">
-                         <div class="modal-content bg-transparent border-0">
-                             <div class="modal-body p-0 position-relative">
-                                 <button type="button"
-                                     class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
-                                     data-bs-dismiss="modal" aria-label="Close"></button>
+                                @if ($isVideo)
+                                    <video src="{{ asset($filePath) }}" class="review-img" style="cursor: pointer;"
+                                        data-bs-toggle="modal" data-bs-target="#{{ $uniqueModalId }}"></video>
+                                @else
+                                    <img src="{{ asset($filePath) }}" alt="Review Image" class="review-img"
+                                        style="cursor: pointer; object-fit: cover;" data-bs-toggle="modal"
+                                        data-bs-target="#{{ $uniqueModalId }}">
+                                @endif
 
-                                 <div class="text-center bg-dark rounded p-2">
-                                     @if($isVideo)
-                                                                                  <video src="{{ asset($filePath) }}" class="img-fluid rounded" controls
-                                             style="max-height: 80vh; object-fit: contain;"></video>
-                                     @else
-                                                                                  <img src="{{ asset($filePath) }}" class="img-fluid rounded"
-                                             alt="Enlarged Review Image"
-                                             style="max-height: 80vh; object-fit: contain;">
-                                     @endif
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             @endforeach
-         </div>
-     @else
-         {{-- メディアがない場合は非表示（今回はプレースホルダーをコメントアウトします） --}}
-         {{--
+                                {{-- 💡 ファイルごとに拡大モーダル本体を生成 --}}
+                                <div class="modal fade" id="{{ $uniqueModalId }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content bg-transparent border-0">
+                                            <div class="modal-body p-0 position-relative">
+                                                <button type="button"
+                                                    class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                                <div class="text-center bg-dark rounded p-2">
+                                                    @if ($isVideo)
+                                                        <video src="{{ asset($filePath) }}" class="img-fluid rounded"
+                                                            controls style="max-height: 80vh; object-fit: contain;"></video>
+                                                    @else
+                                                        <img src="{{ asset($filePath) }}" class="img-fluid rounded"
+                                                            alt="Enlarged Review Image"
+                                                            style="max-height: 80vh; object-fit: contain;">
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        {{-- メディアがない場合は非表示（今回はプレースホルダーをコメントアウトします） --}}
+                        {{--
          <div class="review-img-placeholder mb-2">
              <i class="bi bi-image fs-3"></i>
          </div>
          --}}
-     @endif
-{{-- ========================================================== --}}
+                    @endif
+                </div>
+            @endforeach
+            {{-- ========================================================== --}}
 
             {{-- ▼ 2. 追加した口コミ：Maria Garcia (固定表示) --}}
             <div class="review-card p-4">

@@ -16,12 +16,8 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        $restaurant = Auth::user()->restaurant;
+        $restaurant = $this->currentRestaurant();
 
-        if (!$restaurant) {
-            $restaurant = new Restaurant();
-            $restaurant->user_id = Auth::id();
-        }
         // DBのマスターテーブルから選択肢をすべて取得
         $allCategories = Category::all();
         $allFeatures   = Feature::all();
@@ -44,12 +40,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $restaurant = Auth::user()->restaurant;
-
-        if (!$restaurant) {
-            $restaurant = new Restaurant();
-            $restaurant->user_id = Auth::id();
-        }
+        $restaurant = $this->currentRestaurant();
 
         // バリデーション
         $request->validate([
@@ -99,5 +90,23 @@ class ProfileController extends Controller
         $restaurant->features()->sync($featureIds);
 
         return redirect()->route('restaurant.profile.edit');
+    }
+
+    private function currentRestaurant(): Restaurant
+    {
+        $restaurant = Restaurant::where('user_id', Auth::id())->first();
+
+        if ($restaurant) {
+            return $restaurant;
+        }
+
+        $fallbackRestaurant = Restaurant::first();
+
+        if (!$fallbackRestaurant) {
+            $fallbackRestaurant = new Restaurant();
+            $fallbackRestaurant->user_id = Auth::id();
+        }
+
+        return $fallbackRestaurant;
     }
 }

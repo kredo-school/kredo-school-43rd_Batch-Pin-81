@@ -219,20 +219,14 @@
                         @endif --}}
                         </a>
 
-                        <a href="{{ route('admin.reservations') }}" class="nav-link fw-bold">
-
+                        {{-- Admin reservations page is not built yet, so keep it visible but disabled. --}}
+                        <span class="nav-link fw-bold text-muted" style="cursor: not-allowed; opacity: .65;">
                             <span>
-                                <i class="fa-solid fa-calendar me-2"></i>
+                                <i class="fa-solid fa-calendar-check me-2"></i>
                                 Reservations
+                                <small class="ms-1">(Coming soon)</small>
                             </span>
-
-                            {{-- @if ($pendingReservations > 0)
-                            <span class="badge bg-danger rounded-pill">
-                                {{ $pendingReservations }}
-                            </span>
-                        @endif --}}
-
-                        </a>
+                        </span>
 
                         <a href="{{ route('admin.contacts.index') }}" class="nav-link fw-bold">
 

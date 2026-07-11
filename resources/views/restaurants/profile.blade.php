@@ -169,12 +169,12 @@
                 <div class="mb-3">
                     <label for="restaurant_name" class="form-label">Restaurant Name</label>
                     <input type="text" class="form-control" id="restaurant_name" name="restaurant_name"
-                        value="{{ $restaurant->restaurant_name }}">
+                        value="{{ old('restaurant_name', $restaurant->restaurant_name) }}">
                 </div>
 
                 <div class="mb-4">
                     <label for="description" class="form-label">Description (English)</label>
-                    <textarea class="form-control" id="description" name="description" rows="3">{{ $restaurant->description }}</textarea>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ old('description', $restaurant->description) }}</textarea>
                 </div>
 
                 <div class="mb-2">
@@ -187,7 +187,7 @@
                                         value="{{ $category->id }}" id="cuisine-{{ $category->id }}"
                                         {{ in_array($category->id, $selectedCategoryIds) ? 'checked' : '' }}>
                                     <label class="form-check-label text-navy" for="cuisine-{{ $category->id }}">
-                                        {{ $category->categories_name }}
+                                        {{ $category->category_name }}
                                     </label>
                                 </div>
                             </div>
@@ -206,16 +206,17 @@
                         value="{{ $restaurant->address }}">
                 </div> --}}
 
-                <div class="mb-3">
-                    <label for="postal_code" class="form-label">Postal Code</label>
-                    <input type="text" class="form-control" id="postal_code" name="postal_code"
-                        value="{{ old('postal_code', $restaurant->postal_code) }}">
-                </div>
-
-                <div class="mb-3">
-                    <label for="prefecture" class="form-label">Prefecture</label>
-                    <input type="text" class="form-control" id="prefecture" name="prefecture"
-                        value="{{ old('prefecture', $restaurant->prefecture) }}">
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label for="postal_code" class="form-label">Postal Code</label>
+                        <input type="text" class="form-control" id="postal_code" name="postal_code"
+                            value="{{ old('postal_code', $restaurant->postal_code) }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="prefecture" class="form-label">Prefecture</label>
+                        <input type="text" class="form-control" id="prefecture" name="prefecture"
+                            value="{{ old('prefecture', $restaurant->prefecture) }}">
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -234,7 +235,7 @@
                     <div class="col-md-6 mb-3 mb-md-0">
                         <label for="phone_number" class="form-label">Phone</label>
                         <input type="text" class="form-control" id="phone_number" name="phone_number"
-                            value="{{ $restaurant->phone_number }}">
+                            value="{{ old('phone_number', $restaurant->phone_number) }}">
                     </div>
                     <div class="col-md-6">
                         <label for="email" class="form-label">Email</label>
@@ -245,22 +246,26 @@
 
                 <div class="mb-3">
                     <label class="form-label">Website</label>
-                    <input type="text" class="form-control" name="website" value="{{ $restaurant->website }}">
+                    <input type="text" class="form-control" name="website"
+                        value="{{ old('website', $restaurant->website) }}">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Instagram</label>
-                    <input type="text" class="form-control" name="instagram" value="{{ $restaurant->instagram }}">
+                    <input type="text" class="form-control" name="instagram"
+                        value="{{ old('instagram', $restaurant->instagram) }}">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Facebook</label>
-                    <input type="text" class="form-control" name="facebook" value="{{ $restaurant->facebook }}">
+                    <input type="text" class="form-control" name="facebook"
+                        value="{{ old('facebook', $restaurant->facebook) }}">
                 </div>
 
                 <div class="mb-1">
                     <label class="form-label">X (Twitter)</label>
-                    <input type="text" class="form-control" name="twitter" value="{{ $restaurant->twitter }}">
+                    <input type="text" class="form-control" name="twitter"
+                        value="{{ old('twitter', $restaurant->twitter) }}">
                 </div>
             </div>
 
@@ -353,12 +358,20 @@
                 <div class="mt-4 pt-3">
                     <label class="form-label small fw-bold" style="color: #0A2540;">Reservation Slot Duration</label>
                     <select name="stay_duration" class="form-select">
-                        <option value="60" {{ $restaurant->stay_duration == 60 ? 'selected' : '' }}>1 Hour</option>
-                        <option value="90" {{ $restaurant->stay_duration == 90 ? 'selected' : '' }}>1.5 Hours</option>
-                        <option value="120" {{ $restaurant->stay_duration == 120 ? 'selected' : '' }}>2 Hours</option>
-                        <option value="150" {{ $restaurant->stay_duration == 150 ? 'selected' : '' }}>2.5 Hours
+                        <option value="60"
+                            {{ old('stay_duration', $restaurant->stay_duration) == 60 ? 'selected' : '' }}>1 Hour</option>
+                        <option value="90"
+                            {{ old('stay_duration', $restaurant->stay_duration) == 90 ? 'selected' : '' }}>1.5 Hours
                         </option>
-                        <option value="180" {{ $restaurant->stay_duration == 180 ? 'selected' : '' }}>3 Hours</option>
+                        <option value="120"
+                            {{ old('stay_duration', $restaurant->stay_duration) == 120 ? 'selected' : '' }}>2 Hours
+                        </option>
+                        <option value="150"
+                            {{ old('stay_duration', $restaurant->stay_duration) == 150 ? 'selected' : '' }}>2.5 Hours
+                        </option>
+                        <option value="180"
+                            {{ old('stay_duration', $restaurant->stay_duration) == 180 ? 'selected' : '' }}>3 Hours
+                        </option>
                     </select>
                     <small class="text-muted d-block mt-1">Select the default time slot allocated for each customer
                         group.</small>
@@ -371,7 +384,7 @@
                 <div class="d-flex flex-column gap-3">
                     @foreach ($allFeatures as $feature)
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold text-navy">{{ $feature->features_name }}</span>
+                            <span class="fw-semibold text-navy">{{ $feature->feature_name }}</span>
                             <div class="form-check form-switch fs-5">
                                 <input class="form-check-input" type="checkbox" role="switch" name="features[]"
                                     value="{{ $feature->id }}" id="feature-{{ $feature->id }}"
@@ -388,7 +401,7 @@
                 <div class="mb-1">
                     <label for="capacity" class="form-label">Maximum Party Size</label>
                     <input type="number" class="form-control" id="capacity" name="capacity"
-                        value="{{ $restaurant->capacity }}">
+                        value="{{ old('capacity', $restaurant->capacity) }}">
                 </div>
             </div>
 

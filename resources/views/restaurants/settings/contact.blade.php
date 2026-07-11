@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.restaurant')
+
 
 @section('title', 'Contact')
 
@@ -254,7 +255,7 @@
                 <button class="nav-link fw-bold" id="message-history-tab" data-bs-toggle="pill"
                     data-bs-target="#message-history" type="button" role="tab">
                     Message History <span class="badge bg-secondary rounded-circle ms-1"
-                        style="font-size: 0.7rem;">{{ $contacts->count() }}</span>
+                        style="font-size: 0.7rem;">{{ $activeContactsCount ?? $contacts->where('status', '!=', 'resolved')->count() }}</span>
                 </button>
             </li>
         </ul>
@@ -346,6 +347,16 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
+                            <label for="title" class="form-label fw-semibold">Title</label>
+                            <input type="text" id="title" name="title"
+                                class="form-control @error('title') is-invalid @enderror"
+                                placeholder="Please enter a short title" value="{{ old('title') }}">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="message" class="form-label fw-semibold">Message</label>
                             <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="4"
                                 placeholder="Please describe your issue in detail..." required>{{ old('message') }}</textarea>
@@ -418,21 +429,31 @@
                                         <div>
                                             <div class="fw-bold text-dark mb-1 text-truncate"
                                                 style="font-size: 0.95rem; max-width: 350px;">
-                                                {{ $contact->message }}
+                                                {{ $contact->title ?: Str::limit($contact->message, 60) }}
                                             </div>
                                             <div class="d-flex align-items-center gap-2 small text-muted">
                                                 <span><i
                                                         class="bi bi-clock me-1"></i>{{ $contact->created_at->format('Y-m-d H:i') }}</span>
-                                                @if ($contact->replies && $contact->replies->count() > 0)
-                                                    <span
-                                                        class="badge bg-success-subtle text-success px-2 py-1 rounded-pill">replied</span>
-                                                @else
-                                                    <span
-                                                        class="badge bg-secondary text-white px-2 py-1 rounded-pill">open</span>
-                                                @endif
+                                                <span
+                                                    class="badge {{ $contact->status === 'resolved' ? 'bg-secondary text-white' : ($contact->status === 'replied' ? 'bg-success-subtle text-success' : 'bg-warning text-dark') }} px-2 py-1 rounded-pill">
+                                                    {{ $contact->status }}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
+
+                                    @if ($contact->status !== 'resolved')
+                                        <form action="{{ route('restaurant.settings.contact.resolve', $contact->id) }}"
+                                            method="POST" class="d-inline m-0">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                class="btn btn-outline-success btn-sm rounded-pill px-3"
+                                                onclick="return confirm('Mark this message as resolved?')">
+                                                Mark as resolved
+                                            </button>
+                                        </form>
+                                    @endif
 
                                     <form action="{{ route('restaurant.settings.contact.destroy', $contact->id) }}"
                                         method="POST" class="delete-history-form d-inline m-0">
@@ -680,7 +701,7 @@
                 `;
                 } else {
                     bubble.className =
-                    'align-self-start text-start w-100 d-flex flex-column align-items-start mb-2';
+                        'align-self-start text-start w-100 d-flex flex-column align-items-start mb-2';
                     bubble.style.maxWidth = '80%';
                     bubble.innerHTML = `
                     <div class="p-3 rounded-3 text-dark shadow-sm bg-light border" style="font-size: 0.95rem; display: inline-block; max-width: 100%;">
