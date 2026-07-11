@@ -19,7 +19,7 @@ class CustomerController extends Controller
         ];
 
         // 2. 本物の店舗データをDBから取得
-        $all_restaurants = Restaurant::all();
+        $all_restaurants = Restaurant::approved()->get();
 
         // 💡 補正ポイント: もしDBが空の場合の保険（マップがエラーを吐かないようダミーを詰める）
         if ($all_restaurants->isEmpty()) {

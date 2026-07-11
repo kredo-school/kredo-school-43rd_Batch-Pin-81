@@ -178,7 +178,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $restaurants = Restaurant::all();
+        $restaurants = Restaurant::approved()->get(); // Approvedされたレストランのみを取得するために->approved()を追加 : リカコ
         return view('customers.restaurants.index', compact('restaurants'));
     }
 
