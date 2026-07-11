@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.restaurant')
+
 
 @section('title', 'Reviews & Ratings')
 
@@ -93,7 +94,7 @@
         }
     </style>
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="container py-5" style="max-width: 1000px;">
         <h2 class="mb-4 fw-bold text-navy">Reviews & Ratings</h2>
@@ -105,7 +106,8 @@
                     <h1 class="display-4 fw-bold text-navy mb-1">{{ number_format($stats['average_rating'] ?? 0.0, 1) }}</h1>
                     <div class="mb-2">
                         @for ($i = 1; $i <= 5; $i++)
-                            <i class="bi bi-star-fill {{ $i <= round($stats['average_rating'] ?? 0) ? 'star-rating' : 'star-rating-muted' }} fs-5"></i>
+                            <i
+                                class="bi bi-star-fill {{ $i <= round($stats['average_rating'] ?? 0) ? 'star-rating' : 'star-rating-muted' }} fs-5"></i>
                         @endfor
                     </div>
                     <small class="text-muted">{{ $reviews->count() }} reviews</small>
@@ -143,14 +145,17 @@
                 <div class="review-card p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
-                            <h5 class="fw-bold text-navy mb-1">{{ $review->user->username ?? $review->user->last_name }}</h5>
+                            <h5 class="fw-bold text-navy mb-1">{{ $review->user->username ?? $review->user->last_name }}
+                            </h5>
                             <div class="d-flex align-items-center gap-2">
                                 <div class="star-rating small">
                                     @for ($i = 1; $i <= 5; $i++)
-                                        <i class="bi bi-star-fill {{ $i <= $review->rating ? 'star-rating' : 'star-rating-muted' }}"></i>
+                                        <i
+                                            class="bi bi-star-fill {{ $i <= $review->rating ? 'star-rating' : 'star-rating-muted' }}"></i>
                                     @endfor
                                 </div>
-                                <small class="text-muted">{{ \Carbon\Carbon::parse($review->created_at)->format('Y-m-d') }}</small>
+                                <small
+                                    class="text-muted">{{ \Carbon\Carbon::parse($review->created_at)->format('Y-m-d') }}</small>
                             </div>
                         </div>
 
@@ -221,7 +226,12 @@
                                                 @foreach ($mediaItems as $index => $filePath)
                                                     @php
                                                         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-                                                        $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'ogg', 'qt']);
+                                                        $isVideo = in_array(strtolower($extension), [
+                                                            'mp4',
+                                                            'mov',
+                                                            'ogg',
+                                                            'qt',
+                                                        ]);
                                                     @endphp
                                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                                         <div class="d-flex justify-content-center align-items-center"
@@ -303,7 +313,12 @@
                                                 @foreach ($mediaItems as $index => $filePath)
                                                     @php
                                                         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-                                                        $isVideo = in_array(strtolower($extension), ['mp4', 'mov', 'ogg', 'qt']);
+                                                        $isVideo = in_array(strtolower($extension), [
+                                                            'mp4',
+                                                            'mov',
+                                                            'ogg',
+                                                            'qt',
+                                                        ]);
                                                     @endphp
                                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                                         <div class="d-flex align-items-center justify-content-center"

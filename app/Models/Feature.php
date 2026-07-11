@@ -11,7 +11,7 @@ class Feature extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'features_name',
+        'feature_name',
     ];
 
     public function restaurants()

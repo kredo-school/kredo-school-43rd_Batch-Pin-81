@@ -50,7 +50,7 @@
                     {{-- Category --}}
                     <div class="d-flex justify-content-start category">
                         @foreach ($restaurant->categories as $category)
-                            <span>{{ $category->categories_name }}</span>
+                            <span>{{ $category->category_name }}</span>
                         @endforeach
                     </div>
 
