@@ -15,7 +15,7 @@
 
             <form action="{{ route('booking.store') }}" method="POST">
                 @csrf
-                <input type="hidden" name="restaurant_id" value="{{$reservation->reservationCode }}">
+                <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
 
                 @if ($errors->any())
                     <div class="alert alert-danger py-2 small mb-3">

@@ -10,6 +10,11 @@ class Reservation extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public static function formatReservationCode(int $id): string
+    {
+        return 'RM' . str_pad((string) $id, 3, '0', STR_PAD_LEFT);
+    }
+
     public function scopeOccupying($query)
     {
         return $query->whereIn('status', ['pending', 'confirmed', 'completed']);
@@ -24,6 +29,7 @@ class Reservation extends Model
         'reservation_date',
         'reservation_time',
         'end_time',
+        'reservation_code',
         'status',
         'cancelled_by',
     ];

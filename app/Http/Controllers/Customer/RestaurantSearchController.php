@@ -43,5 +43,4 @@ class RestaurantSearchController extends Controller
         return view('customers.restaurants.show', compact('restaurant', 'availableSlots'));
     }
 
-    
 }
