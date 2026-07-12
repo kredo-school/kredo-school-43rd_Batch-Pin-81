@@ -7,6 +7,9 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Notifications\ContactReplyNotification;
+
 
 class ContactController extends Controller
 {
@@ -82,6 +85,11 @@ class ContactController extends Controller
         ]);
 
         $contact->update(['status' => 'replied']);
+
+        // Notify the customer who created the original contact
+        $contact->user->notify(
+            new ContactReplyNotification($contact, $validated['message'])
+        );
 
         return redirect()
             ->route('admin.contacts.index', ['contact' => $contact->id])
