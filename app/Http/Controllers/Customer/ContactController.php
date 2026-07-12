@@ -56,7 +56,7 @@ class ContactController extends Controller
             'status' => 'open',
         ]);
 
-        // adminがnotificationを受け取るようにするために追加しました。
+        // adminがnotificationを受け取るようにするために追加
         $admins = User::where('role_id', User::ROLE_ADMIN)->get();
         
         Notification::send($admins, new ContactMessageReceived($contact));

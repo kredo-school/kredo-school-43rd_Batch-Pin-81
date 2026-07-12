@@ -38,6 +38,26 @@ use Illuminate\Support\Facades\Route;
 # Main Search (app.blade.php)
 Route::get('/restaurants/search', [RestaurantController::class, 'search'])->name('restaurants.search'); // For everyone
 
+// Page for display restaurants after search
+Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])
+  ->name('restaurants.view');
+// Restaurant Page
+Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show'])
+  ->whereNumber('restaurant')
+  ->name('restaurant.show');
+
+// Display booking form page
+
+Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
+  ->name('booking.confirmation');
+
+Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
+  ->name('booking.create');
+
+Route::post('/booking', [BookingController::class, 'store'])
+  ->name('booking.store');
+
+
 Route::middleware('guest')->group(function () {
 
   Route::get('/register', [RegisterController::class, 'create'])
@@ -94,6 +114,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::patch('/settings/profile', [UserController::class, 'updateProfile'])->name('settings.profile.update');
     Route::patch('/settings/password', [UserController::class, 'updatePassword'])->name('settings.password.update');
+
+    Route::get('/notifications/{notification}', [CustomerNotificationController::class, 'read'])
+      ->name('notifications.read');
   });
 });
 
@@ -298,20 +321,3 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
 
-// Page for display restaurants after search
-Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])
-  ->name('restaurants.view');
-// Restaurant Page
-Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show'])
-  ->name('restaurant.show');
-
-// Display booking form page
-
-Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
-  ->name('booking.confirmation');
-
-Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
-  ->name('booking.create');
-
-Route::post('/booking', [BookingController::class, 'store'])
-  ->name('booking.store');

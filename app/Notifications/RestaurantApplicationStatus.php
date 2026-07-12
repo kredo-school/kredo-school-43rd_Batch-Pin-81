@@ -47,9 +47,10 @@ class RestaurantApplicationStatus extends Notification
             ->line('Thank you for your interest in Pin+81.');
     }
 
-    public function toArray($notifiable): array
+    public function toDatabase($notifiable): array
     {
         $data = [
+            'type' => 'restaurant_application',
             'title' => $this->status === 'approved'
                 ? 'Restaurant Approved'
                 : 'Restaurant Rejected',
@@ -71,6 +72,6 @@ class RestaurantApplicationStatus extends Notification
 
     public function toBroadcast($notifiable): BroadcastMessage
     {
-        return new BroadcastMessage($this->toArray($notifiable));
+        return new BroadcastMessage($this->toDatabase($notifiable));
     }
 }
