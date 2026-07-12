@@ -65,10 +65,6 @@ class BookingController extends Controller
             'num_of_people' => $validated['num_of_people'],
         ]);
 
-        $reservation->update([
-            'reservation_code' => Reservation::formatReservationCode($reservation->id),
-        ]);
-
          // 👇 Send the notification here
         {        
             $restaurantOwner = $reservation->restaurant->user;

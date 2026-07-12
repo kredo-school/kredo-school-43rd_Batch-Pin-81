@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Feature;
+use Illuminate\Database\Seeder;
 
 class FeatureSeeder extends Seeder
 {
@@ -17,6 +17,9 @@ class FeatureSeeder extends Seeder
             ['feature_name' => 'English Speaking Staff'],
             ['feature_name' => 'Vegetarian Options'],
             ['feature_name' => 'Halal Options'],
+            ['feature_name' => 'Vegan Options'],
+            ['feature_name' => 'Wi-Fi Available'],
+            ['feature_name' => 'Private Room Available'],
         ];
 
         foreach ($features as $feature) {
