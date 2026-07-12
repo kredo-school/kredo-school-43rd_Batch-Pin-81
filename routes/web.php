@@ -204,7 +204,7 @@ Route::middleware(['auth', 'admin'])
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth'/*, 'restaurant'*/]], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth', 'restaurant']], function () {
 
   // Index
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

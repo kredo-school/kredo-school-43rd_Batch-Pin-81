@@ -95,7 +95,7 @@
             border-radius: 8px !important;
         }
 
-        .list-group-item-action {
+        .contact-page .list-group-item-action {
             background-color: #fff !important;
             transition: all 0.2s ease;
             cursor: pointer;
@@ -104,7 +104,7 @@
             margin-bottom: 4px;
         }
 
-        .list-group-item-action:hover {
+        .contact-page .list-group-item-action:hover {
             background-color: #fff !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border-color: #e9ecef;
@@ -232,9 +232,194 @@
             color: #6c757d;
             border: 1px solid #ced4da;
         }
+    
+        /* Restaurant contact UI fix */
+        .contact-page .btn-followup:not(:disabled),
+        .contact-page #btn-send-followup:not(:disabled) {
+            background-color: #0b2238 !important;
+            color: #ffffff !important;
+            border-color: #0b2238 !important;
+        }
+
+        .contact-page .btn-followup:not(:disabled):hover,
+        .contact-page #btn-send-followup:not(:disabled):hover {
+            background-color: #143554 !important;
+            color: #ffffff !important;
+            border-color: #143554 !important;
+        }
+        /* restaurant-contact-actions-v3:start */
+        .contact-page .history-row-content {
+            gap: 16px;
+        }
+
+        .contact-page .history-main-content {
+            min-width: 0;
+        }
+
+        .contact-page .history-actions {
+            min-width: 270px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        .contact-page .btn-resolve-history {
+            min-width: 170px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .contact-page .btn-delete-history {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc3545;
+            background: #ffffff;
+            border: 1px solid transparent;
+            padding: 0;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .contact-page .btn-delete-history:hover {
+            background-color: #fff5f5;
+            color: #a71d2a;
+            border-color: #f1b0b7;
+        }
+
+        .contact-page .contact-confirm-modal .modal-dialog {
+            max-width: 560px;
+        }
+
+        .contact-page .contact-confirm-modal .modal-content {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(10, 37, 64, 0.28);
+            padding: 36px 42px 34px;
+            color: #0A2540;
+        }
+
+        .contact-page .contact-confirm-modal .modal-header {
+            border-bottom: none;
+            padding: 0;
+            align-items: flex-start;
+        }
+
+        .contact-page .contact-confirm-modal .modal-title {
+            color: #0A2540;
+            font-size: 2rem;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+
+        .contact-page .contact-confirm-modal .btn-close {
+            width: 1.25rem;
+            height: 1.25rem;
+            padding: 0;
+            margin: 0;
+            opacity: 0.55;
+            box-shadow: none;
+        }
+
+        .contact-page .contact-confirm-modal .modal-body {
+            padding: 34px 0 34px;
+        }
+
+        .contact-page .contact-confirm-modal .modal-subtitle {
+            color: #0A2540;
+            font-size: 1.45rem;
+            line-height: 1.35;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        .contact-page .contact-confirm-modal .modal-message {
+            color: #6c757d;
+            font-size: 1.12rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .contact-page .contact-confirm-modal .modal-footer {
+            border-top: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 18px;
+        }
+
+        .contact-page .contact-confirm-modal .btn-modal-cancel,
+        .contact-page .contact-confirm-modal .btn-modal-submit {
+            min-height: 52px;
+            border-radius: 12px;
+            font-size: 1.08rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-page .contact-confirm-modal .btn-modal-cancel {
+            color: #ffffff;
+            background-color: #0A2540;
+            border: 2px solid #0A2540;
+        }
+
+        .contact-page .contact-confirm-modal .btn-modal-resolve {
+            color: #198754;
+            background-color: #ffffff;
+            border: 2px solid #198754;
+        }
+
+        .contact-page .contact-confirm-modal .btn-modal-resolve:hover {
+            color: #ffffff;
+            background-color: #198754;
+        }
+
+        .contact-page .contact-confirm-modal .btn-modal-delete {
+            color: #ffffff;
+            background-color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        .contact-page .contact-confirm-modal .btn-modal-delete:hover {
+            color: #ffffff;
+            background-color: #bb2d3b;
+            border-color: #bb2d3b;
+        }
+
+        @media (max-width: 768px) {
+            .contact-page .history-row-content {
+                align-items: flex-start !important;
+                flex-direction: column;
+            }
+
+            .contact-page .history-actions {
+                width: 100%;
+                min-width: 0;
+                justify-content: flex-end;
+            }
+
+            .contact-page .contact-confirm-modal .modal-content {
+                padding: 28px 24px 26px;
+            }
+
+            .contact-page .contact-confirm-modal .modal-footer {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* restaurant-contact-actions-v3:end */
     </style>
 
-    <div class="container py-5" style="max-width: 800px;">
+    <div class="container py-5 contact-page" style="max-width: 800px;">
         <h2 class="mb-4 fw-bold" style="color: #0f2d4a;">Contact & Support</h2>
 
         {{-- フラッシュメッセージ --}}
@@ -420,8 +605,8 @@
                                 data-time="{{ $contact->created_at->format('Y-m-d H:i') }}"
                                 data-attachments='@json($attachmentsArr)'
                                 data-replies='@json($repliesArr)'>
-                                <div class="d-flex align-items-center w-100 justify-content-between">
-                                    <div class="d-flex align-items-center">
+                                <div class="history-row-content d-flex align-items-center w-100 justify-content-between">
+                                    <div class="history-main-content d-flex align-items-center">
                                         <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                                             style="width: 40px; height: 40px; background-color: #e8f7f0;">
                                             <i class="bi bi-chat-left-text text-success" style="font-size: 1.1rem;"></i>
@@ -441,29 +626,34 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    @if ($contact->status !== 'resolved')
-                                        <form action="{{ route('restaurant.settings.contact.resolve', $contact->id) }}"
-                                            method="POST" class="d-inline m-0">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit"
-                                                class="btn btn-outline-success btn-sm rounded-pill px-3"
-                                                onclick="return confirm('Mark this message as resolved?')">
+                                    <div class="history-actions" onclick="event.stopPropagation();">
+                                        @if ($contact->status !== 'resolved')
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm rounded-pill px-3 btn-resolve-history js-contact-action-modal"
+                                                data-action="{{ route('restaurant.settings.contact.resolve', $contact->id) }}"
+                                                data-method="PATCH"
+                                                data-title="Confirm Resolve" data-subtitle="Mark this message as resolved?"
+                                                data-message="This inquiry will be moved to resolved status."
+                                                data-button-text="Yes, Mark as resolved"
+                                                data-button-type="resolve">
                                                 Mark as resolved
                                             </button>
-                                        </form>
-                                    @endif
+                                        @else
+                                            <span class="btn-resolve-history"></span>
+                                        @endif
 
-                                    <form action="{{ route('restaurant.settings.contact.destroy', $contact->id) }}"
-                                        method="POST" class="delete-history-form d-inline m-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-delete-history" title="Delete message"
-                                            onclick="return confirm('Are you sure you want to delete this message and all its chat history?')">
-                                            <i class="bi bi-trash3" style="font-size: 1.1rem;"></i>
+                                        <button type="button"
+                                            class="btn-delete-history js-contact-action-modal"
+                                            title="Delete message"
+                                            data-action="{{ route('restaurant.settings.contact.destroy', $contact->id) }}"
+                                            data-method="DELETE"
+                                            data-title="Delete Message" data-subtitle="Delete this message?"
+                                            data-message="This will delete the message and all related chat history. This action cannot be undone."
+                                            data-button-text="Yes, Delete"
+                                            data-button-type="delete">
+                                            <i class="fa-regular fa-trash-can" style="font-size: 1.05rem;"></i>
                                         </button>
-                                    </form>
+                                    </div>
                                 </div>
                             </a>
                         @empty
@@ -513,6 +703,30 @@
             </div>
         </div>
     </div>
+    <!-- restaurant-contact-confirm-modal-v3:start -->
+    <div class="modal fade contact-confirm-modal" id="contactActionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form id="contact-action-form" method="POST" class="modal-content">
+                @csrf
+                <input type="hidden" name="_method" id="contact-action-method" value="PATCH">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contactActionModalTitle">Confirm action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-subtitle" id="contactActionModalSubtitle">Are you sure?</div>
+                    <p class="modal-message" id="contactActionModalMessage">Please confirm this action.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Back</button>
+                    <button type="submit" id="contactActionModalSubmit" class="btn btn-modal-submit btn-modal-resolve">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- restaurant-contact-confirm-modal-v3:end -->
 
     {{-- 画像拡大用モーダル --}}
     <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
@@ -591,10 +805,50 @@
             const btnBackToList = document.getElementById('btn-back-to-list');
             const chatLogContainer = document.getElementById('chat-log-container');
             const followUpForm = document.getElementById('follow-up-form');
+            // restaurant-contact-confirm-modal-v3:start
+            const contactActionModalEl = document.getElementById('contactActionModal');
+            const contactActionForm = document.getElementById('contact-action-form');
+            const contactActionMethod = document.getElementById('contact-action-method');
+            const contactActionModalTitle = document.getElementById('contactActionModalTitle');
+            const contactActionModalSubtitle = document.getElementById('contactActionModalSubtitle');
+            const contactActionModalMessage = document.getElementById('contactActionModalMessage');
+            const contactActionModalSubmit = document.getElementById('contactActionModalSubmit');
+            const contactActionModal = contactActionModalEl ? new bootstrap.Modal(contactActionModalEl) : null;
+
+            document.querySelectorAll('.js-contact-action-modal').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!contactActionModal || !contactActionForm) {
+                        return;
+                    }
+
+                    const action = this.dataset.action;
+                    const method = this.dataset.method || 'POST';
+                    const title = this.dataset.title || 'Confirm action';
+                    const subtitle = this.dataset.subtitle || 'Are you sure?';
+                    const message = this.dataset.message || 'Please confirm this action.';
+                    const buttonText = this.dataset.buttonText || 'Confirm';
+                    const buttonType = this.dataset.buttonType || 'resolve';
+
+                    contactActionForm.action = action;
+                    contactActionMethod.value = method;
+                    contactActionModalTitle.textContent = title;
+                    contactActionModalSubtitle.textContent = subtitle;
+                    contactActionModalMessage.textContent = message;
+                    contactActionModalSubmit.textContent = buttonText;
+                    contactActionModalSubmit.classList.remove('btn-modal-resolve', 'btn-modal-delete');
+                    contactActionModalSubmit.classList.add(buttonType === 'delete' ? 'btn-modal-delete' : 'btn-modal-resolve');
+
+                    contactActionModal.show();
+                });
+            });
+            // restaurant-contact-confirm-modal-v3:end
 
             document.querySelectorAll('.history-item').forEach(item => {
                 item.addEventListener('click', function(e) {
-                    if (e.target.closest('.delete-history-form') || e.target.closest(
+                    if (e.target.closest('.delete-history-form') || e.target.closest('.resolve-history-form') || e.target.closest(
                             '.btn-delete-history')) {
                         return;
                     }
