@@ -232,7 +232,7 @@
             color: #6c757d;
             border: 1px solid #ced4da;
         }
-    
+
         /* Restaurant contact UI fix */
         .contact-page .btn-followup:not(:disabled),
         .contact-page #btn-send-followup:not(:disabled) {
@@ -247,6 +247,7 @@
             color: #ffffff !important;
             border-color: #143554 !important;
         }
+
         /* restaurant-contact-actions-v3:start */
         .contact-page .history-row-content {
             gap: 16px;
@@ -295,105 +296,102 @@
             border-color: #f1b0b7;
         }
 
-        .contact-page .contact-confirm-modal .modal-dialog {
-            max-width: 560px;
+        /* Contact modal: match Reservations modal design */
+        .contact-confirm-modal .modal-dialog {
+            max-width: 480px;
         }
 
-        .contact-page .contact-confirm-modal .modal-content {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 24px 60px rgba(10, 37, 64, 0.28);
-            padding: 36px 42px 34px;
+        .contact-confirm-modal .modal-content {
+            background-color: #ffffff !important;
+            border: none !important;
+            border-radius: 16px !important;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+            padding: 10px;
             color: #0A2540;
         }
 
-        .contact-page .contact-confirm-modal .modal-header {
-            border-bottom: none;
-            padding: 0;
-            align-items: flex-start;
+        .contact-confirm-modal .modal-header {
+            border: 0 !important;
+            padding: 1rem 1rem 0 !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .contact-page .contact-confirm-modal .modal-title {
-            color: #0A2540;
-            font-size: 2rem;
-            line-height: 1.2;
-            font-weight: 800;
+        .contact-confirm-modal .modal-title {
+            color: #0A2540 !important;
+            font-size: 1.25rem;
+            font-weight: 700 !important;
         }
 
-        .contact-page .contact-confirm-modal .btn-close {
-            width: 1.25rem;
-            height: 1.25rem;
-            padding: 0;
-            margin: 0;
-            opacity: 0.55;
+        .contact-confirm-modal .btn-close {
+            font-size: 14px;
             box-shadow: none;
         }
 
-        .contact-page .contact-confirm-modal .modal-body {
-            padding: 34px 0 34px;
+        .contact-confirm-modal .modal-body {
+            padding: 1rem !important;
         }
 
-        .contact-page .contact-confirm-modal .modal-subtitle {
+        .contact-confirm-modal .modal-subtitle {
             color: #0A2540;
-            font-size: 1.45rem;
-            line-height: 1.35;
-            font-weight: 800;
-            margin-bottom: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .contact-page .contact-confirm-modal .modal-message {
+        .contact-confirm-modal .modal-message {
             color: #6c757d;
-            font-size: 1.12rem;
-            line-height: 1.5;
+            font-size: 14px;
             margin: 0;
         }
 
-        .contact-page .contact-confirm-modal .modal-footer {
-            border-top: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: 180px 1fr;
-            gap: 18px;
+        .contact-confirm-modal .modal-footer {
+            border: 0 !important;
+            padding: 0.5rem 1rem 1rem !important;
+            display: flex;
+            gap: 8px;
         }
 
-        .contact-page .contact-confirm-modal .btn-modal-cancel,
-        .contact-page .contact-confirm-modal .btn-modal-submit {
-            min-height: 52px;
-            border-radius: 12px;
-            font-size: 1.08rem;
-            font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        .contact-confirm-modal .btn-modal-cancel {
+            background-color: #0A2540 !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-weight: 700;
+            padding: 8px 24px;
         }
 
-        .contact-page .contact-confirm-modal .btn-modal-cancel {
-            color: #ffffff;
-            background-color: #0A2540;
-            border: 2px solid #0A2540;
+        .contact-confirm-modal .btn-modal-submit {
+            flex-grow: 1;
+            border-radius: 8px !important;
+            font-weight: 700;
+            padding: 8px;
+            transition: all 0.2s ease-in-out;
         }
 
-        .contact-page .contact-confirm-modal .btn-modal-resolve {
-            color: #198754;
-            background-color: #ffffff;
-            border: 2px solid #198754;
+        .contact-confirm-modal .btn-modal-resolve {
+            color: #198754 !important;
+            background-color: transparent !important;
+            border: 1px solid #198754 !important;
         }
 
-        .contact-page .contact-confirm-modal .btn-modal-resolve:hover {
-            color: #ffffff;
-            background-color: #198754;
+        .contact-confirm-modal .btn-modal-resolve:hover {
+            color: #ffffff !important;
+            background-color: #198754 !important;
+            border-color: #198754 !important;
         }
 
-        .contact-page .contact-confirm-modal .btn-modal-delete {
-            color: #ffffff;
-            background-color: #dc3545;
-            border: 2px solid #dc3545;
+        .contact-confirm-modal .btn-modal-delete {
+            color: #dc3545 !important;
+            background-color: transparent !important;
+            border: 1px solid #dc3545 !important;
         }
 
-        .contact-page .contact-confirm-modal .btn-modal-delete:hover {
-            color: #ffffff;
-            background-color: #bb2d3b;
-            border-color: #bb2d3b;
+        .contact-confirm-modal .btn-modal-delete:hover {
+            color: #ffffff !important;
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
         }
 
         @media (max-width: 768px) {
@@ -408,14 +406,8 @@
                 justify-content: flex-end;
             }
 
-            .contact-page .contact-confirm-modal .modal-content {
-                padding: 28px 24px 26px;
-            }
-
-            .contact-page .contact-confirm-modal .modal-footer {
-                grid-template-columns: 1fr;
-            }
         }
+
         /* restaurant-contact-actions-v3:end */
     </style>
 
@@ -631,26 +623,23 @@
                                             <button type="button"
                                                 class="btn btn-outline-success btn-sm rounded-pill px-3 btn-resolve-history js-contact-action-modal"
                                                 data-action="{{ route('restaurant.settings.contact.resolve', $contact->id) }}"
-                                                data-method="PATCH"
-                                                data-title="Confirm Resolve" data-subtitle="Mark this message as resolved?"
+                                                data-method="PATCH" data-title="Confirm Resolve"
+                                                data-subtitle="Mark this message as resolved?"
                                                 data-message="This inquiry will be moved to resolved status."
-                                                data-button-text="Yes, Mark as resolved"
-                                                data-button-type="resolve">
+                                                data-button-text="Yes, Mark as resolved" data-button-type="resolve">
                                                 Mark as resolved
                                             </button>
                                         @else
                                             <span class="btn-resolve-history"></span>
                                         @endif
 
-                                        <button type="button"
-                                            class="btn-delete-history js-contact-action-modal"
+                                        <button type="button" class="btn-delete-history js-contact-action-modal"
                                             title="Delete message"
                                             data-action="{{ route('restaurant.settings.contact.destroy', $contact->id) }}"
-                                            data-method="DELETE"
-                                            data-title="Delete Message" data-subtitle="Delete this message?"
+                                            data-method="DELETE" data-title="Delete Message"
+                                            data-subtitle="Delete this message?"
                                             data-message="This will delete the message and all related chat history. This action cannot be undone."
-                                            data-button-text="Yes, Delete"
-                                            data-button-type="delete">
+                                            data-button-text="Yes, Delete" data-button-type="delete">
                                             <i class="fa-regular fa-trash-can" style="font-size: 1.05rem;"></i>
                                         </button>
                                     </div>
@@ -838,8 +827,10 @@
                     contactActionModalSubtitle.textContent = subtitle;
                     contactActionModalMessage.textContent = message;
                     contactActionModalSubmit.textContent = buttonText;
-                    contactActionModalSubmit.classList.remove('btn-modal-resolve', 'btn-modal-delete');
-                    contactActionModalSubmit.classList.add(buttonType === 'delete' ? 'btn-modal-delete' : 'btn-modal-resolve');
+                    contactActionModalSubmit.classList.remove('btn-modal-resolve',
+                        'btn-modal-delete');
+                    contactActionModalSubmit.classList.add(buttonType === 'delete' ?
+                        'btn-modal-delete' : 'btn-modal-resolve');
 
                     contactActionModal.show();
                 });
@@ -848,7 +839,8 @@
 
             document.querySelectorAll('.history-item').forEach(item => {
                 item.addEventListener('click', function(e) {
-                    if (e.target.closest('.delete-history-form') || e.target.closest('.resolve-history-form') || e.target.closest(
+                    if (e.target.closest('.delete-history-form') || e.target.closest(
+                            '.resolve-history-form') || e.target.closest(
                             '.btn-delete-history')) {
                         return;
                     }
