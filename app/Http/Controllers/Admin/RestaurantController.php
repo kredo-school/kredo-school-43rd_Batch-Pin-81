@@ -28,6 +28,24 @@ class RestaurantController extends Controller
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
+    public function approved()
+    {
+        $restaurants = Restaurant::where('status', Restaurant::STATUS_APPROVED)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.restaurants.index', compact('restaurants'));
+    }
+
+    public function rejected()
+    {
+        $restaurants = Restaurant::where('status', Restaurant::STATUS_REJECTED)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.restaurants.index', compact('restaurants'));
+    }
+
     public function approve(Request $request, Restaurant $restaurant)
     {
         $restaurant->update([
@@ -48,8 +66,7 @@ class RestaurantController extends Controller
         );
 
         // Mark admin notification as read
-        auth()
-            ->user()
+        Auth::user()
             ->notifications()
             ->find($request->notification_id)
             ?->markAsRead();
@@ -113,7 +130,7 @@ class RestaurantController extends Controller
     public function updateStatus(Request $request, Restaurant $restaurant)
     {
         $request->validate([
-            'status' => 'required|boolean',
+            'status' => 'required|string|in:pending,approved,rejected,suspended',
         ]);
 
         $restaurant->update([

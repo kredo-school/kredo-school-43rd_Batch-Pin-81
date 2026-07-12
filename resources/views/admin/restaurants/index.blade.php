@@ -32,8 +32,8 @@
             color: #fff !important;
         }
 
-        .btn-dark-blue:active,
-        .btn-dark-blue.active,
+        .btn-dark-blue:approved,
+        .btn-dark-blue.approved,
         .btn-dark-blue:focus,
         .btn-dark-blue:focus-visible {
             background-color: #0a2540 !important;
@@ -42,8 +42,8 @@
             box-shadow: none !important;
         }
 
-        .btn-unactive:active,
-        .btn-unactive.active {
+        .btn-unactive:approved,
+        .btn-unactive.approved {
             background-color: #0a2540 !important;
             color: #fff !important;
             border-color: #0a2540 !important;
@@ -59,14 +59,18 @@
             padding: 1rem 1.5rem;
         }
 
+        .table-responsive {
+            overflow: visible;
+        }
+
         /* Pending */
         .status-pending {
             background: #dbeafe;
             color: #2563eb;
         }
 
-        /* Active */
-        .status-active {
+        /* approved */
+        .status-approved {
             background: #dcffd5;
             color: #5dea0c;
         }
@@ -84,7 +88,7 @@
         }
 
         .status-pending,
-        .status-active,
+        .status-approved,
         .status-rejected,
         .status-suspended {
             border: none;
@@ -98,6 +102,29 @@
             padding: .5rem;
             min-width: 180px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+        }
+
+        /* CSS-only dropdown (no JS): show on hover or keyboard focus */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown .dropdown-toggle {
+            cursor: pointer;
+        }
+
+        .dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            left: auto;
+            z-index: 2000;
+        }
+
+        .dropdown:hover .dropdown-menu,
+        .dropdown:focus-within .dropdown-menu {
+            display: block;
         }
 
         .status-option {
@@ -121,12 +148,12 @@
             color: #2563eb;
         }
 
-        /* active */
-        .status-option-active {
+        /* approved */
+        .status-option-approved {
             color: #16a34a;
         }
 
-        .status-option-active:hover {
+        .status-option-approved:hover {
             background: #dcffd5;
             color: #16a34a;
         }
@@ -174,8 +201,8 @@
             class="btn {{ request()->routeIs('admin.restaurants') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">All</a>
         <a href="{{ route('admin.restaurants.pending') }}"
             class="btn {{ request()->routeIs('admin.restaurants.pending') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Pending</a>
-        <a href="{{ route('admin.restaurants.active') }}"
-            class="btn {{ request()->routeIs('admin.restaurants.active') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Active</a>
+        <a href="{{ route('admin.restaurants.approved') }}"
+            class="btn {{ request()->routeIs('admin.restaurants.approved') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Approved</a>
         <a href="{{ route('admin.restaurants.rejected') }}"
             class="btn {{ request()->routeIs('admin.restaurants.rejected') ? 'btn-dark-blue' : 'btn-unactive' }}">Rejected</a>
         <a href="{{ route('admin.restaurants.suspended') }}"
@@ -232,7 +259,7 @@
 
                                   @if ($restaurant->status == 'pending') status-pending
                                   @elseif($restaurant->status == 'approved')
-                                      status-active
+                                      status-approved
                                   @elseif($restaurant->status == 'rejected')
                                       status-rejected
                                   @else
@@ -272,14 +299,14 @@
                                                 @csrf
                                                 @method('PATCH')
 
-                                                <input type="hidden" name="status" value="active">
+                                                <input type="hidden" name="status" value="approved">
 
                                                 <button type="submit"
-                                                    class="status-option status-option-active d-flex justify-content-between">
+                                                    class="status-option status-option-approved d-flex justify-content-between">
 
-                                                    <span>Active</span>
+                                                    <span>Approved</span>
 
-                                                    @if ($restaurant->status == 'active')
+                                                    @if ($restaurant->status == 'approved')
                                                         <span>✓</span>
                                                     @endif
 

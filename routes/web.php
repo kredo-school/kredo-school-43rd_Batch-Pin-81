@@ -161,8 +161,8 @@ Route::middleware(['auth', 'admin'])
     // Status of Restaurants
     Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
       ->name('admin.restaurants.pending');
-    Route::get('/restaurants/active', [AdminRestaurantController::class, 'active'])
-      ->name('admin.restaurants.active');
+    Route::get('/restaurants/approved', [AdminRestaurantController::class, 'approved'])
+      ->name('admin.restaurants.approved');
     Route::get('/restaurants/rejected', [AdminRestaurantController::class, 'rejected'])
       ->name('admin.restaurants.rejected');
     Route::get('/restaurants/suspended', [AdminRestaurantController::class, 'suspended'])
@@ -320,4 +320,3 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
   // Notification
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
-

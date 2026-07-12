@@ -8,7 +8,7 @@
         <div class="row g-4">
 
             {{-- LEFT SIDE: Restaurant Photos, Details & Tabs --}}
-            <div class="col-lg-9 order-lg-1 order-1">
+            <div class="col-12 col-lg-9 order-lg-1 order-1">
 
                 {{-- Inline Restaurant Photos Container --}}
                 <div id="restaurantCarousel"
@@ -22,7 +22,7 @@
                                     <div class="d-flex justify-content-center align-items-center image-container"
                                         style="background-color: #000; min-height: 400px; max-height: 500px; overflow: hidden;">
                                         <img src="{{ asset('storage/' . $photo->photo_path) }}"
-                                            class="d-block w-100 h-100 object-fit-cover restaurant-image"
+                                            class="d-block w-100 h-100 restaurant-image"
                                             alt="{{ $restaurant->restaurant_name }} Photo">
                                     </div>
                                 </div>
@@ -68,7 +68,9 @@
                             $percentage = ($averageRating / 5) * 100;
                         @endphp
                         {{-- Desktop --}}
-                        <div class="star-rating d-none d-md-flex align-items-center me-4">
+                        <div class="star-rating d-none d-md-flex align-items-center me-4"
+                            id="restaurantReviewsShortcut" role="button" tabindex="0"
+                            aria-label="Open reviews tab">
                             <div class="star-rating-top" style="width: {{ $percentage }}%">
                                 ★★★★★
                             </div>
@@ -166,7 +168,7 @@
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-people fs-4 mt-1 icon"></i>
                                             <div>
-                                                <h6 class="fw-bold text-navy mb-1">Party Size</h6>
+                                                <h6 class="fw-bold text-navy mb-1">Maximum Party Size</h6>
                                                 <p class="text-muted mb-0">Up to {{ $restaurant->capacity }} guests</p>
                                             </div>
                                         </div>
@@ -178,9 +180,14 @@
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-clock fs-4 mt-1 icon"></i>
                                             <div>
-                                                <h6 class="fw-bold text-navy mb-1">Hours</h6>
-                                                <p class="text-muted mb-0">{{ $restaurant->open_time }} -
-                                                    {{ $restaurant->close_time }}</p>
+                                                <h6 class="fw-bold text-navy mb-1">Today's Hours</h6>
+                                                <p class="text-muted mb-0">
+                                                    @if ($restaurant->today_hours)
+                                                        {{ $restaurant->today_hours }}
+                                                    @else
+                                                        Close
+                                                    @endif
+                                                </p>
                                             </div>
                                         </div>
 
@@ -188,31 +195,44 @@
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-globe fs-4 mt-1 icon"></i>
                                             <div>
-                                                <h6 class="fw-bold text-navy mb-1">Website & Socials</h6>
-                                                <p class="mb-2">
-                                                    <a href="https://www.sushimasaru.jp" target="_blank"
-                                                        class="text-muted text-decoration-none hover-underline">
-                                                        {{ $restaurant->website }}
-                                                    </a>
+                                                <p class="mb-2 d-flex align-items-center gap-2 flex-wrap">
+                                                    @if ($restaurant->website)
+                                                        <a href="{{ $restaurant->website }}" target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="text-muted text-decoration-none hover-underline d-inline-flex align-items-center gap-2">
+                                                            {{ $restaurant->website }}
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
                                                 </p>
 
                                                 {{-- SNS Quick Links Row --}}
                                                 <div class="d-flex align-items-center gap-3 mt-2">
-                                                    <a href="{{ $restaurant->instagram }}"
-                                                        class="text-muted fs-5 transition-colors" title="Instagram"
-                                                        style="opacity: 0.85;">
-                                                        <i class="bi bi-instagram text-danger"></i>
-                                                    </a>
-                                                    <a href="{{ $restaurant->facebook }}"
-                                                        class="text-muted fs-5 transition-colors" title="Facebook"
-                                                        style="opacity: 0.85;">
-                                                        <i class="bi bi-facebook text-primary"></i>
-                                                    </a>
-                                                    <a href="{{ $restaurant->twitter }}"
-                                                        class="text-muted fs-5 transition-colors" title="X (Twitter)"
-                                                        style="opacity: 0.85;">
-                                                        <i class="bi bi-twitter-x text-dark"></i>
-                                                    </a>
+                                                    @if ($restaurant->instagram)
+                                                        <a href="{{ $restaurant->instagram }}" target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="text-muted fs-5 transition-colors" title="Instagram"
+                                                            style="opacity: 0.85;">
+                                                            <i class="bi bi-instagram text-danger"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if ($restaurant->facebook)
+                                                        <a href="{{ $restaurant->facebook }}" target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="text-muted fs-5 transition-colors" title="Facebook"
+                                                            style="opacity: 0.85;">
+                                                            <i class="bi bi-facebook text-primary"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if ($restaurant->twitter)
+                                                        <a href="{{ $restaurant->twitter }}" target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="text-muted fs-5 transition-colors" title="X (Twitter)"
+                                                            style="opacity: 0.85;">
+                                                            <i class="bi bi-twitter-x text-dark"></i>
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -237,26 +257,70 @@
                             </ul>
                         </div>
 
+                        @php
+                            $foodMenus = $restaurant->menus->where('menu_category', 'food');
+                            $drinkMenus = $restaurant->menus->where('menu_category', 'drink');
+                        @endphp
+
                         <div class="tab-content" id="menuSubTabsContent">
                             <div class="tab-pane fade show active" id="menu-food" role="tabpanel">
-                                <div class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
-                                    @forelse ($restaurant->menus as $menu)
-                                        <div class="d-flex justify-content-between align-items-start border-bottom pb-3">
-                                            <div>
-                                                {{-- 💡 更生ポイント: $restaurant->menus->... から $menu->... へ修正 --}}
+                                <div class="card bg-white border-0 shadow-sm rounded-4 p-4">
+                                    @forelse ($foodMenus as $menu)
+                                        <div class="menu-item row g-3 align-items-center border-bottom pb-3 mb-3">
+                                            <div class="col-md-2 col-4">
+                                                @if ($menu->menu_image)
+                                                    <img src="{{ asset('assets/images/menu/' . $menu->menu_image) }}"
+                                                        alt="{{ $menu->menu_name }}"
+                                                        class="img-fluid rounded-3 w-100 object-fit-cover"
+                                                        style="aspect-ratio: 1 / 1; min-height: 84px;">
+                                                @else
+                                                    <div class="rounded-3 bg-light d-flex align-items-center justify-content-center text-muted"
+                                                        style="aspect-ratio: 1 / 1; min-height: 84px;">
+                                                        <i class="bi bi-image"></i>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-7 col-8">
                                                 <h5 class="fw-bold text-navy mb-1">{{ $menu->menu_name }}</h5>
                                                 <p class="text-muted mb-0 small">{{ $menu->description }}</p>
                                             </div>
-                                            <span class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
+                                            <div class="col-md-3 col-12 text-md-end">
+                                                <span class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
+                                            </div>
                                         </div>
                                     @empty
-                                        <p class="text-muted mb-0">No menu items available.</p>
+                                        <p class="text-muted mb-0">No food menu items available.</p>
                                     @endforelse
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="menu-drink" role="tabpanel">
                                 <div class="card bg-white border-0 shadow-sm rounded-4 p-4">
-                                    <p class="text-muted mb-0">Premium Japanese Sake selections available.</p>
+                                    @forelse ($drinkMenus as $menu)
+                                        <div class="menu-item row g-3 align-items-center border-bottom pb-3 mb-3">
+                                            <div class="col-md-2 col-4">
+                                                @if ($menu->menu_image)
+                                                    <img src="{{ asset('assets/images/menu/' . $menu->menu_image) }}"
+                                                        alt="{{ $menu->menu_name }}"
+                                                        class="img-fluid rounded-3 w-100 object-fit-cover"
+                                                        style="aspect-ratio: 1 / 1; min-height: 84px;">
+                                                @else
+                                                    <div class="rounded-3 bg-light d-flex align-items-center justify-content-center text-muted"
+                                                        style="aspect-ratio: 1 / 1; min-height: 84px;">
+                                                        <i class="bi bi-cup-straw"></i>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-7 col-8">
+                                                <h5 class="fw-bold text-navy mb-1">{{ $menu->menu_name }}</h5>
+                                                <p class="text-muted mb-0 small">{{ $menu->description }}</p>
+                                            </div>
+                                            <div class="col-md-3 col-12 text-md-end">
+                                                <span class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted mb-0">No drink menu items available.</p>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
@@ -266,59 +330,137 @@
                     <div class="tab-pane fade" id="photos" role="tabpanel">
                         <div class="custom-tabs-container mb-4 d-inline-block">
                             <ul class="nav nav-pills custom-track-pills text-center" id="photoSubTabs" role="tablist">
-                                <li class="nav-item"><button class="nav-link active px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-all" type="button" role="tab">All</button></li>
-                                <li class="nav-item"><button class="nav-link px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-food" type="button" role="tab">Food</button></li>
-                                <li class="nav-item"><button class="nav-link px-3" data-bs-toggle="pill"
+                                <li class="nav-item">
+                                    <button class="nav-link active px-3" data-bs-toggle="pill"
+                                        data-bs-target="#photo-all" type="button" role="tab">All</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link px-3" data-bs-toggle="pill"
+                                        data-bs-target="#photo-food" type="button" role="tab">Food</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link px-3" data-bs-toggle="pill"
+                                        data-bs-target="#photo-drink" type="button" role="tab">Drink</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link px-3" data-bs-toggle="pill"
                                         data-bs-target="#photo-interior" type="button" role="tab">Interior</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link px-3" data-bs-toggle="pill"
+                                        data-bs-target="#photo-exterior" type="button" role="tab">Exterior</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link px-3" data-bs-toggle="pill"
+                                        data-bs-target="#photo-other" type="button" role="tab">Other</button>
                                 </li>
                             </ul>
                         </div>
 
+                        @php
+                            $photoCategories = [
+                                'all' => 'All',
+                                'food' => 'Food',
+                                'drink' => 'Drink',
+                                'interior' => 'Interior',
+                                'exterior' => 'Exterior',
+                                'other' => 'Other',
+                            ];
+
+                            $photosByCategory = [
+                                'all' => $restaurant->photos,
+                                'food' => $restaurant->photos->where('photo_category', 'food'),
+                                'drink' => $restaurant->photos->where('photo_category', 'drink'),
+                                'interior' => $restaurant->photos->where('photo_category', 'interior'),
+                                'exterior' => $restaurant->photos->where('photo_category', 'exterior'),
+                                'other' => $restaurant->photos->where('photo_category', 'other'),
+                            ];
+                        @endphp
+
                         <div class="tab-content">
-                            <div class="tab-pane fade show active" id="photo-all" role="tabpanel">
-                                <div class="row g-3">
-                                    @forelse ($restaurant->photos as $photo)
-                                        <div class="col-md-4 col-6">
-                                            <div class="ratio ratio-1x1 rounded-4 overflow-hidden shadow-sm">
-                                                <img src="{{ asset('storage/' . $photo->photo_path) }}"
-                                                    alt="Gallery Image" class="w-100 h-100 object-fit-cover">
+                            @foreach ($photoCategories as $key => $label)
+                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="photo-{{ $key }}"
+                                    role="tabpanel">
+                                    @php $filteredPhotos = $photosByCategory[$key]; @endphp
+
+                                    <div class="row g-3">
+                                        @forelse ($filteredPhotos as $photo)
+                                            <div class="col-md-4 col-6">
+                                                <div class="photo-wrapper shadow-sm rounded-4 overflow-hidden position-relative">
+                                                    <img src="{{ asset('storage/' . $photo->photo_path) }}"
+                                                        alt="{{ $label }} photo"
+                                                        class="photo-item-img photo-zoom-trigger"
+                                                        data-photo-src="{{ asset('storage/' . $photo->photo_path) }}"
+                                                        data-photo-alt="{{ $label }} photo">
+                                                </div>
                                             </div>
-                                        </div>
-                                    @empty
-                                        <div class="col-11 text-center py-4 text-muted">No photos available.</div>
-                                    @endforelse
+                                        @empty
+                                            <div class="col-12 text-center py-4 text-muted">
+                                                No {{ strtolower($label) }} photos available.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            @endforeach
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
                     {{-- 4. REVIEWS (💡 更生ポイント: ここをダミーから本物のループ画像対応に変更) --}}
                     <div class="tab-pane fade" id="reviews" role="tabpanel">
                         <div class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
 
                             @forelse ($restaurant->posts as $post)
+                                @php
+                                    $user = $post->user;
+                                    $isLiked = auth()->check() ? $post->likes->contains('user_id', auth()->id()) : false;
+                                    $likesCount = $post->likes->count();
+                                @endphp
                                 <div class="review-item border-bottom pb-4 mb-2">
-                                    {{-- User Profile Header --}}
-                                    <div class="d-flex align-items-center gap-3 mb-3">
-                                        <img src="https://i.pravatar.cc/150?img={{ $post->user_id ?? 1 }}" alt="Avatar"
-                                            class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
-                                        <div>
-                                            <h6 class="fw-bold text-navy mb-0">
-                                                {{ $post->user->name ?? 'Anonymous User' }}
-                                                <span class="text-muted fw-normal fs-7">·
-                                                    {{ $post->created_at ? $post->created_at->diffForHumans() : '' }}</span>
-                                            </h6>
-                                            <div class="text-warning fs-7">
-                                                {{ str_repeat('★', $post->rating) }}{{ str_repeat('☆', 5 - $post->rating) }}
+                                    <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="https://i.pravatar.cc/150?img={{ $post->user_id ?? 1 }}" alt="Avatar"
+                                                class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
+                                            <div>
+                                                <div class="d-flex align-items-center flex-wrap gap-2">
+                                                    <a href="{{ $user ? route('customer.user.profile', $user) : '#' }}"
+                                                        class="fw-bold text-navy mb-0 text-decoration-none d-inline-flex align-items-center gap-2">
+                                                        <span>{{ $user->name ?? 'Anonymous User' }}</span>
+                                                    </a>
+                                                    <div class="text-warning fs-7">
+                                                        {{ str_repeat('★', $post->rating) }}{{ str_repeat('☆', 5 - $post->rating) }}
+                                                    </div>
+                                                </div>
+                                                <div class="text-muted fw-normal fs-7">·
+                                                    {{ $post->created_at ? $post->created_at->diffForHumans() : '' }}</div>
                                             </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                            @auth
+                                                <button type="button"
+                                                    class="btn btn-link p-0 border-0 bg-transparent shadow-none review-like-btn d-inline-flex align-items-center justify-content-center"
+                                                    data-like-url="{{ route('customer.posts.like', $post) }}"
+                                                    data-post-id="{{ $post->id }}"
+                                                    data-liked="{{ $isLiked ? '1' : '0' }}"
+                                                    aria-label="Like review"
+                                                    style="width: auto; height: auto;">
+                                                    <i class="bi {{ $isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted' }} fs-4"></i>
+                                                </button>
+                                            @else
+                                                <a href="{{ route('login') }}"
+                                                    class="btn btn-link p-0 border-0 bg-transparent shadow-none d-inline-flex align-items-center justify-content-center"
+                                                    aria-label="Login to like review"
+                                                    style="width: auto; height: auto;">
+                                                    <i class="bi bi-heart text-muted fs-4"></i>
+                                                </a>
+                                            @endauth
+
+                                            <span class="text-muted small fw-semibold review-like-count"
+                                                data-like-count-for="{{ $post->id }}">{{ $likesCount }}</span>
                                         </div>
                                     </div>
 
-                                    {{-- Review Content Row --}}
                                     <div class="row g-3 align-items-start">
-                                        {{-- 💡 ユーザーが投稿した写真の表示エリア --}}
                                         @if ($post->image)
                                             <div class="col-md-4 col-12">
                                                 <img src="{{ asset('storage/' . $post->image) }}" alt="Review Image"
@@ -328,7 +470,6 @@
                                             </div>
                                         @endif
 
-                                        {{-- Review Text Comment --}}
                                         <div class="col text-muted mb-0 fs-6">
                                             {{ $post->description }}
                                         </div>
@@ -346,7 +487,7 @@
             </div>
 
             {{-- RIGHT SIDE: Calendar Reservation Card --}}
-            <div class="col-lg-3 order-lg-2 order-2">
+            <div class="col-12 col-lg-3 order-lg-2 order-2">
                 <div class="card bg-white border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 24px; z-index: 100;">
                     <h5 class="fw-bold text-navy mb-4">Make a Reservation</h5>
 
@@ -436,6 +577,22 @@
     <div class="chat-floating-btn shadow">
         <i class="bi bi-chat-left-dots-fill text-white"></i>
     </div>
+
+    <div class="modal fade" id="photoZoomModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-body p-0 position-relative">
+                    <button type="button"
+                        class="photo-zoom-close-btn position-absolute top-0 end-0 m-3 z-3 p-0 border-0 bg-transparent text-white"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    <img id="photoZoomModalImage" src="" alt="Zoomed photo"
+                        class="w-100 rounded-4 shadow-lg bg-black" style="max-height: 90vh; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @include('customers.restaurants.partials.modals.booking_options')
@@ -475,7 +632,9 @@
     .restaurant-image {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        object-position: center;
+        background-color: #000;
     }
 
     /* Shrink image container height on mobile screens */
@@ -740,6 +899,40 @@
         border-color: #0a2540 !important;
     }
 
+    .photo-wrapper {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background-color: #f1f3f5;
+    }
+
+    .photo-zoom-trigger {
+        cursor: zoom-in;
+    }
+
+    .photo-zoom-trigger:hover {
+        opacity: 0.95;
+    }
+
+    .photo-zoom-close-btn {
+        font-size: 2rem;
+        line-height: 1;
+        box-shadow: none !important;
+    }
+
+    .photo-zoom-close-btn:hover,
+    .photo-zoom-close-btn:focus {
+        color: #ffffff;
+        box-shadow: none !important;
+        outline: none;
+    }
+
+    .photo-item-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
     .chat-floating-btn {
         position: fixed;
         bottom: 24px;
@@ -753,6 +946,14 @@
         justify-content: center;
         font-size: 1.4rem;
         z-index: 1050;
+    }
+
+    .review-like-btn {
+        transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .review-like-btn:hover {
+        transform: scale(1.04);
     }
 </style>
 
@@ -834,6 +1035,88 @@
         nextBtn.addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
+        });
+
+        const zoomModalElement = document.getElementById('photoZoomModal');
+        const zoomModalImage = document.getElementById('photoZoomModalImage');
+        const restaurantReviewsShortcut = document.getElementById('restaurantReviewsShortcut');
+        const reviewsTabButton = document.getElementById('reviews-tab');
+        const reviewsPane = document.getElementById('reviews');
+
+        if (restaurantReviewsShortcut && reviewsTabButton && reviewsPane) {
+            const openReviewsTab = function() {
+                bootstrap.Tab.getOrCreateInstance(reviewsTabButton).show();
+            };
+
+            restaurantReviewsShortcut.addEventListener('click', openReviewsTab);
+            restaurantReviewsShortcut.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openReviewsTab();
+                }
+            });
+
+            reviewsTabButton.addEventListener('shown.bs.tab', function() {
+                reviewsPane.setAttribute('tabindex', '-1');
+                reviewsPane.focus({ preventScroll: true });
+                reviewsPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+
+        document.querySelectorAll('.photo-zoom-trigger').forEach((photo) => {
+            photo.addEventListener('click', function() {
+                zoomModalImage.src = this.dataset.photoSrc;
+                zoomModalImage.alt = this.dataset.photoAlt || 'Zoomed photo';
+
+                const zoomModal = bootstrap.Modal.getOrCreateInstance(zoomModalElement);
+                zoomModal.show();
+            });
+        });
+
+        document.querySelectorAll('.review-like-btn').forEach((button) => {
+            button.addEventListener('click', async function() {
+                const likeUrl = this.dataset.likeUrl;
+                const postId = this.dataset.postId;
+                const icon = this.querySelector('i');
+                const countElement = document.querySelector(`[data-like-count-for="${postId}"]`);
+
+                try {
+                    const response = await fetch(likeUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        window.location.href = '{{ route('login') }}';
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to toggle like');
+                    }
+
+                    const data = await response.json();
+                    const isLiked = data.isLiked;
+
+                    this.dataset.liked = isLiked ? '1' : '0';
+                    icon.className = `bi ${isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted'} fs-4`;
+
+                    if (countElement) {
+                        countElement.textContent = data.likes_count;
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        zoomModalElement.addEventListener('hidden.bs.modal', function() {
+            zoomModalImage.src = '';
+            zoomModalImage.alt = 'Zoomed photo';
         });
 
         renderCalendar();
