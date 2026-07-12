@@ -73,9 +73,6 @@ Route::middleware('auth')->group(function () {
 
   Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-  // dissplay Home page
-  Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
-
   // Favorites Page
   Route::get('/favorites', [FavoriteController::class, 'view'])->name('favorites.index');
   Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
@@ -281,7 +278,7 @@ Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.set
 Route::get('/restaurant/{restaurant}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews');
 
 // Customer
-Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'customer'*/], function () {
+Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth', 'customer']], function () {
 
   Route::get('/search', [CustomerController::class, 'index'])->name('search');
 
