@@ -31,8 +31,8 @@ class RestaurantSearchController extends Controller
             'categories',
             'features',
             'menus',
-            'menus.photos',
             'posts.user',
+            'posts.likes',
         ]);
 
         // 💡 補正ポイント：postsが存在する場合のみ平均点と件数を計算（クラッシュ防止）
