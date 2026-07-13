@@ -15,6 +15,11 @@ class Reservation extends Model
         return 'RM' . str_pad((string) $id, 3, '0', STR_PAD_LEFT);
     }
 
+    public function getReservationCodeAttribute(): ?string
+    {
+        return $this->id ? self::formatReservationCode($this->id) : null;
+    }
+
     public function scopeOccupying($query)
     {
         return $query->whereIn('status', ['pending', 'confirmed', 'completed']);
@@ -29,7 +34,6 @@ class Reservation extends Model
         'reservation_date',
         'reservation_time',
         'end_time',
-        'reservation_code',
         'status',
         'cancelled_by',
     ];

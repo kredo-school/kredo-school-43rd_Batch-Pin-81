@@ -187,9 +187,22 @@
                                     <div class="d-flex align-items-center gap-3">
 
                                         {{-- FOOD画像表示エリア --}}
-                                        @if ($menu->menu_image)
-                                            <img src="{{ asset('assets/images/menu/' . $menu->menu_image) }}"
-                                                alt="{{ $menu->menu_name }}"
+                                        @php
+                                            $menuImage = $menu->menu_image ?? $menu->image_path;
+
+                                            if ($menuImage && str_starts_with($menuImage, 'demo/')) {
+                                                $menuImageUrl = asset('storage/' . $menuImage);
+                                            } elseif ($menuImage && str_starts_with($menuImage, 'menus/')) {
+                                                $menuImageUrl = asset('storage/' . $menuImage);
+                                            } elseif ($menuImage) {
+                                                $menuImageUrl = asset('assets/images/menu/' . $menuImage);
+                                            } else {
+                                                $menuImageUrl = null;
+                                            }
+                                        @endphp
+
+                                        @if ($menuImageUrl)
+                                            <img src="{{ $menuImageUrl }}" alt="{{ $menu->menu_name }}"
                                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
                                         @else
                                             <div class="image-placeholder">
@@ -243,9 +256,22 @@
                                     <div class="d-flex align-items-center gap-3">
 
                                         {{-- DRINK画像表示エリア --}}
-                                        @if ($menu->menu_image)
-                                            <img src="{{ asset('assets/images/menu/' . $menu->menu_image) }}"
-                                                alt="{{ $menu->menu_name }}"
+                                        @php
+                                            $menuImage = $menu->menu_image ?? $menu->image_path;
+
+                                            if ($menuImage && str_starts_with($menuImage, 'demo/')) {
+                                                $menuImageUrl = asset('storage/' . $menuImage);
+                                            } elseif ($menuImage && str_starts_with($menuImage, 'menus/')) {
+                                                $menuImageUrl = asset('storage/' . $menuImage);
+                                            } elseif ($menuImage) {
+                                                $menuImageUrl = asset('assets/images/menu/' . $menuImage);
+                                            } else {
+                                                $menuImageUrl = null;
+                                            }
+                                        @endphp
+
+                                        @if ($menuImageUrl)
+                                            <img src="{{ $menuImageUrl }}" alt="{{ $menu->menu_name }}"
                                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
                                         @else
                                             <div class="image-placeholder">
@@ -345,21 +371,24 @@
 
                         <div class="mb-4">
                             <label class="form-label small fw-bold" style="color: #0A2540;">Photo (optional)</label>
-                            <div class="upload-zone" onclick="document.getElementById('input-photo').click()" style="min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-                                
+                            <div class="upload-zone" onclick="document.getElementById('input-photo').click()"
+                                style="min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+
                                 {{-- プレビュー画像（選択されたらJavaScriptでd-noneを外す） --}}
-                                <img id="upload-preview" src="#" alt="Preview" class="d-none" style="max-width: 100%; max-height: 100px; border-radius: 8px; object-fit: cover;">
-                                
+                                <img id="upload-preview" src="#" alt="Preview" class="d-none"
+                                    style="max-width: 100%; max-height: 100px; border-radius: 8px; object-fit: cover;">
+
                                 {{-- デフォルト表示（画像選択後は非表示にする） --}}
                                 <div id="upload-zone-default" class="text-center">
                                     <i class="fa-regular fa-image mb-2 d-block text-muted" style="font-size: 28px;"></i>
-                                    <span class="small text-muted d-block" id="upload-zone-text">Click to upload photo</span>
+                                    <span class="small text-muted d-block" id="upload-zone-text">Click to upload
+                                        photo</span>
                                 </div>
                             </div>
-                        
+
                             <input type="file" id="input-photo" name="menu_image" class="d-none" accept="image/*"
                                 onchange="previewImage(this)">
-                        
+
                             @error('menu_image')
                                 <div class="invalid-feedback d-block small mt-1 fw-bold text-danger">{{ $message }}</div>
                             @enderror
