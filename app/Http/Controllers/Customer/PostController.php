@@ -179,7 +179,21 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $restaurants = Restaurant::approved()->get(); // Approvedされたレストランのみを取得するために->approved()を追加 : リカコ
+        $restaurants = Restaurant::query()
+            ->select('restaurants.*')
+            ->selectRaw(
+                'exists (
+                    select 1
+                    from favorites
+                    where favorites.restaurant_id = restaurants.id
+                      and favorites.user_id = ?
+                      and favorites.deleted_at is null
+                ) as is_favorited',
+                [Auth::id()]
+            )
+            ->approved()
+            ->get(); // Approvedされたレストランのみを取得するために->approved()を追加 : リカコ
+
         return view('customers.restaurants.index', compact('restaurants'));
     }
 

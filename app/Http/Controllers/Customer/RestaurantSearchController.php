@@ -5,15 +5,34 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use App\Models\Reservation;
+use Illuminate\Support\Facades\Auth;
 
 class RestaurantSearchController extends Controller
 {
     public function view()
     {
-        $restaurants = Restaurant::with(['photos', 'categories', 'features'])
+        // $restaurants = Restaurant::all();
+        $restaurants = Restaurant::with([
+            'photos',
+            'categories',
+            'features'
+        ])
+            ->select('restaurants.*')
+            ->selectRaw(
+                'exists (
+                    select 1
+                    from favorites
+                    where favorites.restaurant_id = restaurants.id
+                      and favorites.user_id = ?
+                      and favorites.deleted_at is null
+                ) as is_favorited',
+                [Auth::id()]
+            )
             ->approved()
             ->withAvg('posts', 'rating')
-            ->get();
+            ->get(); // Approvedされたレストランのみを取得するために->approved()を追加ーリカコ
+
 
         return view('customers.restaurants.index', compact('restaurants'));
     }
