@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\PostLikedNotification;
 
 class LikeController extends Controller
 {
@@ -18,21 +19,30 @@ class LikeController extends Controller
         if (!$user) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
+
         $alreadyLiked = Like::where('user_id', $user->id)
-                            ->where('post_id', $post->id)
-                            ->exists();
+            ->where('post_id', $post->id)
+            ->exists();
 
         if ($alreadyLiked) {
             Like::where('user_id', $user->id)
                 ->where('post_id', $post->id)
                 ->delete();
-                
+
             $isLiked = false;
         } else {
             Like::create([
                 'user_id' => $user->id,
                 'post_id' => $post->id
             ]);
+
+            // Notify the post owner
+            if ($post->user_id !== $user->id) {
+                $post->user->notify(
+                    new PostLikedNotification($user, $post)
+                );
+            }
+
             $isLiked = true;
         }
 

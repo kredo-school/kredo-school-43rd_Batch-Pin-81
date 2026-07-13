@@ -66,7 +66,7 @@
                             </a>
                         @break
 
-                        @case('restaurant_application')
+                        @case('restaurant')
                             <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
                                 <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
                                     <div class="d-flex align-items-start justify-content-between w-100">
@@ -84,6 +84,74 @@
                                                     Restaurant {{ ucfirst((string) data_get($notification->data, 'status', 'Update')) }}
                                                 </h6>
                                                 <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'Your restaurant application has been updated.') }}</p>
+                                                <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+
+                                        @if($isUnread)
+                                            <span class="badge badge-new fw-bold px-2 py-1 rounded-3">New</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </a>
+                        @break
+                                                                                        
+                        {{-- @case('new_follower')
+                            <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
+                                <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
+                                    <div class="d-flex align-items-start justify-content-between w-100">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm border border-pink"
+                                                style="width: 44px; height: 44px; min-width: 44px; background-color: #FCE7F3;">
+                                                @if(data_get($notification->data, 'profile_photo'))
+                                                    <img src="{{ asset('storage/' . data_get($notification->data, 'profile_photo')) }}"
+                                                        alt="Follower profile photo"
+                                                        class="rounded-circle"
+                                                        style="width: 44px; height: 44px; object-fit: cover;">
+                                                @else
+                                                    <i class="fa-solid fa-user-plus {{ $isUnread ? 'style-pink-text' : 'style-pink-text-light' }}" style="font-size: 1.05rem;"></i>
+                                                @endif
+                                            </div>
+
+                                            <div>
+                                                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">
+                                                    New Follower
+                                                </h6>
+                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'Followed you') }}</p>
+                                                <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+
+                                        @if($isUnread)
+                                            <span class="badge badge-new fw-bold px-2 py-1 rounded-3">New</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </a>
+                        @break
+
+                        @case('post_liked')
+                            <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
+                                <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
+                                    <div class="d-flex align-items-start justify-content-between w-100">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm border border-pink"
+                                                style="width: 44px; height: 44px; min-width: 44px; background-color: #FCE7F3;">
+                                                @if(data_get($notification->data, 'profile_photo'))
+                                                    <img src="{{ asset('storage/' . data_get($notification->data, 'profile_photo')) }}"
+                                                        alt="Liker profile photo"
+                                                        class="rounded-circle"
+                                                        style="width: 44px; height: 44px; object-fit: cover;">
+                                                @else
+                                                    <i class="fa-solid fa-heart {{ $isUnread ? 'style-pink-text' : 'style-pink-text-light' }}" style="font-size: 1.05rem;"></i>
+                                                @endif
+                                            </div>
+
+                                            <div>
+                                                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">
+                                                    {{ data_get($notification->data, 'title', 'Someone liked your post') }}
+                                                </h6>
+                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'Your post received a new like.') }}</p>
                                                 <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
                                             </div>
                                         </div>
@@ -118,7 +186,7 @@
                                     </div>
                                 </div>
                             </a>
-                        @break
+                        @break --}}
 
                     @endswitch
                 @empty
