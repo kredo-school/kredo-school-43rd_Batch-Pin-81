@@ -10,12 +10,12 @@ use App\Services\ReservationAvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class DashboardController extends Controller
 {
-    public function __construct(private ReservationAvailabilityService $availability)
-    {
-    }
+    public function __construct(private ReservationAvailabilityService $availability) {}
 
     public function index(Request $request)
     {
@@ -35,10 +35,12 @@ class DashboardController extends Controller
                 'isClosed' => true,
                 'durationLabel' => '2 hours',
                 'immediateReservation' => null,
+                'focusReservationId' => null,
             ]);
         }
 
         $date = $request->input('date', now()->format('Y-m-d'));
+        $focusReservationId = $request->integer('focus');
         $bounds = $this->availability->timelineBounds($restaurant, $date);
         $displayStartTime = $request->input('start_time', $bounds['open'] ?? '17:00');
         $timeSlots = $this->availability->generateTimelineSlots(
@@ -104,7 +106,150 @@ class DashboardController extends Controller
             'isClosed' => $bounds['closed'],
             'durationLabel' => $this->availability->durationLabel($restaurant),
             'immediateReservation' => $immediateReservation,
+            'focusReservationId' => $focusReservationId ?: null,
         ]);
+    }
+
+    public function manualAvailability(Request $request)
+    {
+        $restaurant = $this->currentRestaurant();
+        abort_if(!$restaurant, 404);
+
+        $validated = $request->validate([
+            'date' => ['required', 'date'],
+            'time' => ['required', 'date_format:H:i'],
+            'guests' => ['required', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $start = Carbon::parse($validated['date'] . ' ' . $validated['time']);
+
+        if ($start->lt(now()->copy()->subMinute())) {
+            return response()->json(['tables' => [], 'message' => 'Past times cannot be selected.']);
+        }
+
+        if (!$this->availability->isWithinOperatingHours(
+            $restaurant,
+            $validated['date'],
+            $validated['time']
+        )) {
+            return response()->json(['tables' => [], 'message' => 'The selected time is outside operating hours.']);
+        }
+
+        $tables = Table::query()
+            ->where('restaurant_id', $restaurant->id)
+            ->where('is_active', true)
+            ->where('capacity', '>=', $validated['guests'])
+            ->orderBy('capacity')
+            ->orderBy('id')
+            ->get()
+            ->filter(fn(Table $table) => !$this->availability->tableHasConflict(
+                $table,
+                $restaurant,
+                $validated['date'],
+                $validated['time'],
+                (int) $validated['guests']
+            ))
+            ->map(fn(Table $table) => [
+                'id' => $table->id,
+                'name' => $table->table_name,
+                'capacity' => $table->capacity,
+            ])
+            ->values();
+
+        return response()->json([
+            'tables' => $tables,
+            'message' => $tables->isEmpty() ? 'No available tables match the selected conditions.' : '',
+        ]);
+    }
+
+    public function storeManualReservation(Request $request)
+    {
+        $restaurant = $this->currentRestaurant();
+        abort_if(!$restaurant, 404);
+
+        $validated = $request->validate([
+            'booking_source' => ['required', 'in:phone,walk_in'],
+            'guest_name' => ['nullable', 'string', 'max:255'],
+            'phone_number' => ['nullable', 'string', 'max:50'],
+            'num_of_people' => ['required', 'integer', 'min:1', 'max:50'],
+            'reservation_date' => ['required', 'date'],
+            'reservation_time' => ['required', 'date_format:H:i'],
+            'table_id' => ['required', 'integer', 'exists:tables,id'],
+        ]);
+
+        $start = Carbon::parse($validated['reservation_date'] . ' ' . $validated['reservation_time']);
+        if ($start->lt(now()->copy()->subMinute())) {
+            throw ValidationException::withMessages([
+                'reservation_time' => 'Past times cannot be selected.',
+            ]);
+        }
+
+        if (((int) Carbon::parse($validated['reservation_time'])->minute % 15) !== 0) {
+            throw ValidationException::withMessages([
+                'reservation_time' => 'Please select a 15-minute interval.',
+            ]);
+        }
+
+        if (!$this->availability->isWithinOperatingHours(
+            $restaurant,
+            $validated['reservation_date'],
+            $validated['reservation_time']
+        )) {
+            throw ValidationException::withMessages([
+                'reservation_time' => 'The selected time is outside operating hours.',
+            ]);
+        }
+
+        $reservation = DB::transaction(function () use ($validated, $restaurant) {
+            $table = Table::query()
+                ->whereKey($validated['table_id'])
+                ->where('restaurant_id', $restaurant->id)
+                ->where('is_active', true)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ((int) $table->capacity < (int) $validated['num_of_people']) {
+                throw ValidationException::withMessages([
+                    'table_id' => 'The selected table does not have enough seats.',
+                ]);
+            }
+
+            if ($this->availability->tableHasConflict(
+                $table,
+                $restaurant,
+                $validated['reservation_date'],
+                $validated['reservation_time'],
+                (int) $validated['num_of_people']
+            )) {
+                throw ValidationException::withMessages([
+                    'table_id' => 'That table is no longer available for the selected time.',
+                ]);
+            }
+
+            return Reservation::create([
+                'user_id' => null,
+                'restaurant_id' => $restaurant->id,
+                'table_id' => $table->id,
+                'guest_name' => $validated['guest_name'] ?: null,
+                'phone_number' => $validated['phone_number'] ?: null,
+                'booking_source' => $validated['booking_source'],
+                'num_of_people' => $validated['num_of_people'],
+                'reservation_date' => $validated['reservation_date'],
+                'reservation_time' => $validated['reservation_time'],
+                'end_time' => $this->availability->reservationEndTimeForDb(
+                    $restaurant,
+                    $validated['reservation_date'],
+                    $validated['reservation_time']
+                ),
+                'status' => 'confirmed',
+            ]);
+        });
+
+        return redirect()->route('restaurant.dashboard', [
+            'date' => $validated['reservation_date'],
+            'start_time' => $validated['reservation_time'],
+            'focus' => $reservation->id,
+        ])->with('success', 'Manual reservation added successfully.');
     }
 
     public function storeTable(Request $request)

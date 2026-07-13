@@ -22,8 +22,18 @@
             : null;
 
         $fullName = function ($reservation) {
-            $name = trim(($reservation->user->first_name ?? '') . ' ' . ($reservation->user->last_name ?? ''));
-            return $name !== '' ? $name : 'Guest';
+            $userName = trim(($reservation->user->first_name ?? '') . ' ' . ($reservation->user->last_name ?? ''));
+            if ($userName !== '') {
+                return $userName;
+            }
+            if (!empty($reservation->guest_name)) {
+                return $reservation->guest_name;
+            }
+            return match ($reservation->booking_source ?? 'online') {
+                'phone' => 'Phone Guest',
+                'walk_in' => 'Walk-in Guest',
+                default => 'Guest',
+            };
         };
 
         $statusBadgeClass = function ($status) {
@@ -88,6 +98,33 @@
             background-color: #fbcfe8 !important;
         }
 
+
+        .manual-reservation-actions .btn {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .manual-reservation-submit,
+        .manual-reservation-submit:disabled {
+            background-color: #FCE7F3 !important;
+            color: #0A2540 !important;
+            border: none !important;
+            opacity: 1 !important;
+        }
+
+        .manual-reservation-submit:hover:not(:disabled) {
+            background-color: #fbcfe8 !important;
+            color: #0A2540 !important;
+        }
+
+        .manual-reservation-submit:disabled {
+            cursor: not-allowed;
+        }
+
         .custom-table-head th {
             padding-bottom: 4px !important;
             border-bottom: none !important;
@@ -142,6 +179,7 @@
             background-color: #FCE7F3 !important;
             color: #0A2540 !important;
         }
+        }
 
         .disabled-table {
             opacity: 0.45;
@@ -172,11 +210,17 @@
         <div class="d-flex flex-column d-md-none px-4 bg-white" style="padding-top: 95px; box-sizing: border-box;">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2 class="h4 mb-0 fw-bold text-navy">Table Schedule</h2>
-                <button
-                    class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center btn-pink-custom"
-                    data-bs-toggle="modal" data-bs-target="#addTableModal">
-                    <i class="fa-solid fa-plus me-1"></i> Add Table
-                </button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm px-3 py-1 fw-bold btn-pink-custom" data-bs-toggle="modal"
+                        data-bs-target="#manualReservationModal">
+                        <i class="fa-solid fa-calendar-plus me-1"></i> Add Reservation
+                    </button>
+                    <button
+                        class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center btn-pink-custom"
+                        data-bs-toggle="modal" data-bs-target="#addTableModal">
+                        <i class="fa-solid fa-plus me-1"></i> Add Table
+                    </button>
+                </div>
             </div>
 
             <div class="d-flex align-items-center gap-2 pb-2 mt-3">
@@ -216,11 +260,17 @@
                     </a>
                 </div>
 
-                <button
-                    class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center btn-pink-custom"
-                    data-bs-toggle="modal" data-bs-target="#addTableModal">
-                    <i class="fa-solid fa-plus me-1"></i> Add Table
-                </button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm px-3 py-1 fw-bold btn-pink-custom" data-bs-toggle="modal"
+                        data-bs-target="#manualReservationModal">
+                        <i class="fa-solid fa-calendar-plus me-1"></i> Add Reservation
+                    </button>
+                    <button
+                        class="btn btn-sm px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center btn-pink-custom"
+                        data-bs-toggle="modal" data-bs-target="#addTableModal">
+                        <i class="fa-solid fa-plus me-1"></i> Add Table
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -259,7 +309,7 @@
                         $tableName = $reservation->table->table_name ?? '-';
                     @endphp
                     <div class="card p-3 border rounded-4 shadow-sm" style="background-color: #ffffff; cursor: pointer;"
-                        onclick="openReservationModal({{ $reservation->id }}, 'RM{{ str_pad($reservation->id, 3, '0', STR_PAD_LEFT) }}', {{ \Illuminate\Support\Js::from($customer) }}, '{{ $time }}', {{ \Illuminate\Support\Js::from($durationLabel) }}, {{ $reservation->num_of_people }}, {{ \Illuminate\Support\Js::from($tableName) }}, '{{ $reservation->status }}')">
+                        onclick="focusReservation('{{ $date }}', '{{ $time }}', {{ $reservation->id }})">
                         <div class="d-flex justify-content-between align-items-start mb-1">
                             <div class="fw-bold text-dark" style="font-size: 15px;">{{ $customer }}</div>
                             <span class="badge text-secondary border bg-light px-2 py-1 rounded small fw-normal"
@@ -325,7 +375,7 @@
                             @endphp
                             <div class="card p-3 border rounded-3 position-relative shadow-sm"
                                 style="background-color: #ffffff; cursor: pointer;"
-                                onclick="openReservationModal({{ $reservation->id }}, 'RM{{ str_pad($reservation->id, 3, '0', STR_PAD_LEFT) }}', {{ \Illuminate\Support\Js::from($customer) }}, '{{ $time }}', {{ \Illuminate\Support\Js::from($durationLabel) }}, {{ $reservation->num_of_people }}, {{ \Illuminate\Support\Js::from($tableName) }}, '{{ $reservation->status }}')">
+                                onclick="focusReservation('{{ $date }}', '{{ $time }}', {{ $reservation->id }})">
                                 <span
                                     class="badge text-secondary border position-absolute top-0 end-0 mt-2 me-2 small fw-normal bg-light"
                                     style="font-size: 10px;">
@@ -444,36 +494,59 @@
 
                                         </td>
 
-                                        @php $currentColumn = 0; @endphp
+                                        @php
+                                            $currentColumn = 0;
+                                            $visibleStart = \Carbon\Carbon::parse($date . ' ' . $timeSlots[0]);
+                                            $visibleEnd = \Carbon\Carbon::parse(
+                                                $date . ' ' . end($timeSlots),
+                                            )->addMinutes(15);
+                                        @endphp
 
-                                        @foreach ($timeSlots as $time)
-                                            @if ($currentColumn >= $totalColumns)
-                                                @break
-                                            @endif
-
+                                        @while ($currentColumn < $totalColumns)
                                             @php
-                                                $reservation = $table->reservations->first(function ($res) use ($time) {
-                                                    return \Carbon\Carbon::parse($res->reservation_time)->format(
-                                                        'H:i',
-                                                    ) === $time;
+                                                $slotStart = $visibleStart->copy()->addMinutes($currentColumn * 15);
+                                                $reservation = $table->reservations->first(function ($res) use (
+                                                    $slotStart,
+                                                    $restaurant,
+                                                ) {
+                                                    $resStart = \Carbon\Carbon::parse(
+                                                        $res->reservation_date->format('Y-m-d') .
+                                                            ' ' .
+                                                            $res->reservation_time,
+                                                    );
+                                                    $resEnd = $resStart
+                                                        ->copy()
+                                                        ->addMinutes((int) (($restaurant->stay_duration ?? 120) + 15));
+                                                    $slotEnd = $slotStart->copy()->addMinutes(15);
+                                                    return $resStart->lt($slotEnd) && $resEnd->gt($slotStart);
                                                 });
                                             @endphp
 
                                             @if ($reservation)
                                                 @php
-                                                    $colspan = (int) ceil($blockMinutes / 15);
-                                                    if ($currentColumn + $colspan > $totalColumns) {
-                                                        $colspan = $totalColumns - $currentColumn;
-                                                    }
+                                                    $resStart = \Carbon\Carbon::parse(
+                                                        $reservation->reservation_date->format('Y-m-d') .
+                                                            ' ' .
+                                                            $reservation->reservation_time,
+                                                    );
+                                                    $resEnd = $resStart->copy()->addMinutes($blockMinutes);
+                                                    $clippedStart = $resStart->gt($slotStart) ? $resStart : $slotStart;
+                                                    $clippedEnd = $resEnd->lt($visibleEnd) ? $resEnd : $visibleEnd;
+                                                    $colspan = max(
+                                                        1,
+                                                        (int) ceil($clippedStart->diffInMinutes($clippedEnd) / 15),
+                                                    );
+                                                    $colspan = min($colspan, $totalColumns - $currentColumn);
                                                     $currentColumn += $colspan;
                                                     $customer = $fullName($reservation);
-                                                    $reservationTime = \Carbon\Carbon::parse(
-                                                        $reservation->reservation_time,
-                                                    )->format('H:i');
+                                                    $reservationTime = $resStart->format('H:i');
                                                 @endphp
 
-                                                <td colspan="{{ $colspan }}" class="p-1" style="height: 50px;">
-                                                    <div class="rounded {{ $reservationBlockClass($reservation->status) }}"
+                                                <td colspan="{{ $colspan }}"
+                                                    class="p-1 border-top border-bottom border-end" style="height: 50px;">
+
+                                                    <div id="reservation-block-{{ $reservation->id }}"
+                                                        class="rounded {{ $reservationBlockClass($reservation->status) }}"
                                                         style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-size: 10px;"
                                                         onclick="openReservationModal({{ $reservation->id }}, 'RM{{ str_pad($reservation->id, 3, '0', STR_PAD_LEFT) }}', {{ \Illuminate\Support\Js::from($customer) }}, '{{ $reservationTime }}', {{ \Illuminate\Support\Js::from($durationLabel) }}, {{ $reservation->num_of_people }}, {{ \Illuminate\Support\Js::from($table->table_name) }}, '{{ $reservation->status }}')">
                                                         <div class="fw-bold text-truncate" style="max-width: 90%;">
@@ -486,7 +559,7 @@
                                                 <td class="border-top border-bottom border-end empty-slot">&nbsp;</td>
                                                 @php $currentColumn++; @endphp
                                             @endif
-                                        @endforeach
+                                        @endwhile
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -495,6 +568,7 @@
 
                     @include('restaurants.dashboard.modals.edit_table')
                     @include('restaurants.dashboard.modals.add_table')
+                    @include('restaurants.dashboard.modals.manual_reservation')
                     @include('restaurants.dashboard.modals.reservation_details')
                     @include('restaurants.dashboard.modals.new_reservation')
                 </div>
@@ -505,6 +579,87 @@
             const tableUpdateUrlTemplate = @json(route('restaurant.tables.update', ['table' => '__ID__']));
             const tableDeleteUrlTemplate = @json(route('restaurant.tables.destroy', ['table' => '__ID__']));
             const reservationUpdateUrlTemplate = @json(route('restaurant.reservations.update_status', ['reservation' => '__ID__']));
+
+            function focusReservation(date, time, reservationId) {
+                const url = new URL(@json(route('restaurant.dashboard')), window.location.origin);
+                url.searchParams.set('date', date);
+                url.searchParams.set('start_time', time);
+                url.searchParams.set('focus', reservationId);
+                window.location.href = url.toString();
+            }
+
+            function roundUpToNextQuarter(date = new Date()) {
+                const rounded = new Date(date);
+                rounded.setSeconds(0, 0);
+                const remainder = rounded.getMinutes() % 15;
+                if (remainder !== 0) rounded.setMinutes(rounded.getMinutes() + (15 - remainder));
+                return `${String(rounded.getHours()).padStart(2, '0')}:${String(rounded.getMinutes()).padStart(2, '0')}`;
+            }
+
+            async function refreshManualTables() {
+                const date = document.getElementById('manualDate')?.value;
+                const time = document.getElementById('manualTime')?.value;
+                const guests = document.getElementById('manualGuests')?.value;
+                const tableSelect = document.getElementById('manualTable');
+                const message = document.getElementById('manualAvailabilityMessage');
+                const submit = document.getElementById('manualReservationSubmit');
+                if (!date || !time || !guests || !tableSelect) return;
+
+                tableSelect.disabled = true;
+                submit.disabled = true;
+                tableSelect.innerHTML = '<option value="">Checking availability...</option>';
+                message.textContent = '';
+
+                const url = new URL(@json(route('restaurant.dashboard.manual_availability')), window.location.origin);
+                url.searchParams.set('date', date);
+                url.searchParams.set('time', time);
+                url.searchParams.set('guests', guests);
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    tableSelect.innerHTML = '<option value="">Select an available table</option>';
+                    (data.tables || []).forEach(table => {
+                        const option = document.createElement('option');
+                        option.value = table.id;
+                        option.textContent = `${table.name} (${table.capacity} seats)`;
+                        tableSelect.appendChild(option);
+                    });
+                    tableSelect.disabled = !(data.tables || []).length;
+                    message.textContent = data.message || '';
+                } catch (error) {
+                    tableSelect.innerHTML = '<option value="">Unable to load tables</option>';
+                    message.textContent = 'Could not check table availability.';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const source = document.getElementById('manualBookingSource');
+                const time = document.getElementById('manualTime');
+                const modal = document.getElementById('manualReservationModal');
+                document.querySelectorAll('.manual-availability-input').forEach(el => {
+                    el.addEventListener('change', refreshManualTables);
+                    el.addEventListener('input', refreshManualTables);
+                });
+                document.getElementById('manualTable')?.addEventListener('change', function() {
+                    document.getElementById('manualReservationSubmit').disabled = !this.value;
+                });
+                source?.addEventListener('change', () => {
+                    if (source.value === 'walk_in') {
+                        document.getElementById('manualDate').value = new Date().toISOString().slice(0, 10);
+                        time.value = roundUpToNextQuarter();
+                        refreshManualTables();
+                    }
+                });
+                modal?.addEventListener('shown.bs.modal', () => {
+                    if (!time.value) time.value = roundUpToNextQuarter();
+                    refreshManualTables();
+                });
+            });
 
             function openEditModal(id, name, capacity, isDisabled = false) {
                 document.getElementById('tableIdInput').value = id;
