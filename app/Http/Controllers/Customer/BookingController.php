@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Restaurant;
 use App\Models\User;
-use App\Notifications\ReservationSubmittedNotification;
+use App\Notifications\NewReservationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Notifications\ChangedReservationNotification;
 
 class BookingController extends Controller
 {
@@ -31,7 +32,7 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        
+
         $validated = $request->validate([
             'restaurant_id' => ['required', 'exists:restaurants,id'],
             'reservation_date' => ['required', 'date'],
@@ -65,16 +66,12 @@ class BookingController extends Controller
             'num_of_people' => $validated['num_of_people'],
         ]);
 
-         // 👇 Send the notification here
-        {        
-            $restaurantOwner = $reservation->restaurant->user;
+        // 👇 Send the notification here
+        $restaurantOwner = $reservation->restaurant->user;
 
-            if ($restaurantOwner) {
-                $restaurantOwner->notify(
-                    new ReservationSubmittedNotification($reservation)
-                );
-            }
-        }
+        $restaurantOwner->notify(
+            new NewReservationNotification($reservation)
+        );
 
         return redirect()->route('booking.confirmation', ['reservation' => $reservation]);
     }
@@ -83,5 +80,27 @@ class BookingController extends Controller
     {
 
         return view('customers.restaurants.booking_confirmation', compact('reservation'));
+    }
+
+    public function update(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'reservation_date' => ['required', 'date'],
+            'reservation_time' => ['required'],
+            'num_of_people' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $reservation->update($validated);
+
+        // Notify restaurant owner
+        $restaurantOwner = $reservation->restaurant->user;
+
+        $restaurantOwner->notify(
+            new ChangedReservationNotification($reservation)
+        );
+
+        return redirect()
+            ->route('customer.reservations.index')
+            ->with('success', 'Reservation updated successfully.');
     }
 }
