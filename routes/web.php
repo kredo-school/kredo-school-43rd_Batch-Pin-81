@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
 
   // Favorites Page
   Route::get('/favorites', [FavoriteController::class, 'view'])->name('favorites.index');
+  Route::post('/favorites/{id}', [FavoriteController::class, 'store'])->name('favorites.store');
   Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
 
   // My Reservations Page

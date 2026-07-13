@@ -88,8 +88,7 @@ class RestaurantController extends Controller
             )
         );
 
-        auth()
-            ->user()
+        Auth::user()
             ->notifications()
             ->find($request->notification_id)
             ?->markAsRead();

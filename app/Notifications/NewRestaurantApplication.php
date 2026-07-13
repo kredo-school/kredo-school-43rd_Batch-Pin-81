@@ -23,7 +23,11 @@ class NewRestaurantApplication extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database', 'broadcast'];
+        return [
+            'mail',
+            'database',
+            // 'broadcast'
+        ];
     }
 
     /**
@@ -51,14 +55,14 @@ class NewRestaurantApplication extends Notification
         ];
     }
 
-    public function toBroadcast(object $notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage([
-            'type' => 'restaurant',
-            'restaurant_id' => $this->restaurant->id,
-            'restaurant_name' => $this->restaurant->restaurant_name,
-            'restaurant_status' => $this->restaurant->status,
-            'message' => $this->restaurant->restaurant_name . ' has submitted a restaurant application.',
-        ]);
-    }
+    // public function toBroadcast(object $notifiable): BroadcastMessage
+    // {
+    //     return new BroadcastMessage([
+    //         'type' => 'restaurant',
+    //         'restaurant_id' => $this->restaurant->id,
+    //         'restaurant_name' => $this->restaurant->restaurant_name,
+    //         'restaurant_status' => $this->restaurant->status,
+    //         'message' => $this->restaurant->restaurant_name . ' has submitted a restaurant application.',
+    //     ]);
+    // }
 }

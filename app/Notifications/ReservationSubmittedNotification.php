@@ -23,8 +23,11 @@ class ReservationSubmittedNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['mail','database', 'broadcast'];
-        // Later you can add Broadcast:: ['database', 'broadcast']
+        return [
+            'mail',
+            'database',
+            // 'broadcast'
+        ];
     }
 
 
@@ -59,18 +62,17 @@ class ReservationSubmittedNotification extends Notification
     }
 
 
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage([
-            'type' => 'reservation',
-            'reservation_id' => $this->reservation->id,
-            'reservation_code' => $this->reservation->reservation_code,
-            'customer_name' => $this->reservation->user->name,
-            'reservation_date' => $this->reservation->reservation_date,
-            'reservation_time' => $this->reservation->reservation_time,
-            'num_of_people' => $this->reservation->num_of_people,
-            'message' => $this->reservation->user->name . ' submitted a reservation.',
-        ]);
-    }
-    
+    // public function toBroadcast($notifiable)
+    // {
+    //     return new BroadcastMessage([
+    //         'type' => 'reservation',
+    //         'reservation_id' => $this->reservation->id,
+    //         'reservation_code' => $this->reservation->reservation_code,
+    //         'customer_name' => $this->reservation->user->name,
+    //         'reservation_date' => $this->reservation->reservation_date,
+    //         'reservation_time' => $this->reservation->reservation_time,
+    //         'num_of_people' => $this->reservation->num_of_people,
+    //         'message' => $this->reservation->user->name . ' submitted a reservation.',
+    //     ]);
+    // }
 }

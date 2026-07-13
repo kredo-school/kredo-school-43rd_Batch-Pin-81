@@ -27,8 +27,8 @@ class ContactReplyNotification extends Notification implements ShouldQueue
     {
         return [
             'database',
-            'mail',
-            'broadcast'
+            'mail'
+            // 'broadcast'
         ];
     }
 
@@ -56,10 +56,10 @@ class ContactReplyNotification extends Notification implements ShouldQueue
     }
 
 
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage($this->toDatabase($notifiable));
-    }
+    // public function toBroadcast($notifiable)
+    // {
+    //     return new BroadcastMessage($this->toDatabase($notifiable));
+    // }
 
 
     public function toArray($notifiable)

@@ -58,6 +58,7 @@ class Restaurant extends Model
         'hours'           => 'array',
         'features' => 'array',
     ];
+
     public function getHoursAttribute()
     {
         return $this->operating_hours ?? [];
