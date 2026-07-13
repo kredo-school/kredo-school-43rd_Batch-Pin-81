@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Notifications\CustomerRunningLateNotification;
 
 class MyReservationController extends Controller
 {
@@ -70,6 +71,13 @@ class MyReservationController extends Controller
         // Example: save that the customer notified the restaurant
         // $reservation->is_late_notice = true;
         // $reservation->save();
+
+        // Send notification
+        $restaurantOwner = $reservation->restaurant->user;
+
+        $restaurantOwner->notify(
+            new CustomerRunningLateNotification($reservation)
+        );
 
         return redirect()
             ->back()

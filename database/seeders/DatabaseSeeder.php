@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            FeatureSeeder::class,
             RestaurantSeeder::class,
             DemoSeeder::class,
             ReservationSeeder::class,
