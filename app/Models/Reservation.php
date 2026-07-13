@@ -36,6 +36,9 @@ class Reservation extends Model
         'end_time',
         'status',
         'cancelled_by',
+        'guest_name',
+        'phone_number',
+        'booking_source',
     ];
 
     protected $casts = [
