@@ -40,6 +40,26 @@ use Illuminate\Support\Facades\Route;
 # Main Search (app.blade.php)
 Route::get('/restaurants/search', [RestaurantController::class, 'search'])->name('restaurants.search'); // For everyone
 
+// Page for display restaurants after search
+Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])
+  ->name('restaurants.view');
+// Restaurant Page
+Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show'])
+  ->whereNumber('restaurant')
+  ->name('restaurant.show');
+
+// Display booking form page
+
+Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
+  ->name('booking.confirmation');
+
+Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
+  ->name('booking.create');
+
+Route::post('/booking', [BookingController::class, 'store'])
+  ->name('booking.store');
+
+
 Route::middleware('guest')->group(function () {
 
   Route::get('/register', [RegisterController::class, 'create'])
@@ -54,9 +74,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
 
   Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-
-  // dissplay Home page
-  Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
 
   // Favorites Page
   Route::get('/favorites', [FavoriteController::class, 'view'])->name('favorites.index');
@@ -96,6 +113,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::patch('/settings/profile', [UserController::class, 'updateProfile'])->name('settings.profile.update');
     Route::patch('/settings/password', [UserController::class, 'updatePassword'])->name('settings.password.update');
+
+    Route::get('/notifications/{notification}', [CustomerNotificationController::class, 'read'])
+      ->name('notifications.read');
   });
 });
 
@@ -140,8 +160,8 @@ Route::middleware(['auth', 'admin'])
     // Status of Restaurants
     Route::get('/restaurants/pending', [AdminRestaurantController::class, 'pending'])
       ->name('admin.restaurants.pending');
-    Route::get('/restaurants/active', [AdminRestaurantController::class, 'active'])
-      ->name('admin.restaurants.active');
+    Route::get('/restaurants/approved', [AdminRestaurantController::class, 'approved'])
+      ->name('admin.restaurants.approved');
     Route::get('/restaurants/rejected', [AdminRestaurantController::class, 'rejected'])
       ->name('admin.restaurants.rejected');
     Route::get('/restaurants/suspended', [AdminRestaurantController::class, 'suspended'])
@@ -206,7 +226,7 @@ Route::middleware(['auth', 'admin'])
 
 #RESTAURANT
 // middlewareがないと、routeを書き換えてcustomerのroleIDの人が中に入れてしまうので必須, asはnameの前につくやつ
-Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth'/*, 'restaurant'*/]], function () {
+Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => ['auth', 'restaurant']], function () {
 
   // Index
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -260,7 +280,7 @@ Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.set
 Route::get('/restaurant/{restaurant}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews');
 
 // Customer
-Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'customer'*/], function () {
+Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth', 'customer']], function () {
 
   Route::get('/search', [CustomerController::class, 'index'])->name('search');
   
@@ -307,21 +327,3 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', /*'middleware' => 'cu
   // Notification
   Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });
-
-// Page for display restaurants after search
-Route::get('/restaurants/view', [RestaurantSearchController::class, 'view'])
-  ->name('restaurants.view');
-// Restaurant Page
-Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show'])
-  ->name('restaurant.show');
-
-// Display booking form page
-
-Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
-  ->name('booking.confirmation');
-
-Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
-  ->name('booking.create');
-
-Route::post('/booking', [BookingController::class, 'store'])
-  ->name('booking.store');

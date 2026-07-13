@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Reservation;
 use App\Models\Restaurant;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -178,7 +179,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $restaurants = Restaurant::all();
+        $restaurants = Restaurant::approved()->get(); // Approvedされたレストランのみを取得するために->approved()を追加 : リカコ
         return view('customers.restaurants.index', compact('restaurants'));
     }
 
@@ -235,6 +236,16 @@ class PostController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function userProfile(User $user)
+    {
+        $reviews = Post::with(['restaurant', 'likes'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return view('customer.user_profile', compact('user', 'reviews'));
     }
 }
 

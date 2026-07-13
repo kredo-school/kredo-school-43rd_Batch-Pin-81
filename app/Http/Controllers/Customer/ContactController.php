@@ -7,6 +7,9 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Notifications\ContactMessageReceived;
+use Illuminate\Support\Facades\Notification;
 
 class ContactController extends Controller
 {
@@ -41,7 +44,9 @@ class ContactController extends Controller
                 ->firstOrFail();
         }
 
-        Contact::create([
+
+        //　Notificationno を組み込むときに creat([]) を Contact::create([]) に変更しました。
+        $contact = Contact::create([
             'user_id' => Auth::id(),
             'restaurant_id' => $parentContact?->restaurant_id,
             'parent_id' => $parentContact?->id,
@@ -50,6 +55,12 @@ class ContactController extends Controller
             'attachments' => $this->storeAttachments($request),
             'status' => 'open',
         ]);
+
+        // adminがnotificationを受け取るようにするために追加
+        $admins = User::where('role_id', User::ROLE_ADMIN)->get();
+        
+        Notification::send($admins, new ContactMessageReceived($contact));
+
 
         if ($parentContact) {
             $parentContact->update(['status' => 'open']);

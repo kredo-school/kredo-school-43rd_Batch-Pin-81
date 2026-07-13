@@ -1,4 +1,4 @@
-<div class="modal fade" id="notificationModal-{{ $notification->id }}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="restaurantApplicationNotificationModal-{{ $notification->id }}" tabindex="-1" aria-hidden="true">
 
     <div class="modal-dialog modal-xl">
 

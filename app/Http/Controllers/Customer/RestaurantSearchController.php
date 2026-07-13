@@ -10,7 +10,12 @@ class RestaurantSearchController extends Controller
 {
     public function categories(Request $request)
     {
-        $category = $request->query('category');
+        // $restaurants = Restaurant::all();
+        $restaurants = Restaurant::with([
+            'photos',
+            'categories',
+            'features'
+        ])->approved()->withAvg('posts', 'rating')->get(); // Approvedされたレストランのみを取得するために->approved()を追加ーリカコ
 
         $query = Restaurant::with(['photos', 'categories', 'features'])->withAvg('posts', 'rating');
 
@@ -44,13 +49,15 @@ class RestaurantSearchController extends Controller
 
     public function show(Restaurant $restaurant)
     {
+        // abort_unless($restaurant->status === Restaurant::STATUS_APPROVED, 404); // レストランがApprovedされていない場合、万が一カスタマーがURLからレストランページへアクセスしようとした場合は404エラーを返す
+
         $restaurant->load([
             'photos',
             'categories',
             'features',
             'menus',
-            'menus.photos',
             'posts.user',
+            'posts.likes',
         ]);
 
         if ($restaurant->relationLoaded('posts') || $restaurant->posts()->exists()) {

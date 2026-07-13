@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
@@ -21,6 +22,11 @@ class Restaurant extends Model
         static::creating(function ($restaurant) {
             $restaurant->status = self::STATUS_PENDING;
         });
+    }
+
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_APPROVED);
     }
 
     protected $fillable = [
@@ -57,12 +63,93 @@ class Restaurant extends Model
         return $this->operating_hours ?? [];
     }
 
+    public function getOpenTimeAttribute(): ?string
+    {
+        if (!empty($this->attributes['open_time'] ?? null)) {
+            return $this->attributes['open_time'];
+        }
+
+        $hours = $this->hours;
+        $earliest = null;
+
+        foreach ($hours as $daySlots) {
+            foreach ($daySlots as $slot) {
+                if (!isset($slot['open'])) {
+                    continue;
+                }
+
+                if ($earliest === null || $slot['open'] < $earliest) {
+                    $earliest = $slot['open'];
+                }
+            }
+        }
+
+        return $earliest;
+    }
+
+    public function getCloseTimeAttribute(): ?string
+    {
+        if (!empty($this->attributes['close_time'] ?? null)) {
+            return $this->attributes['close_time'];
+        }
+
+        $hours = $this->hours;
+        $latest = null;
+
+        foreach ($hours as $daySlots) {
+            foreach ($daySlots as $slot) {
+                if (!isset($slot['close'])) {
+                    continue;
+                }
+
+                if ($latest === null || $slot['close'] > $latest) {
+                    $latest = $slot['close'];
+                }
+            }
+        }
+
+        return $latest;
+    }
+
+    public function getTodayHoursAttribute(): ?string
+    {
+        $todayKey = strtolower(now()->format('l'));
+        $dayHours = $this->hours[$todayKey] ?? [];
+
+        if (empty($dayHours)) {
+            return null;
+        }
+
+        if (isset($dayHours['closed']) && $dayHours['closed']) {
+            return 'Closed today';
+        }
+
+        $slots = [];
+
+        foreach ($dayHours as $slot) {
+            if (empty($slot['open']) || empty($slot['close'])) {
+                continue;
+            }
+
+            $slots[] = $slot['open'] . ' - ' . $slot['close'];
+        }
+
+        return $slots ? implode(' / ', $slots) : null;
+    }
+
     public function availableSlots()
     {
         $slots = [];
 
-        $start = Carbon::parse($this->open_time);
-        $end = Carbon::parse($this->close_time);
+        $startTime = $this->open_time;
+        $endTime = $this->close_time;
+
+        if (!$startTime || !$endTime) {
+            return $slots;
+        }
+
+        $start = Carbon::parse($startTime);
+        $end = Carbon::parse($endTime);
 
         while ($start < $end) {
             $slots[] = $start->format('H:i');

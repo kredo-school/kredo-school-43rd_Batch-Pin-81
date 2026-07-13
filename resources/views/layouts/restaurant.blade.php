@@ -150,10 +150,13 @@
                         class="text-white-50 text-decoration-none py-2 px-3 small rounded-3 d-flex align-items-center list-group-item-action">
                         <i class="fa-solid fa-phone me-3" style="width: 16px;"></i>Contact
                     </a>
-                    <a href="#"
-                        class="text-danger text-decoration-none py-2 px-3 small rounded-3 d-flex align-items-center list-group-item-action">
-                        <i class="fa-solid fa-arrow-right-from-bracket me-3" style="width: 16px;"></i>Logout
-                    </a>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit"
+                                class="text-danger text-decoration-none py-2 px-3 small rounded-3 d-flex align-items-center list-group-item-action bg-transparent border-0 w-100 text-start">
+                                <i class="fa-solid fa-arrow-right-from-bracket me-3" style="width: 16px;"></i>Logout
+                            </button>
+                        </form>
                 </div>
             </div>
 
