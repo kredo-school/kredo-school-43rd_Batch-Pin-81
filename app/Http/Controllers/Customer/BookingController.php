@@ -48,7 +48,7 @@ class BookingController extends Controller
         $firstName = $guestNameParts[0] ?? 'Guest';
         $lastName = $guestNameParts[1] ?? '';
 
-        $user = auth()->user() ?? User::firstOrCreate(
+        $user = Auth::user() ?? User::firstOrCreate(
             ['email' => $validated['email']],
             [
                 'first_name' => $firstName,

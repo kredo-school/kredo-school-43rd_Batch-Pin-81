@@ -1,7 +1,17 @@
-<a href="{{ route('restaurant.show', $restaurant) }}" class="text-decoration-none">
+<div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden position-relative"
+    style="background: #fff; font-family: inter;">
+    <a href="{{ route('restaurant.show', $restaurant) }}" class="stretched-link"></a>
+    <form action="{{ route('favorites.store', $restaurant->id) }}" method="POST" class="favorite-form position-absolute top-0 end-0 m-2">
+        @csrf
+        <button
+            type="submit"
+            class="favorite-btn"
+            aria-label="{{ $restaurant->is_favorited ? 'Remove from favorites' : 'Add to favorites' }}">
+            <i class="fa-{{ $restaurant->is_favorited ? 'solid' : 'regular' }} fa-heart {{ $restaurant->is_favorited ? 'text-warning' : 'text-dark' }}"></i>
+        </button>
+    </form>
 
-    <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden"
-        style="background: #fff; font-family: inter;">
+    <div>
         <div class="row g-0">
 
             <!-- Image -->
@@ -10,8 +20,13 @@
                     <img src="{{ asset('storage/' . $restaurant->photos->first()->photo_path) }}"
                         alt="{{ $restaurant->restaurant_name }}" class="restaurant-photos">
                 @else
-                    <div class="restaurant-photos">
-                        <i class="fa-regular fa-image no-photo"></i>
+                    <div class="d-flex justify-content-center align-items-center restaurant-placeholder"
+                        style="background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200') center/cover;">
+                        <div class="text-center text-white px-3 py-2 rounded"
+                            style="background: rgba(0, 0, 0, 0.5);">
+                            <i class="bi bi-image fa-2x mb-2"></i>
+                            <p class="mb-0 small">No photos available (Showing default view)</p>
+                        </div>
                     </div>
                 @endif
             </div>
@@ -64,51 +79,58 @@
 
                     {{-- Avalable time --}}
                     <div class="mb-2">
-
-                        <p class="mb-1 avalable-time">
-                            <i class="fa-regular fa-clock time-icon"></i>
-                            Available time
-                        </p>
-
-                        {{-- This is for test --}}
                         @php
-                            $now = now();
-                            $endTime = $now->copy()->addHour();
+                            $availableTimes = $restaurant->available_times ?? [];
 
-                            $minutes = ceil($now->minute / 15) * 15;
+                            if (empty($availableTimes)) {
+                                $now = \Carbon\Carbon::now();
+                                $endTime = $now->copy()->addHour();
 
-                            $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
+                                $minutes = ceil($now->minute / 15) * 15;
+                                $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
 
-                            $availableSlots = [];
+                                $availableTimes = [];
 
-                            while ($slot <= $endTime) {
-                                $availableSlots[] = $slot->format('H:i');
-                                $slot->addMinutes(15);
+                                while ($slot <= $endTime) {
+                                    $availableTimes[] = $slot->format('H:i');
+                                    $slot->addMinutes(15);
+                                }
                             }
                         @endphp
 
+                        <p class="mb-1 avalable-time">
+                            <i class="fa-regular fa-clock time-icon"></i>
+                            Available Now
+                        </p>
+
                         {{-- Mobile --}}
                         <div class="d-md-none">
+                            <div class="time-slider">
+                                @foreach ($availableTimes as $time)
 
-                            @auth
-                                @foreach ($availableSlots as $time)
-                                    <a href="{{ route('booking.create', $restaurant->id) }}?time={{ urlencode($time) }}"
-                                        class="time-btn" data-time="{{ $time }}"
-                                        data-restaurant-id="{{ $restaurant->id }}">
-                                        {{ $time }}
-                                    </a>
-                                @endforeach
-                            @endauth
+                                    @auth
+                                        <a href="{{ route('booking.create', [
+                                            'restaurant' => $restaurant->id,
+                                            'time' => $time
+                                        ]) }}"
+                                        class="time-btn">
+                                            {{ $time }}
+                                        </a>
+                                    @endauth
 
-                            @guest
-                                @foreach ($availableSlots as $time)
-                                    <button type="button" class="time-btn" data-bs-toggle="modal"
-                                        data-bs-target="#bookingOptionsModal" data-time="{{ $time }}"
-                                        data-restaurant-id="{{ $restaurant->id }}">
-                                        {{ $time }}
-                                    </button>
+                                    @guest
+                                        <button
+                                            type="button"
+                                            class="time-btn"
+                                            data-time="{{ $time }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#bookingOptionsModal">
+                                            {{ $time }}
+                                        </button>
+                                    @endguest
+
                                 @endforeach
-                            @endguest
+                            </div>
 
                         </div>
 
@@ -116,7 +138,7 @@
                         <div class="d-none d-md-block">
 
                             @auth
-                                @foreach ($availableSlots as $time)
+                                @foreach ($availableTimes as $time)
                                     <a href="{{ route('booking.create', $restaurant->id) }}?time={{ urlencode($time) }}"
                                         class="time-btn" data-time="{{ $time }}"
                                         data-restaurant-id="{{ $restaurant->id }}">
@@ -126,7 +148,7 @@
                             @endauth
 
                             @guest
-                                @foreach ($availableSlots as $time)
+                                @foreach ($availableTimes as $time)
                                     <button type="button" class="time-btn" data-restaurant-id="{{ $restaurant->id }}"
                                         data-bs-toggle="modal" data-bs-target="#bookingOptionsModal"
                                         data-time="{{ $time }}">
@@ -156,7 +178,7 @@
 
         </div>
     </div>
-</a>
+</div>
 
 {{-- include  the modal here --}}
 @include('customers.restaurants.partials.modals.booking_options')
@@ -184,15 +206,39 @@
         box-shadow: 0 8px 15px rgba(3, 3, 3, 0.1) !important;
     }
 
+    .favorite-form {
+        z-index: 3;
+    }
+
+    .favorite-btn {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        width: auto;
+        height: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 4;
+        padding: 0.1rem 0.25rem;
+        appearance: none;
+    }
+
+    .favorite-btn i {
+        font-size: 1.9rem;
+        margin: 4px;
+    }
+
     .restaurant-photos {
         width: 100%;
         height: 220px;
         object-fit: cover;
     }
 
-    .no-photo {
-
-        font-size: 100px;
+    .restaurant-placeholder {
+        width: 100%;
+        height: 220px;
     }
 
     .star-rating {
@@ -224,6 +270,10 @@
         .restaurant-photos {
             height: 100%;
             min-height: 140px;
+        }
+
+        .restaurant-placeholder {
+            height: 140px;
         }
 
         .restaurant-card h4 {

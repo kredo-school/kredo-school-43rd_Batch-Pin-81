@@ -28,7 +28,7 @@ class ContactMessageReceived extends Notification implements ShouldQueue
         return [
             'mail',
             'database',
-            'broadcast',
+            // 'broadcast',
         ];
     }
 
@@ -68,17 +68,17 @@ class ContactMessageReceived extends Notification implements ShouldQueue
     /**
      * Broadcast notification.
      */
-    public function toBroadcast($notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage([
-            'type' => 'contact',
-            'contact_id' => $this->contact->id,
-            'title' => $this->contact->title,
-            'message' => $this->contact->message,
-            'user_name' => $this->contact->user->name,
-            'user_id' => $this->contact->user_id,
-        ]);
-    }
+    // public function toBroadcast($notifiable): BroadcastMessage
+    // {
+    //     return new BroadcastMessage([
+    //         'type' => 'contact',
+    //         'contact_id' => $this->contact->id,
+    //         'title' => $this->contact->title,
+    //         'message' => $this->contact->message,
+    //         'user_name' => $this->contact->user->name,
+    //         'user_id' => $this->contact->user_id,
+    //     ]);
+    // }
 
     /**
      * Optional: Use the same data for database notifications.
