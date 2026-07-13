@@ -16,8 +16,10 @@ class EnsureCustomer
             return redirect()->route('login');
         }
 
-        if ((int) $user->role_id !== 1) {
-            abort(403, 'This page is only available for customer accounts.');
+        // Customer（1）とAdmin（3）はCustomer側ページにアクセス可能
+        // Restaurant（2）はアクセス不可
+        if (!in_array((int) $user->role_id, [1, 3], true)) {
+            abort(403, 'This page is only available for customer and admin accounts.');
         }
 
         return $next($request);
