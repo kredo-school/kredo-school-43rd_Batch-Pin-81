@@ -24,10 +24,11 @@
 
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h3 class="fw-bold m-0 h5 text-color: #0a2540">Food Categories</h3>
+                    <h3 class="fw-bold m-0 h5" style="color: #0a2540;">Food Categories</h3>
                     <p class="text-muted small m-0">Explore your favorite dishes in Tokyo</p>
                 </div>
-                <a href="#" class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
+                <a href="{{ route('customer.categories.index') }}"
+                    class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
             </div>
 
             @php
@@ -46,25 +47,28 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
                 @foreach ($displayTags as $tag)
                     <div class="col">
-                        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden bg-white card-effect">
-                            <div class="position-relative">
+                        <!-- 💡 フロントデザインを一切壊さず、リンクのルーティング表現を正常化 -->
+                        <a href="{{ route('customer.categories.show', $tag) }}"
+                            class="text-decoration-none d-block h-100">
+                            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden bg-white card-effect">
+                                <div class="position-relative">
 
-                                <div
-                                    style="height: 140px; background: url('{{ $categoryImages[$tag] ?? 'https://via.placeholder.com/300xl40' }}') center/cover;">
+                                    <div
+                                        style="height: 140px; background: url('{{ $categoryImages[$tag] ?? 'https://via.placeholder.com/300x140' }}') center/cover;">
+                                    </div>
+
+                                    <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white"
+                                        style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);">
+                                        <h6 class="fw-bold mb-0 text-white">{{ $tag }}</h6>
+                                        <span style="font-size: 11px; opacity: 0.9;">View restaurants</span>
+                                    </div>
+
                                 </div>
-
-                                <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white"
-                                    style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);">
-                                    <h6 class="fw-bold mb-0 text-white">{{ $tag }}</h6>
-                                    <span style="font-size: 11px; opacity: 0.9;">View restaurants</span>
-                                </div>
-
                             </div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
-
         </div>
     </div>
 
@@ -73,10 +77,11 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h3 class="fw-bold m-0 h5 text-color: #0a2540">Popular Areas</h3>
+                    <h3 class="fw-bold m-0 h5" style="color: #0a2540;">Popular Areas</h3>
                     <p class="text-muted small m-0">Dining hotspots in Tokyo</p>
                 </div>
-                <a href="#" class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
+                <a href="{{ route('customer.areas.index') }}"
+                    class="text-decoration-none small fw-bold text-secondary custom-btn">View all →</a>
             </div>
 
             @php
@@ -87,24 +92,24 @@
                     'Roppongi' => 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=400',
                     'Asakusa' => 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=400',
                 ];
-                $allTags = ['Ginza', 'Shibuya', 'Shinjuku', 'Roppongi', 'Asakusa'];
-
-                $displayTags = array_slice($allTags, 0, 4);
             @endphp
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
                 @foreach ($chartData as $area)
                     <div class="col">
-                        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden bg-white card-effect">
-                            <div class="position-relative"
-                                style="height: 140px; background: url('{{ $areaImages[$area['name']] ?? 'https://via.placeholder.com/300x140' }}') center/cover;">
-                                <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white"
-                                    style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);">
-                                    <h6 class="fw-bold mb-0 text-white">{{ $area['name'] }}</h6>
-                                    <span style="font-size: 11px; opacity: 0.9;">{{ $area['count'] }} restaurants</span>
+                        <!-- 💡 エリアも同様に、デザイン構造を変えずにリンク先のみを正常化 -->
+                        <a href="{{ route('customer.areas.show', $area['name']) }}" class="text-decoration-none d-block h-100">
+                            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden bg-white card-effect">
+                                <div class="position-relative"
+                                    style="height: 140px; background: url('{{ $areaImages[$area['name']] ?? 'https://via.placeholder.com/300x140' }}') center/cover;">
+                                    <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white"
+                                        style="background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);">
+                                        <h6 class="fw-bold mb-0 text-white">{{ $area['name'] }}</h6>
+                                        <span style="font-size: 11px; opacity: 0.9;">{{ $area['count'] }} restaurants</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
@@ -243,19 +248,28 @@
     </style>
 
     <script
-        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&language=en">
-        // 💡 Laravelの現在の言語設定(enやja)をそのままGoogle Mapsに渡す = 多言語（中国語、韓国語、フランス語、スペイン語、アラビア語など）に対応
-        //src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&language={{ str_replace('_', '-', app()->getLocale()) }}">
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&language=en&loading=async&v=weekly">
     </script>
 
     <script>
         let map;
         let infoWindow;
+        let AdvancedMarkerElement;
         const markersMap = {};
 
         const restaurants = @json($all_restaurants ?? []);
 
-        function initMap() {
+        async function initMap() {
+            if (typeof google === 'undefined' || !google.maps || !google.maps.importLibrary) {
+                setTimeout(initMap, 100);
+                return;
+            }
+
+            const {
+                Map
+            } = await google.maps.importLibrary("maps");
+            AdvancedMarkerElement = (await google.maps.importLibrary("marker")).AdvancedMarkerElement;
+
             let centerLocation = {
                 lat: 35.658581,
                 lng: 139.745433
@@ -268,10 +282,11 @@
                 };
             }
 
-            map = new google.maps.Map(document.getElementById("map"), {
+            map = new Map(document.getElementById("map"), {
                 zoom: 14,
                 center: centerLocation,
                 mapTypeControl: false,
+                mapId: "DEMO_MAP_ID",
             });
 
             infoWindow = new google.maps.InfoWindow();
@@ -279,14 +294,13 @@
             restaurants.forEach(restaurant => {
                 if (!restaurant.latitude || !restaurant.longitude) return;
 
-                const marker = new google.maps.Marker({
+                const marker = new AdvancedMarkerElement({
                     map: map,
                     position: {
                         lat: parseFloat(restaurant.latitude),
                         lng: parseFloat(restaurant.longitude)
                     },
                     title: restaurant.restaurant_name,
-                    animation: google.maps.Animation.DROP
                 });
 
                 const contentString = `
@@ -297,37 +311,33 @@
                 </div>
             `;
 
-                // 💡 後から外（HTML）から呼び出せるように、店舗IDをキーにして保存しておく
                 markersMap[String(restaurant.id)] = {
                     marker: marker,
                     content: contentString
                 };
 
-                // ピンをクリックしたときの通常の動き
-                marker.addListener("click", () => {
+                marker.addListener("gmp-click", () => {
                     infoWindow.setContent(contentString);
                     infoWindow.open(map, marker);
                 });
             });
 
-            // 現在地取得処理（既存のまま）
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     const pos = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
-                    new google.maps.Marker({
+
+                    new AdvancedMarkerElement({
                         position: pos,
                         map: map,
                         title: "Your Location",
-                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                     });
                 });
             }
         }
 
-        // 🚀【新機能】店舗リストがクリックされた時に、地図をスッと移動させる関数
         function focusRestaurant(id, lat, lng) {
             if (!map || !lat || !lng) return;
 
@@ -336,31 +346,28 @@
                 lng: parseFloat(lng)
             };
 
-            // 1. 指定された緯度経度へスッと滑らかに移動（パノラマ移動）
             map.panTo(targetLatLng);
-            map.setZoom(16); // 少し拡大して見やすくする
+            map.setZoom(16);
 
-            // 2. もしその店舗のピンが存在すれば、自動で吹き出しを開く
             const stringId = String(id);
             if (markersMap[stringId]) {
                 const data = markersMap[stringId];
                 infoWindow.setContent(data.content);
-                infoWindow.open(map, data.marker);
 
-                data.marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(() => {
-                    data.marker.setAnimation(null);
-                }, 1400);
+                // 💡 最新のアンカー指定ルールに修正済み
+                infoWindow.open({
+                    anchor: data.marker,
+                    map: map
+                });
             }
 
-            // 3. 地図がある場所まで画面を自動スクロールさせる（マップが見えない位置にいる場合用）
             document.getElementById('map').scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             });
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("load", () => {
             initMap();
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(

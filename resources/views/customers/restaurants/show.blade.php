@@ -88,8 +88,8 @@
 
                     {{-- Features --}}
                     <div class="d-flex flex-wrap gap-1 ">
-                       @if($restaurant->features && $restaurant->features->isNotEmpty())
-                            @foreach($restaurant->features as $feature)
+                        @if ($restaurant->features && $restaurant->features->isNotEmpty())
+                            @foreach ($restaurant->features as $feature)
                                 <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
                                     style="background-color: #e8ebf1; font-size: 10px;">
                                     {{ $feature->feature_name }}

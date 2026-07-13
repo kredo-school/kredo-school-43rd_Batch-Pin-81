@@ -14,6 +14,8 @@ use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\RestaurantSearchController;
 use App\Http\Controllers\Customer\UserController;
 use App\Http\Controllers\Customer\BookingController;
+use App\Http\Controllers\Customer\CategoryController;
+use App\Http\Controllers\Customer\AreaController;
 
 use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Restaurant\MenuController;
@@ -281,6 +283,14 @@ Route::get('/restaurant/{restaurant}/reviews', [PostController::class, 'showRest
 Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth', 'customer']], function () {
 
   Route::get('/search', [CustomerController::class, 'index'])->name('search');
+  
+  // Food Category
+  Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+  Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+
+  // Popular Area
+  Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
+  Route::get('/areas/{area}', [AreaController::class, 'show'])->name('areas.show');
 
   // Profile
   Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');

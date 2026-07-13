@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Restaurant;
-use App\Models\Reservation;
+use Illuminate\Http\Request;
 
 class RestaurantSearchController extends Controller
 {
-    public function view()
+    public function categories(Request $request)
     {
         // $restaurants = Restaurant::all();
         $restaurants = Restaurant::with([
@@ -18,8 +17,34 @@ class RestaurantSearchController extends Controller
             'features'
         ])->approved()->withAvg('posts', 'rating')->get(); // Approvedされたレストランのみを取得するために->approved()を追加ーリカコ
 
+        $query = Restaurant::with(['photos', 'categories', 'features'])->withAvg('posts', 'rating');
 
-        return view('customers.restaurants.index', compact('restaurants'));
+        if (!empty($category)) {
+            $query->where(function($q) use ($category) {
+                $q->where('restaurant_name', 'LIKE', '%' . $category . '%')
+                  ->orWhere('description', 'LIKE', '%' . $category . '%');
+            });
+        }
+
+        $restaurants = $query->get();
+
+        return view('customer.categories', compact('restaurants', 'category'));
+    }
+
+    public function areas(Request $request)
+    {
+        $area = $request->query('area');
+
+        $query = Restaurant::with(['photos', 'categories', 'features'])->withAvg('posts', 'rating');
+
+        if (!empty($area)) {
+            $query->where('city', 'like', '%' . $area . '%')
+                  ->orWhere('street_address_building', 'like', '%' . $area . '%');
+        }
+
+        $restaurants = $query->get();
+
+        return view('customer.areas', compact('restaurants', 'area'));
     }
 
     public function show(Restaurant $restaurant)
@@ -35,21 +60,23 @@ class RestaurantSearchController extends Controller
             'posts.likes',
         ]);
 
-        // 💡 補正ポイント：postsが存在する場合のみ平均点と件数を計算（クラッシュ防止）
         if ($restaurant->relationLoaded('posts') || $restaurant->posts()->exists()) {
-            $restaurant->loadAvg('posts', 'rating')
-                ->loadCount('posts');
+            $restaurant->loadAvg('posts', 'rating')->loadCount('posts');
         } else {
-            // postsテーブルが空、またはリレーションがない場合のデフォルト値をセット
             $restaurant->posts_avg_rating = 4.7;
             $restaurant->posts_count = 120;
         }
 
-        // 予約可能スロットの取得（メソッドが存在しない場合の致命的エラーを回避）
-        $availableSlots = method_exists($restaurant, 'availableSlots')
-            ? $restaurant->availableSlots()
-            : collect([]);
+        $availableSlots = method_exists($restaurant, 'availableSlots') ? $restaurant->availableSlots() : collect([]);
 
         return view('customers.restaurants.show', compact('restaurant', 'availableSlots'));
+    }
+    public function view(Request $request)
+    {
+        $restaurants = Restaurant::with(['photos', 'categories', 'features'])
+            ->withAvg('posts', 'rating')
+            ->get();
+
+        return view('customers.restaurants.index', compact('restaurants'));
     }
 }
