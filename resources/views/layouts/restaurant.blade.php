@@ -56,10 +56,32 @@
             pointer-events: none;
             /* 閉じている時はクリックできないようにする */
         }
+
+        .notification-icon-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: #dc2626;
+            border: 2px solid #0A2540;
+        }
     </style>
 </head>
 
 <body class="bg-light">
+
+    @php
+        $hasUnreadNotifications = auth()->check() ? auth()->user()->unreadNotifications()->exists() : false;
+    @endphp
 
     <nav class="navbar navbar-dark bg-brand-navbar px-4 py-3 fixed-top">
         <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -128,7 +150,13 @@
                 <a href="{{ route('restaurant.notifications') }}"
                     class="list-group-item list-group-item-action border-0 rounded-3 py-2 px-3 {{ request()->routeIs('restaurant.notifications') ? '' : 'bg-transparent text-white-50' }}"
                     style="{{ request()->routeIs('restaurant.notifications') ? 'background-color: rgba(255, 255, 255, 0.15); color: #fff;' : '' }}">
-                    <i class="fa-regular fa-bell me-3" style="width: 20px;"></i>Notifications
+                    <span class="notification-icon-wrap me-3" style="width: 20px;">
+                        <i class="fa-regular fa-bell"></i>
+                        @if ($hasUnreadNotifications)
+                            <span class="notification-dot"></span>
+                        @endif
+                    </span>
+                    Notifications
                 </a>
             </div>
 

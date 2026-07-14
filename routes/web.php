@@ -24,12 +24,13 @@ use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotifica
 use App\Http\Controllers\Restaurant\OwnerAccountController;
 use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
-use App\Http\Controllers\Restaurant\ReservationController;
+use App\Http\Controllers\Restaurant\ReservationController as RestaurantReservationController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
 use App\Http\Controllers\Restaurant\DashboardController;
 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CategoryFeatureController;
 use App\Http\Controllers\Admin\ReviewController;
@@ -188,7 +189,7 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.restaurants.destroy');
 
     // Reservations dashboard
-    Route::get('/reservations', [ReservationController::class, 'index'])
+    Route::get('/reservations', [AdminReservationController::class, 'index'])
       ->name('admin.reservations');
 
     // Reviews dashboard 
@@ -244,8 +245,8 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
   Route::delete('/tables/{table}', [DashboardController::class, 'destroyTable'])->name('tables.destroy');
 
   // Reservation
-  Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
-  Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
+  Route::get('/reservations', [RestaurantReservationController::class, 'index'])->name('reservations');
+  Route::patch('/reservations/{reservation}/status', [RestaurantReservationController::class, 'updateStatus'])->name('reservations.update_status');
 
 
   // Menu

@@ -72,8 +72,11 @@
                                             data-bs-target="#editModal">
                                             Edit
                                         </button>
-
-                                        <button type="button" class="btn btn-action-outline" data-bs-toggle="modal"
+                                    
+                                        <button
+                                            type="button"
+                                            class="btn btn-action-outline"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#NotifyLateModal-{{ $booking->id }}">
                                             Notify I'll be Late
                                         </button>
