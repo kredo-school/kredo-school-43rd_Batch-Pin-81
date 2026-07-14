@@ -37,9 +37,7 @@ class ReviewController extends Controller
         ];
 
         return view('admin.reviews.index', compact('reviews', 'currentTab', 'counts'));
-    } // ← indexメソッドの終わり
-
-    // Show / Hide
+    }
     public function toggleStatus($id)
     {
         $review = Post::findOrFail($id);
@@ -55,5 +53,20 @@ class ReviewController extends Controller
         $review->save();
 
         return redirect()->back()->with('success', $message);
+    }
+    public function dismissReport($id)
+    {
+        $review = Post::findOrFail($id);
+        $review->is_reported = false;
+        $review->save();
+
+        return redirect()->back()->with('success', 'The report has been dismissed.');
+    }
+    public function destroy($id)
+    {
+        $review = Post::findOrFail($id);
+        $review->delete();
+
+        return redirect()->back()->with('success', 'The review has been permanently removed.');
     }
 }

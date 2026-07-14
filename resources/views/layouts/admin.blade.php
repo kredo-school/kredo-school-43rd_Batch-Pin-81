@@ -160,7 +160,7 @@
                 </button>
 
                 <!-- Sidebar Content -->
-                <div class="d-flex flex-column flex-grow-1">
+                <div class="d-flex flex-column h-100 flex-grow-1" id="sidebarMenu">
 
                     <!-- Header -->
                     <header class="border-bottom text-center py-3">
@@ -193,23 +193,6 @@
                             </span>
 
                         </a>
-
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                window.Echo.private('App.Models.User.{{ auth()->id() }}')
-                                    .notification((notification) => {
-                                        const notificationsLink = document.querySelector('a[href="{{ route('admin.notifications') }}"]');
-                                        const iconWrap = notificationsLink?.querySelector('.notification-icon-wrap');
-
-                                        if (iconWrap && !iconWrap.querySelector('#unread-notifications-dot')) {
-                                            const dot = document.createElement('span');
-                                            dot.id = 'unread-notifications-dot';
-                                            dot.className = 'notification-dot';
-                                            iconWrap.appendChild(dot);
-                                        }
-                                    });
-                            });
-                        </script>
 
                         <a href="{{ route('admin.users') }}" class="nav-link fw-bold">
 
@@ -299,7 +282,7 @@
             </div>
 
             <!-- MAIN CONTENT -->
-            <div class="col content-area p-4">
+            <div class="col content-area p-4" style="min-width: 0;">
 
                 @yield('content')
 
@@ -308,6 +291,18 @@
         </div>
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            window.Echo.private('App.Models.User.{{ auth()->id() }}')
+                .notification((notification) => {
+                    const badge = document.querySelector("#unread-notifications-count-badge");
+                    const unreadCount = Number(badge?.getAttribute("data-unread-count"));
+                    badge?.setAttribute("data-unread-count", unreadCount + 1);
+                    badge.innerText = unreadCount;
+                });
+        });
+    </script>
 
 </body>
 
