@@ -4,10 +4,10 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <div class="bg-light min-vh-100 py-5">
         <div class="container" style="max-width: 740px;">
-            
+
             <div class="d-flex align-items-center mb-4" style="padding-left: 10px;">
                 <a href="/customer/my_page" class="text-decoration-none d-flex align-items-center justify-content-center me-3"
                     style="color: #051d3b; transition: transform 0.2s;">
@@ -21,9 +21,10 @@
             <form class="needs-validation" action="{{ route('customer.profile.update') }}" method="POST"
                 enctype="multipart/form-data" novalidate>
                 @csrf
-                
-                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4" style="background-color: #ffffff; border-radius: 16px !important;">
-                    
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4"
+                    style="background-color: #ffffff; border-radius: 16px !important;">
+
                     <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #0a2540; font-size: 1.25rem;">
                         <i class="fa-solid fa-address-card me-2"></i>Personal Information
                     </h5>
@@ -34,8 +35,8 @@
                             {{-- ✨ `profile_image` をデータベースのカラム名 `avatar` に修正 --}}
                             @if (Auth::check() && Auth::user()->avatar)
                                 {{-- 🖼️ 画像をアップロードしている場合 --}}
-                                <img id="avatar-preview" src="{{ asset('storage/' . Auth::user()->avatar) }}"
-                                    alt="Profile" class="rounded-circle object-fit-cover shadow-sm"
+                                <img id="avatar-preview" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Profile"
+                                    class="rounded-circle object-fit-cover shadow-sm"
                                     style="width: 130px; height: 130px; border: 3px solid #f8f9fa;">
                             @else
                                 {{-- 👤 画像をアップロードしていない場合（デフォルトのユーザーアイコン） --}}
@@ -59,7 +60,7 @@
                                 onchange="previewImage(this);">
                         </div>
                         <p class="text-muted small mt-3 mb-0">Click the camera icon to upload a new photo</p>
-                        
+
                         @error('avatar')
                             <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
@@ -67,19 +68,19 @@
 
                     <div class="mb-4 mx-auto" style="max-width: 480px; width: 100%;">
                         <label class="form-label fw-bold small mb-2" style="color: #0a2540; font-size: 0.85rem;">User Name</label>
-                        <input type="text" name="username"
-                            class="form-control border-0 rounded-3 px-3 py-2 shadow-none" placeholder="John"
-                            value="{{ old('username', Auth::user()->username ?? '') }}"
+                        <input type="text" name="username" class="form-control border-0 rounded-3 px-3 py-2 shadow-none"
+                            placeholder="John" value="{{ old('username', Auth::user()->username ?? '') }}"
                             style="background-color: #f4f6f9; height: 44px; font-size: 0.95rem;" required>
                         <div class="invalid-feedback small ps-1">Required</div>
-                        
+
                         @error('username')
                             <div class="text-danger small mt-1 ps-1">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="pt-2 mx-auto" style="max-width: 480px; width: 100%;">
-                        <button type="submit" class="btn w-100 fw-bold text-navy py-2 rounded-3 custom-save-btn" style="height: 44px; font-size: 0.95rem;">
+                        <button type="submit" class="btn w-100 fw-bold text-navy py-2 rounded-3 custom-save-btn"
+                            style="height: 44px; font-size: 0.95rem;">
                             Save Changes
                         </button>
                     </div>

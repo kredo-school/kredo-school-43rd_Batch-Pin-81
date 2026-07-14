@@ -16,6 +16,7 @@ use App\Http\Controllers\Customer\UserController;
 use App\Http\Controllers\Customer\BookingController;
 use App\Http\Controllers\Customer\CategoryController;
 use App\Http\Controllers\Customer\AreaController;
+use App\Http\Controllers\Customer\FollowController;
 
 use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Restaurant\MenuController;
@@ -311,14 +312,17 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
 
   // Post & Review
   Route::get('/my_page', [PostController::class, 'myPage'])->name('my_page');
+  Route::get('/user/{user}/my_page', [PostController::class, 'userProfile'])->name('user.profile');
   Route::get('/reviews', [PostController::class, 'index'])->name('reviews.index');
   Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
   Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
   Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
   Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
 
-  // Follow / User Profile
-  Route::post('/user/{user}/follow', [PostController::class, 'toggleFollow'])->name('user.follow');
+  // Follow
+  Route::post('/users/{user}/follow', [FollowController::class, 'toggle'])->name('toggleFollow');
+
+  // User Profile
   Route::get('/user/{user}/profile', [PostController::class, 'userProfile'])->name('user.profile');
 
   // Like

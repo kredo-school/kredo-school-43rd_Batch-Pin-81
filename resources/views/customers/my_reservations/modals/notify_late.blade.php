@@ -1,4 +1,6 @@
-<div class="modal fade" id="NotifyLateModal" tabindex="-1" aria-labelledby="notifyLateModalLabel" aria-hidden="true">
+<div class="modal fade" id="NotifyLateModal-{{ $booking->id }}" tabindex="-1"
+    aria-labelledby="notifyLateModalLabel-{{ $booking->id }}" aria-hidden="true">
+
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="font-family: inter; color:#0a2540; background-color: #fffefc">
 
@@ -43,9 +45,7 @@
                         No, I'll be there in time!
                     </button>
 
-                    <button
-                        type="submit"
-                        class="btn custom-btn-a fw-semibold">
+                    <button type="submit" class="btn custom-btn-a fw-semibold">
                         Yes, Notify Restaurant
                     </button>
                 </div>
@@ -82,36 +82,32 @@
 
 <style>
     .btn-close:focus {
-        box-shadow: 0 0 0 0.15rem rgba(0,0,0,.15) !important;
+        box-shadow: 0 0 0 0.15rem rgba(0, 0, 0, .15) !important;
     }
 
     .custom-btn-a {
         background-color: #FCE7F3;
-        color: #0a2540; /* text color */
+        color: #0a2540;
         cursor: pointer;
         transition: 0.3s;
     }
 
-    /* mouse hover effect */
     .custom-btn-a:hover {
         background-color: #fdd6eb;
         color: #0a2a5e;
     }
 
-    /* login as a guest button */
     .custom-btn-b {
         background-color: transparent;
-        color: #0a2540; /* text color */
+        color: #0a2540;
         border: 1px solid #0a2540;
         cursor: pointer;
         transition: 0.3s;
     }
 
-    /* mouse hover effect */
     .custom-btn-b:hover {
         background-color: #0a2540;
         color: white;
         border-color: #0a2540;
     }
-
 </style>

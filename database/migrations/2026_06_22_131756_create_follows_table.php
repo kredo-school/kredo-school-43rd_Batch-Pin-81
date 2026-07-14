@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('follows', function (Blueprint $table) {
             $table->unsignedBigInteger('follower_id');
             $table->unsignedBigInteger('following_id');
-            $table->primary(['follower_id', 'following_id']); //重複フォロー防止
+            $table->primary(['follower_id', 'following_id']);
 
             $table->foreign('follower_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('following_id')->references('id')->on('users')->onDelete('cascade');
