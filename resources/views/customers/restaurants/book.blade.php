@@ -7,11 +7,15 @@
 <div class="container my-5 d-flex justify-content-center" style="font-family: inter">
     <div class="card p-4 shadow-sm border-0 signup-card bg-white" style="max-width: 600px; width: 100%; border-radius: 16px;">
         <div class="card-body">
-            <h3 class="fw-bold text-navy mb-2">Complete Your Reservation (Guest)</h3>
-            <p class="text-muted small mb-4">
-                Booking as a guest. Want to save your favorites and view your booking history? 
-                <a class="text-navy fw-semibold text-decoration-none hover-underline" href="{{ route('register') }}">Create an account</a>
-            </p>
+            <h3 class="fw-bold text-navy mb-2">
+                Complete Your Reservation{{ auth()->guest() ? ' (Guest)' : '' }}
+            </h3>
+            @guest
+                <p class="text-muted small mb-4">
+                    Booking as a guest. Want to save your favorites and view your booking history?
+                    <a class="text-navy fw-semibold text-decoration-none hover-underline" href="{{ route('register') }}">Create an account</a>
+                </p>
+            @endguest
 
             <form action="{{ route('booking.store') }}" method="POST">
                 @csrf

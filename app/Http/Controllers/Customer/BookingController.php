@@ -10,6 +10,7 @@ use App\Notifications\NewReservationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Notifications\ChangedReservationNotification;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
