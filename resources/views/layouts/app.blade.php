@@ -93,6 +93,24 @@
             color: #0A2A5E;
         }
 
+        .notification-icon-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: #dc2626;
+            border: 2px solid #ffffff;
+        }
+
         /* 【最強化版】ツールチップ（白背景＋紺文字） */
         div.tooltip div.tooltip-inner {
             background-color: #ffffff !important;
@@ -202,6 +220,9 @@
 </head>
 
 <body class="bg-light">
+    @php
+        $hasUnreadNotifications = auth()->check() ? auth()->user()->unreadNotifications()->exists() : false;
+    @endphp
     <div id="app">
         {{-- Web VER --}}
         {{-- Search Ber & 8 Buttons --}}
@@ -274,7 +295,12 @@
                     <a href="{{ route('customer.notifications') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
                         data-bs-placement="bottom" data-bs-title="Notifications">
-                        <i class="bi bi-bell fs-5"></i>
+                        <span class="notification-icon-wrap">
+                            <i class="bi bi-bell fs-5"></i>
+                            @if ($hasUnreadNotifications)
+                                <span class="notification-dot"></span>
+                            @endif
+                        </span>
                     </a>
 
                     <a href="{{ route('contact.index') }}" class="nav-link text-decoration-none"
@@ -333,7 +359,13 @@
                 <div class="list-group list-group-flush">
                     <a href="{{ route('customer.notifications') }}"
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-navy fs-6">
-                        <i class="bi bi-bell fs-5 text-navy"></i> Notifications
+                        <span class="notification-icon-wrap text-navy">
+                            <i class="bi bi-bell fs-5 text-navy"></i>
+                            @if ($hasUnreadNotifications)
+                                <span class="notification-dot"></span>
+                            @endif
+                        </span>
+                        <span>Notifications</span>
                     </a>
                     <a href="{{ route('contact.index') }}"
                         class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center gap-3 fw-bold text-navy fs-6">

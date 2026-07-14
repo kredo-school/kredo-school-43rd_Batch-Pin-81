@@ -39,7 +39,7 @@
                 <div class="row g-3 align-items-center">
                     
                     <div class="col-12 col-md-auto text-center">
-                        <a href="{{ route('restaurant.show') }}">
+                        <a href="{{ route('restaurant.show', $booking->restaurant_id ?? $booking->id) }}">
                             <img src="{{ $booking->restaurant_image ?? 'https://via.placeholder.com/80' }}" alt="Restaurant image" class="restaurant-img">
                         </a>
                     </div>
@@ -48,7 +48,7 @@
                         <div class="reservation-card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center">
-                                    <a href="{{ route('restaurant.show') }}" class="text-decoration-none">
+                                    <a href="{{ route('restaurant.show', $booking->restaurant_id ?? $booking->id) }}" class="text-decoration-none">
                                         <h3 class="fw-bold mb-0" style="color: #002855">{{ $booking->restaurant_name }}</h3>
                                     </a>
                                     <div class="meta-code mt-1 mt-md-0 px-2 text-secondary reservation-code">Code: {{ $booking->reservation_code }}</div>
@@ -88,8 +88,9 @@
                                             type="button"
                                             class="btn btn-action-outline"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#NotifyLateModal">
-                                            Notify I"ll be Late
+                                            data-bs-target="#NotifyLateModal"
+                                            data-notify-late-url="{{ route('my_reservations.notify-late', $booking->id) }}">
+                                            Notify I'll be Late
                                         </button>
                                     
                                         <button type="submit" 
@@ -128,7 +129,7 @@
                 <div class="row align-items-center g-3">
                     
                     <div class="col-12 col-md-auto text-center">
-                        <a href="{{ route('restaurant.show') }}">
+                                                <a href="{{ route('restaurant.show', $past->restaurant_id ?? $past->id) }}">
                           <img src="{{ $past->restaurant_image ?? 'https://via.placeholder.com/80' }}" alt="Restaurant image" class="restaurant-img filter-grayscale">
                         </a>
                     </div>
@@ -137,10 +138,10 @@
                         <div class="reservation-card-body">
                             <div class="d-flex align-items-center">
                                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center">
-                                    <a href="{{ route('restaurant.show')}}" class="text-decoration-none me-3" style="color: #0f2d59;">
+                                    <a href="{{ route('restaurant.show', $past->restaurant_id ?? $past->id) }}" class="text-decoration-none me-3" style="color: #0f2d59;">
                                         <h3 class="fw-bold">{{ $past->restaurant_name }}</h3>
                                     </a>
-                                    <div class="meta-code mb-2 px-2 py-0 text-secondary d-inline">Code: {{ $booking->reservation_code }}</div>
+                                    <div class="meta-code mb-2 px-2 py-0 text-secondary d-inline">Code: {{ $past->reservation_code }}</div>
                                 </div>
                             </div>
                             

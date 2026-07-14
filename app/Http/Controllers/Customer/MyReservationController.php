@@ -3,85 +3,82 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Reservation;
 use App\Notifications\CustomerRunningLateNotification;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MyReservationController extends Controller
 {
     public function index()
     {
-        // $upcomingReservations = Reservation::where('user_id', auth()->id())
-        //     ->where('date', '>=', now()->toDateString())
-        //     ->orderBy('date', 'asc')
-        //     ->get();
+        $reservations = Reservation::with(['restaurant.photos'])
+            ->where('user_id', Auth::id())
+            ->orderBy('reservation_date', 'asc')
+            ->orderBy('reservation_time', 'asc')
+            ->get();
 
-        // Create a quick fake object for the view
+        $upcomingReservations = $reservations
+            ->filter(fn($reservation) => $reservation->reservation_date?->isToday() || $reservation->reservation_date?->isFuture())
+            ->map(fn($reservation) => $this->formatReservationForView($reservation))
+            ->values();
 
-        // $pastReservations = Reservation::where('user_id', auth()->id())
-        //     ->where('date', '<', now()->toDateString())
-        //     ->orderBy('date', 'desc')
-        //     ->get();
-
-        // return view('reservations.index', compact('upcomingReservations', 'pastReservations'));
-
-        // Mock Upcoming Data
-        $upcomingReservations = [
-            (object) [
-                'id' => 1,
-                'restaurant_name' => 'Sushi Masaru',
-                'location' => 'Ginza, Tokyo',
-                'reservation_code' => 'RM2026051501',
-                'date' => '2026-05-20',
-                'time' => '19:00',
-                'guests' => 2,
-                'restaurant_image' => 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=150'
-            ],
-            (object) [
-                'id' => 2,
-                'restaurant_name' => 'Yakitori Tori',
-                'location' => 'Shinjuku, Tokyo',
-                'reservation_code' => 'RM2026051802',
-                'date' => '2026-05-25',
-                'time' => '18:30',
-                'guests' => 4,
-                'restaurant_image' => 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=150'
-            ]
-        ];
-
-        // Mock Past Data
-        $pastReservations = [
-            (object) [
-                'id' => 3,
-                'restaurant_id' => 101,
-                'restaurant_name' => 'Ramen Ichiban',
-                'location' => 'Shibuya, Tokyo',
-                'date' => '2026-05-15',
-                'time' => '12:00',
-                'guests' => 2,
-                'restaurant_image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=150'
-            ]
-        ];
+        $pastReservations = $reservations
+            ->filter(fn($reservation) => $reservation->reservation_date?->isPast())
+            ->sortByDesc('reservation_date')
+            ->sortByDesc('reservation_time')
+            ->map(fn($reservation) => $this->formatReservationForView($reservation))
+            ->values();
 
         return view('customers.my_reservations.index', compact('upcomingReservations', 'pastReservations'));
     }
 
-    // Notify late
-    public function notifyLate(/*Reservation $reservation*/)
+    private function formatReservationForView(Reservation $reservation): object
     {
-        // Example: save that the customer notified the restaurant
-        // $reservation->is_late_notice = true;
-        // $reservation->save();
+        $restaurant = $reservation->restaurant;
+        $firstPhoto = $restaurant?->photos?->first();
+
+        return (object) [
+            'id' => $reservation->id,
+            'restaurant_id' => $reservation->restaurant_id,
+            'restaurant_name' => $restaurant?->restaurant_name ?? 'Unknown Restaurant',
+            'location' => collect([
+                $restaurant?->prefecture,
+                $restaurant?->city,
+                $restaurant?->street_address_building,
+            ])->filter()->implode(', '),
+            'reservation_code' => $reservation->reservation_code,
+            'date' => $reservation->reservation_date?->format('Y-m-d'),
+            'time' => $reservation->reservation_time
+                ? Carbon::parse($reservation->reservation_time)->format('H:i')
+                : null,
+            'guests' => $reservation->num_of_people,
+            'restaurant_image' => $firstPhoto
+                ? asset('storage/' . $firstPhoto->photo_path)
+                : 'https://via.placeholder.com/80',
+        ];
+    }
+
+    // Notify late
+    public function notifyLate(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'late_minutes' => ['required', 'integer', 'in:10,15'],
+        ]);
+
+        $lateMinutes = (int) $validated['late_minutes'];
 
         // Send notification
         $restaurantOwner = $reservation->restaurant->user;
 
         $restaurantOwner->notify(
-            new CustomerRunningLateNotification($reservation)
+            new CustomerRunningLateNotification($reservation, $lateMinutes)
         );
 
         return redirect()
             ->back()
-            ->with('success', 'The restaurant has been notified that you will be late.');
+            ->with('success', 'The restaurant has been notified that you will be late by ' . $lateMinutes . ' minutes.');
     }
 
     // Cancel reservation

@@ -95,6 +95,24 @@
             transition: .2s;
         }
 
+        .notification-icon-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: #dc2626;
+            border: 2px solid #ffffff;
+        }
+
         .footer-a {
             color: #0a2540 !important;
         }
@@ -123,12 +141,16 @@
 
 <body>
 
+    @php
+        $hasUnreadNotifications = auth()->user()->unreadNotifications()->exists();
+    @endphp
+
     <div class="container-fluid">
 
         <div class="row">
 
             <!-- SIDEBAR -->
-            <div class="col-12 col-lg-auto border-end p-3 sidebar d-flex flex-column">
+            <div class="col-12 col-lg-auto border-end p-3 sidebar d-flex flex-column min-vh-100">
 
                 <!-- Mobile Toggle -->
                 <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="collapse"
@@ -138,7 +160,7 @@
                 </button>
 
                 <!-- Sidebar Content -->
-                <div class="d-flex flex-column h-100">
+                <div class="d-flex flex-column flex-grow-1">
 
                     <!-- Header -->
                     <header class="border-bottom text-center py-3">
@@ -155,26 +177,20 @@
                     </header>
 
                     <!-- Navigation -->
-                    <div class="nav flex-column flex-grow-1 mt-3 flex-grow-1">
+                    <div class="nav flex-column flex-grow-1 mt-3">
 
                         <a href="{{ route('admin.notifications') }}"
                             class="nav-link fw-bold d-flex justify-content-between align-items-center">
 
                             <span>
-                                <i class="fa-solid fa-bell me-2"></i>
+                                <span class="notification-icon-wrap me-2">
+                                    <i class="fa-solid fa-bell"></i>
+                                    @if ($hasUnreadNotifications)
+                                        <span id="unread-notifications-dot" class="notification-dot"></span>
+                                    @endif
+                                </span>
                                 Notifications
                             </span>
-
-                            @php
-                                $unread = auth()->user()->unreadNotifications()->count();
-                            @endphp
-
-                            @if ($unread)
-                                <span id="unread-notifications-count-badge" class="badge bg-danger rounded-pill"
-                                    data-unread-count="{{ $unread }}">
-                                    {{ $unread }}
-                                </span>
-                            @endif
 
                         </a>
 
@@ -182,10 +198,15 @@
                             document.addEventListener('DOMContentLoaded', function() {
                                 window.Echo.private('App.Models.User.{{ auth()->id() }}')
                                     .notification((notification) => {
-                                        const badge = document.querySelector("#unread-notifications-count-badge");
-                                        const unreadCount = Number(badge?.getAttribute("data-unread-count"));
-                                        badge?.setAttribute("data-unread-count", unreadCount + 1);
-                                        badge.innerText = unreadCount;
+                                        const notificationsLink = document.querySelector('a[href="{{ route('admin.notifications') }}"]');
+                                        const iconWrap = notificationsLink?.querySelector('.notification-icon-wrap');
+
+                                        if (iconWrap && !iconWrap.querySelector('#unread-notifications-dot')) {
+                                            const dot = document.createElement('span');
+                                            dot.id = 'unread-notifications-dot';
+                                            dot.className = 'notification-dot';
+                                            iconWrap.appendChild(dot);
+                                        }
                                     });
                             });
                         </script>
@@ -219,14 +240,14 @@
                         @endif --}}
                         </a>
 
-                        {{-- Admin reservations page is not built yet, so keep it visible but disabled. --}}
-                        <span class="nav-link fw-bold text-muted" style="cursor: not-allowed; opacity: .65;">
+                        <a href="{{ route('admin.reservations') }}" class="nav-link fw-bold">
+
                             <span>
                                 <i class="fa-solid fa-calendar-check me-2"></i>
                                 Reservations
-                                <small class="ms-1">(Coming soon)</small>
                             </span>
-                        </span>
+
+                        </a>
 
                         <a href="{{ route('admin.contacts.index') }}" class="nav-link fw-bold">
 

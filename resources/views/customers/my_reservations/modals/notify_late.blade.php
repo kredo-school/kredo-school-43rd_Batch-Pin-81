@@ -2,54 +2,83 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="font-family: inter; color:#0a2540; background-color: #fffefc">
 
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="notifyLateModalLabel">
-                    Notify Restaurant
-                </h5>
+            <form action="#" method="POST" class="d-inline" id="notifyLateForm">
+                @csrf
 
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close">
-                </button>
-            </div>
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="notifyLateModalLabel">
+                        Notify Restaurant
+                    </h5>
 
-            <div class="modal-body text-center">
-                <p class="text-muted mb-0">
-                    Would you like to notify the restaurant that you will be arriving late?
-                </p>
-            </div>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+                </div>
 
-            <div class="modal-footer border-0 justify-content-center gap-2">
+                <div class="modal-body text-center">
+                    <p class="text-muted mb-3">
+                        Would you like to notify the restaurant that you will be arriving late?
+                    </p>
 
-                
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    data-bs-dismiss="modal">
-                    No, I'll be there in time!
-                </button>
+                    <div class="text-start">
+                        <label for="lateMinutes" class="form-label fw-semibold">
+                            Estimated delay
+                        </label>
 
-                <form action="#"
-                      method="POST"
-                      class="d-inline">
+                        <select name="late_minutes" id="lateMinutes" class="form-select" required>
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                        </select>
+                    </div>
+                </div>
 
-                    @csrf
+                <div class="modal-footer border-0 justify-content-center gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                        No, I'll be there in time!
+                    </button>
 
                     <button
                         type="submit"
                         class="btn custom-btn-a fw-semibold">
                         Yes, Notify Restaurant
                     </button>
-
-                </form>
-
-            </div>
+                </div>
+            </form>
 
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const notifyLateModal = document.getElementById('NotifyLateModal');
+        const notifyLateForm = document.getElementById('notifyLateForm');
+
+        if (!notifyLateModal || !notifyLateForm) {
+            return;
+        }
+
+        notifyLateModal.addEventListener('show.bs.modal', function (event) {
+            const triggerButton = event.relatedTarget;
+
+            if (!triggerButton) {
+                return;
+            }
+
+            const actionUrl = triggerButton.getAttribute('data-notify-late-url');
+
+            if (actionUrl) {
+                notifyLateForm.action = actionUrl;
+            }
+        });
+    });
+</script>
 
 <style>
     .btn-close:focus {
