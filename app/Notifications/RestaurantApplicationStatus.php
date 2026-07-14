@@ -15,7 +15,7 @@ class RestaurantApplicationStatus extends Notification
     protected $status;
     protected $restaurant;
 
-    public function __construct(string $status, Restaurant $restaurant) 
+    public function __construct(string $status, Restaurant $restaurant)
     {
         $this->status = $status;
         $this->restaurant = $restaurant;
@@ -23,7 +23,11 @@ class RestaurantApplicationStatus extends Notification
 
     public function via($notifiable): array
     {
-        return ['mail', 'database', 'broadcast'];
+        return [
+            'mail',
+            'database',
+            // 'broadcast'
+        ];
     }
 
     public function toMail($notifiable): MailMessage
@@ -70,8 +74,8 @@ class RestaurantApplicationStatus extends Notification
         return $data;
     }
 
-    public function toBroadcast($notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage($this->toDatabase($notifiable));
-    }
+    // public function toBroadcast($notifiable): BroadcastMessage
+    // {
+    //     return new BroadcastMessage($this->toDatabase($notifiable));
+    // }
 }

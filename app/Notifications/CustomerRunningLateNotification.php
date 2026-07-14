@@ -39,11 +39,15 @@ class CustomerRunningLateNotification extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $lateMinutesText = $this->lateMinutes
+            ? ' by ' . $this->lateMinutes . ' minutes'
+            : '';
+
         return [
             'type' => 'customer_running_late',
             'title' => 'Customer Running Late',
             'message' => $this->reservation->user->name .
-                ' has informed you they are running late.',
+                ' has informed you they are running late' . $lateMinutesText . '.',
             'reservation_id' => $this->reservation->id,
             'customer_name' => $this->reservation->user->name,
             'reservation_date' => $this->reservation->reservation_date,
@@ -51,7 +55,7 @@ class CustomerRunningLateNotification extends Notification
             'num_of_people' => $this->reservation->num_of_people,
             'reservation_code' => $this->reservation->reservation_code,
             'late_minutes' => $this->lateMinutes,
-            'url' => route('restaurant.reservations.show', $this->reservation),
+            'url' => route('my_reservations', $this->reservation),
             'button_text' => 'View Reservation',
         ];
     }

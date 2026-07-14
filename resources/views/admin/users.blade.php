@@ -14,22 +14,26 @@
 .btn-dark-blue{
     background-color: #0a2540;
     color: #fff !important;
+    border-radius: 10px;
 }
 
 .btn-dark-blue:hover{
     background-color:#0a2540;
     color:#fff !important;
+    border-radius: 10px;
 }
 
 .btn-unactive {
     background: #fff;
     color: #0a2540;
     border: 1px solid #0a2540;
+    border-radius: 10px;
 }
 
 .btn-unactive:hover{
     background-color: #0a2540;
     color: #fff !important;
+    border-radius: 10px;
 }
 
 .btn-dark-blue:active,
@@ -73,6 +77,17 @@
     padding:1rem 1.5rem;
 }
 
+.search-shell{
+    min-width: 320px;
+}
+
+.search-shell .form-control{
+    border-radius: 999px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    min-height: 44px;
+}
+
 .role-customer{
     background:#dbeafe;
     color:#2563eb;
@@ -102,6 +117,33 @@
     padding: .5rem;
     min-width: 180px;
     box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    z-index: 1055;
+}
+
+.admin-user-dropdown{
+    position: relative;
+    display: inline-block;
+}
+
+.admin-user-dropdown .dropdown-toggle{
+    cursor: pointer;
+}
+
+.admin-user-dropdown .dropdown-menu{
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: auto;
+    z-index: 2000;
+}
+
+.admin-user-dropdown.open .dropdown-menu{
+    display: block;
+}
+
+.table-responsive{
+    overflow: visible !important;
 }
 
 .role-option{
@@ -227,8 +269,8 @@
         </div>
     @endif
 
-    <!-- Filter Buttons -->
-    <div class="mb-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+        <div class="mb-2 mb-md-0">
 
         <a href="{{ route('admin.users') }}"
            class="btn {{ request()->routeIs('admin.users') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">
@@ -241,7 +283,7 @@
         </a>
 
         <a href="{{ route('admin.users.restaurants') }}"
-           class="btn {{ request()->routeIs('admin.users.restaurants') ? 'btn-dark-blue' : 'btn-unactive' }}">
+           class="btn {{ request()->routeIs('admin.users.restaurants') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">
             Restaurants Owner
         </a>
 
@@ -249,6 +291,22 @@
            class="btn {{ request()->routeIs('admin.users.admin') ? 'btn-dark-blue' : 'btn-unactive' }}">
             Admin
         </a>
+
+        </div>
+
+        <form action="{{ url()->current() }}" method="GET" class="search-shell d-flex gap-2 align-items-center">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 rounded-start-pill text-secondary">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="search" value="{{ $search ?? '' }}" class="form-control border-start-0 rounded-end-pill"
+                    placeholder="Search user, email, username">
+            </div>
+            <button type="submit" class="btn btn-dark-blue rounded-pill px-4">Search</button>
+            @if (!empty($search))
+                <a href="{{ route('admin.users') }}" class="text-decoration-none fw-semibold text-secondary">Reset</a>
+            @endif
+        </form>
 
     </div>
 
@@ -309,7 +367,7 @@
                         <!-- Role -->
                         <td>
 
-                            <div class="dropdown">
+                            <div class="dropdown admin-user-dropdown">
 
                                 <button
                                     type="button"
@@ -322,8 +380,7 @@
                                     @else
                                         role-admin
                                     @endif"
-
-                                    data-bs-toggle="dropdown">
+                                    ">
 
                                     @if($user->role_id == 1)
                                         customer
@@ -409,13 +466,13 @@
                         <!-- Status -->
                         <td>
 
-                             <div class="dropdown">
+                             <div class="dropdown admin-user-dropdown">
 
                                 <button
                                     type="button"
                                     class="badge border-0 dropdown-toggle
                                         {{ $user->is_active ? 'status-active' : 'status-suspended' }}"
-                                    data-bs-toggle="dropdown">
+                                    >
 
                                     ● {{ $user->is_active ? 'active' : 'suspended' }}
 
@@ -520,6 +577,45 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdowns = Array.from(document.querySelectorAll('.admin-user-dropdown'));
+
+        function closeAllDropdowns() {
+            dropdowns.forEach(function(dropdown) {
+                dropdown.classList.remove('open');
+            });
+        }
+
+        dropdowns.forEach(function(dropdown) {
+            const toggle = dropdown.querySelector('.dropdown-toggle');
+
+            toggle?.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const isOpen = dropdown.classList.contains('open');
+                closeAllDropdowns();
+
+                if (!isOpen) {
+                    dropdown.classList.add('open');
+                }
+            });
+
+            dropdown.querySelector('.dropdown-menu')?.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+
+        document.addEventListener('click', closeAllDropdowns);
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAllDropdowns();
+            }
+        });
+    });
+</script>
 
 
 @endsection

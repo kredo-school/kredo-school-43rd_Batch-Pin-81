@@ -3,99 +3,188 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Reservation;
 use App\Notifications\CustomerRunningLateNotification;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class MyReservationController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        // $upcomingReservations = Reservation::where('user_id', auth()->id())
-        //     ->where('date', '>=', now()->toDateString())
-        //     ->orderBy('date', 'asc')
-        //     ->get();
+        $reservations = Reservation::query()
+            ->with(['restaurant.photos'])
+            ->where('user_id', Auth::id())
+            ->whereNotIn('status', ['cancelled', 'canceled'])
+            ->get();
 
-        // Create a quick fake object for the view
+        $upcomingReservations = $reservations
+            ->filter(function (Reservation $reservation): bool {
+                return $reservation->status !== 'completed'
+                    && $this->reservationDateTime($reservation)
+                    ->greaterThanOrEqualTo(now());
+            })
+            ->sortBy(function (Reservation $reservation): int {
+                return $this->reservationDateTime($reservation)->timestamp;
+            })
+            ->map(function (Reservation $reservation): object {
+                return $this->formatForView($reservation);
+            })
+            ->values();
 
-        // $pastReservations = Reservation::where('user_id', auth()->id())
-        //     ->where('date', '<', now()->toDateString())
-        //     ->orderBy('date', 'desc')
-        //     ->get();
+        $pastReservations = $reservations
+            ->filter(function (Reservation $reservation): bool {
+                return $reservation->status === 'completed'
+                    || $this->reservationDateTime($reservation)
+                    ->lessThan(now());
+            })
+            ->sortByDesc(function (Reservation $reservation): int {
+                return $this->reservationDateTime($reservation)->timestamp;
+            })
+            ->map(function (Reservation $reservation): object {
+                return $this->formatForView($reservation);
+            })
+            ->values();
 
-        // return view('reservations.index', compact('upcomingReservations', 'pastReservations'));
-
-        // Mock Upcoming Data
-        $upcomingReservations = [
-            (object) [
-                'id' => 1,
-                'restaurant_name' => 'Sushi Masaru',
-                'location' => 'Ginza, Tokyo',
-                'reservation_code' => 'RM2026051501',
-                'date' => '2026-05-20',
-                'time' => '19:00',
-                'guests' => 2,
-                'restaurant_image' => 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=150'
-            ],
-            (object) [
-                'id' => 2,
-                'restaurant_name' => 'Yakitori Tori',
-                'location' => 'Shinjuku, Tokyo',
-                'reservation_code' => 'RM2026051802',
-                'date' => '2026-05-25',
-                'time' => '18:30',
-                'guests' => 4,
-                'restaurant_image' => 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=150'
-            ]
-        ];
-
-        // Mock Past Data
-        $pastReservations = [
-            (object) [
-                'id' => 3,
-                'restaurant_id' => 101,
-                'restaurant_name' => 'Ramen Ichiban',
-                'location' => 'Shibuya, Tokyo',
-                'date' => '2026-05-15',
-                'time' => '12:00',
-                'guests' => 2,
-                'restaurant_image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=150'
-            ]
-        ];
-
-        return view('customers.my_reservations.index', compact('upcomingReservations', 'pastReservations'));
+        return view(
+            'customers.my_reservations.index',
+            compact('upcomingReservations', 'pastReservations')
+        );
     }
 
-    // Notify late
-    public function notifyLate(/*Reservation $reservation*/)
-    {
-        // Example: save that the customer notified the restaurant
-        // $reservation->is_late_notice = true;
-        // $reservation->save();
+    public function notifyLate(
+        Request $request,
+        Reservation $reservation
+    ): RedirectResponse {
+        $this->ensureReservationOwner($reservation);
 
-        // Send notification
-        $restaurantOwner = $reservation->restaurant->user;
+        $validated = $request->validate([
+            'late_minutes' => ['required', 'integer', 'in:10,15'],
+        ]);
+
+        $lateMinutes = (int) $validated['late_minutes'];
+
+        $reservation->loadMissing([
+            'restaurant.user',
+            'user',
+        ]);
+
+        $restaurantOwner = $reservation->restaurant?->user;
+
+        abort_unless(
+            $restaurantOwner,
+            404,
+            'Restaurant owner not found.'
+        );
 
         $restaurantOwner->notify(
-            new CustomerRunningLateNotification($reservation)
+            new CustomerRunningLateNotification($reservation, $lateMinutes)
         );
 
         return redirect()
             ->back()
-            ->with('success', 'The restaurant has been notified that you will be late.');
+            ->with(
+                'success',
+                'The restaurant has been notified that you will be late by ' . $lateMinutes . ' minutes.'
+            );
     }
 
-    // Cancel reservation
-    public function destroy(/*Reservation $reservation*/)
-    {
-        // $reservation->status = 'cancelled';
-        // $reservation->save();
+    public function destroy(
+        Reservation $reservation
+    ): RedirectResponse {
+        $this->ensureReservationOwner($reservation);
+
+        $reservation->update([
+            'status' => 'cancelled',
+            'cancelled_by' => 'customer',
+        ]);
 
         return redirect()
             ->back()
-            ->with('success', 'Reservation cancelled successfully.');
+            ->with(
+                'success',
+                'Reservation cancelled successfully.'
+            );
     }
-    public function search()
+
+    private function ensureReservationOwner(
+        Reservation $reservation
+    ): void {
+        abort_unless(
+            (int) $reservation->user_id === (int) Auth::id(),
+            403
+        );
+    }
+
+    private function reservationDateTime(
+        Reservation $reservation
+    ): Carbon {
+        return Carbon::parse(
+            $reservation->reservation_date->format('Y-m-d')
+                . ' '
+                . $reservation->reservation_time
+        );
+    }
+
+    private function formatForView(
+        Reservation $reservation
+    ): object {
+        $restaurant = $reservation->restaurant;
+        $photo = null;
+
+        if ($restaurant) {
+            $photo = $restaurant->photos
+                ->firstWhere('photo_category', 'exterior')
+                ?? $restaurant->photos
+                ->firstWhere('photo_category', 'interior')
+                ?? $restaurant->photos->first();
+        }
+
+        $location = collect([
+            $restaurant?->city,
+            $restaurant?->prefecture,
+        ])
+            ->filter()
+            ->implode(', ');
+
+        return (object) [
+            'id' => $reservation->id,
+            'restaurant_id' => $reservation->restaurant_id,
+            'restaurant_name' =>
+            $restaurant?->restaurant_name ?? 'Restaurant',
+            'location' => $location !== '' ? $location : '-',
+            'reservation_code' =>
+            $reservation->reservation_code,
+            'date' =>
+            $reservation->reservation_date->format('Y-m-d'),
+            'time' =>
+            Carbon::parse($reservation->reservation_time)
+                ->format('H:i'),
+            'guests' => $reservation->num_of_people,
+            'status' => $reservation->status,
+            'restaurant_image' =>
+            $this->photoUrl($photo?->photo_path),
+        ];
+    }
+
+    private function photoUrl(?string $path): ?string
     {
-        return view('my_reservations');
+        if (!$path) {
+            return null;
+        }
+
+        if (
+            str_starts_with($path, 'http://')
+            || str_starts_with($path, 'https://')
+        ) {
+            return $path;
+        }
+
+        return asset(
+            'storage/' . ltrim($path, '/')
+        );
     }
 }
