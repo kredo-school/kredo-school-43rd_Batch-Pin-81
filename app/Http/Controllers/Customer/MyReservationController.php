@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Notifications\CustomerRunningLateNotification;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -55,9 +56,16 @@ class MyReservationController extends Controller
     }
 
     public function notifyLate(
+        Request $request,
         Reservation $reservation
     ): RedirectResponse {
         $this->ensureReservationOwner($reservation);
+
+        $validated = $request->validate([
+            'late_minutes' => ['required', 'integer', 'in:10,15'],
+        ]);
+
+        $lateMinutes = (int) $validated['late_minutes'];
 
         $reservation->loadMissing([
             'restaurant.user',
@@ -80,7 +88,7 @@ class MyReservationController extends Controller
             ->back()
             ->with(
                 'success',
-                'The restaurant has been notified that you will be late.'
+                'The restaurant has been notified that you will be late by ' . $lateMinutes . ' minutes.'
             );
     }
 

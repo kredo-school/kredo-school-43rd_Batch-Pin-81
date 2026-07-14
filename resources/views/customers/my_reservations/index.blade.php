@@ -77,8 +77,7 @@
                                             type="button"
                                             class="btn btn-action-outline"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#NotifyLateModal"
-                                            data-notify-late-url="{{ route('my_reservations.notify-late', $booking->id) }}">
+                                            data-bs-target="#NotifyLateModal-{{ $booking->id }}">
                                             Notify I'll be Late
                                         </button>
 

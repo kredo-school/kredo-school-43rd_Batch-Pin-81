@@ -4,11 +4,11 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="font-family: inter; color:#0a2540; background-color: #fffefc">
 
-            <form action="#" method="POST" class="d-inline" id="notifyLateForm">
+            <form action="{{ route('my_reservations.notify-late', $booking->id) }}" method="POST" class="d-inline">
                 @csrf
 
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="notifyLateModalLabel">
+                    <h5 class="modal-title" id="notifyLateModalLabel-{{ $booking->id }}">
                         Notify Restaurant
                     </h5>
 
@@ -26,11 +26,11 @@
                     </p>
 
                     <div class="text-start">
-                        <label for="lateMinutes" class="form-label fw-semibold">
+                        <label for="lateMinutes-{{ $booking->id }}" class="form-label fw-semibold">
                             Estimated delay
                         </label>
 
-                        <select name="late_minutes" id="lateMinutes" class="form-select" required>
+                        <select name="late_minutes" id="lateMinutes-{{ $booking->id }}" class="form-select" required>
                             <option value="10">10 minutes</option>
                             <option value="15" selected>15 minutes</option>
                         </select>
@@ -54,31 +54,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const notifyLateModal = document.getElementById('NotifyLateModal');
-        const notifyLateForm = document.getElementById('notifyLateForm');
-
-        if (!notifyLateModal || !notifyLateForm) {
-            return;
-        }
-
-        notifyLateModal.addEventListener('show.bs.modal', function (event) {
-            const triggerButton = event.relatedTarget;
-
-            if (!triggerButton) {
-                return;
-            }
-
-            const actionUrl = triggerButton.getAttribute('data-notify-late-url');
-
-            if (actionUrl) {
-                notifyLateForm.action = actionUrl;
-            }
-        });
-    });
-</script>
 
 <style>
     .btn-close:focus {
