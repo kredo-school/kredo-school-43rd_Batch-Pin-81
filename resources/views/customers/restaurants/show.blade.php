@@ -68,9 +68,8 @@
                             $percentage = ($averageRating / 5) * 100;
                         @endphp
                         {{-- Desktop --}}
-                        <div class="star-rating d-none d-md-flex align-items-center me-4"
-                            id="restaurantReviewsShortcut" role="button" tabindex="0"
-                            aria-label="Open reviews tab">
+                        <div class="star-rating d-none d-md-flex align-items-center me-4" id="restaurantReviewsShortcut"
+                            role="button" tabindex="0" aria-label="Open reviews tab">
                             <div class="star-rating-top" style="width: {{ $percentage }}%">
                                 ★★★★★
                             </div>
@@ -285,7 +284,8 @@
                                                 <p class="text-muted mb-0 small">{{ $menu->description }}</p>
                                             </div>
                                             <div class="col-md-3 col-12 text-md-end">
-                                                <span class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
+                                                <span
+                                                    class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
                                             </div>
                                         </div>
                                     @empty
@@ -315,7 +315,8 @@
                                                 <p class="text-muted mb-0 small">{{ $menu->description }}</p>
                                             </div>
                                             <div class="col-md-3 col-12 text-md-end">
-                                                <span class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
+                                                <span
+                                                    class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
                                             </div>
                                         </div>
                                     @empty
@@ -335,24 +336,24 @@
                                         data-bs-target="#photo-all" type="button" role="tab">All</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-food" type="button" role="tab">Food</button>
+                                    <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-food"
+                                        type="button" role="tab">Food</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-drink" type="button" role="tab">Drink</button>
+                                    <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-drink"
+                                        type="button" role="tab">Drink</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-interior" type="button" role="tab">Interior</button>
+                                    <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-interior"
+                                        type="button" role="tab">Interior</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-exterior" type="button" role="tab">Exterior</button>
+                                    <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-exterior"
+                                        type="button" role="tab">Exterior</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link px-3" data-bs-toggle="pill"
-                                        data-bs-target="#photo-other" type="button" role="tab">Other</button>
+                                    <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-other"
+                                        type="button" role="tab">Other</button>
                                 </li>
                             </ul>
                         </div>
@@ -379,14 +380,15 @@
 
                         <div class="tab-content">
                             @foreach ($photoCategories as $key => $label)
-                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="photo-{{ $key }}"
-                                    role="tabpanel">
+                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                    id="photo-{{ $key }}" role="tabpanel">
                                     @php $filteredPhotos = $photosByCategory[$key]; @endphp
 
                                     <div class="row g-3">
                                         @forelse ($filteredPhotos as $photo)
                                             <div class="col-md-4 col-6">
-                                                <div class="photo-wrapper shadow-sm rounded-4 overflow-hidden position-relative">
+                                                <div
+                                                    class="photo-wrapper shadow-sm rounded-4 overflow-hidden position-relative">
                                                     <img src="{{ asset('storage/' . $photo->photo_path) }}"
                                                         alt="{{ $label }} photo"
                                                         class="photo-item-img photo-zoom-trigger"
@@ -402,8 +404,8 @@
                                     </div>
                                 </div>
                             @endforeach
-                                </div>
-                            </div>
+                        </div>
+                    </div>
 
                     {{-- 4. REVIEWS (💡 更生ポイント: ここをダミーから本物のループ画像対応に変更) --}}
                     <div class="tab-pane fade" id="reviews" role="tabpanel">
@@ -412,14 +414,17 @@
                             @forelse ($restaurant->posts as $post)
                                 @php
                                     $user = $post->user;
-                                    $isLiked = auth()->check() ? $post->likes->contains('user_id', auth()->id()) : false;
+                                    $isLiked = auth()->check()
+                                        ? $post->likes->contains('user_id', auth()->id())
+                                        : false;
                                     $likesCount = $post->likes->count();
                                 @endphp
                                 <div class="review-item border-bottom pb-4 mb-2">
                                     <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
                                         <div class="d-flex align-items-center gap-3">
-                                            <img src="https://i.pravatar.cc/150?img={{ $post->user_id ?? 1 }}" alt="Avatar"
-                                                class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
+                                            <img src="https://i.pravatar.cc/150?img={{ $post->user_id ?? 1 }}"
+                                                alt="Avatar" class="rounded-circle"
+                                                style="width: 48px; height: 48px; object-fit: cover;">
                                             <div>
                                                 <div class="d-flex align-items-center flex-wrap gap-2">
                                                     <a href="{{ $user ? route('customer.user.profile', $user) : '#' }}"
@@ -441,16 +446,15 @@
                                                     class="btn btn-link p-0 border-0 bg-transparent shadow-none review-like-btn d-inline-flex align-items-center justify-content-center"
                                                     data-like-url="{{ route('customer.posts.like', $post) }}"
                                                     data-post-id="{{ $post->id }}"
-                                                    data-liked="{{ $isLiked ? '1' : '0' }}"
-                                                    aria-label="Like review"
+                                                    data-liked="{{ $isLiked ? '1' : '0' }}" aria-label="Like review"
                                                     style="width: auto; height: auto;">
-                                                    <i class="bi {{ $isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted' }} fs-4"></i>
+                                                    <i
+                                                        class="bi {{ $isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted' }} fs-4"></i>
                                                 </button>
                                             @else
                                                 <a href="{{ route('login') }}"
                                                     class="btn btn-link p-0 border-0 bg-transparent shadow-none d-inline-flex align-items-center justify-content-center"
-                                                    aria-label="Login to like review"
-                                                    style="width: auto; height: auto;">
+                                                    aria-label="Login to like review" style="width: auto; height: auto;">
                                                     <i class="bi bi-heart text-muted fs-4"></i>
                                                 </a>
                                             @endauth
@@ -491,10 +495,9 @@
                 <div class="card bg-white border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 24px; z-index: 100;">
                     <h5 class="fw-bold text-navy mb-4">Make a Reservation</h5>
 
-                    <form action="#" method="POST" id="reservationForm">
-                        @csrf
-                        <input type="hidden" name="reservation_date" id="selectedReservationDate"
-                            value="{{ date('Y-m-d') }}">
+                    <form action="{{ route('booking.create', $restaurant->id) }}" method="GET" id="reservationForm">
+                        <input type="hidden" name="date" id="selectedReservationDate"
+                            value="{{ now()->format('Y-m-d') }}">
 
                         {{-- Calendar Widget Component --}}
                         <div class="mb-4">
@@ -509,8 +512,6 @@
                                         <i class="bi bi-chevron-right"></i>
                                     </button>
                                 </div>
-
-                                {{-- Day Matrix Label Layout --}}
                                 <div class="calendar-grid text-center mb-1">
                                     <div class="calendar-day text-muted fw-semibold">Su</div>
                                     <div class="calendar-day text-muted fw-semibold">Mo</div>
@@ -520,54 +521,38 @@
                                     <div class="calendar-day text-muted fw-semibold">Fr</div>
                                     <div class="calendar-day text-muted fw-semibold">Sa</div>
                                 </div>
-
-                                {{-- Target container loaded automatically by Javascript engine --}}
                                 <div class="calendar-grid text-center" id="calendarDaysContainer"></div>
                             </div>
                         </div>
 
-                        {{-- Time Picker --}}
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-navy small">Time</label>
-                            <select name="reservation_time" class="form-select border rounded-3 py-2 text-muted input-box"
-                                required>
-                                <option value="" selected disabled>Select time</option>
-                                @foreach ($availableSlots as $time)
-                                    <option value="{{ $time }}">{{ $time }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        {{-- Guests --}}
-                        <div class="mb-4">
                             <label class="form-label fw-bold text-navy small">Guests</label>
-                            <select name="guests" class="form-select border rounded-3 py-2 text-muted input-box">
-                                @for ($i = 1; $i <= 10; $i++)
+                            <select name="guests" id="reservationGuests"
+                                class="form-select border rounded-3 py-2 text-muted input-box" required>
+                                @php
+                                    $maxBookableGuests =
+                                        (int) ($restaurant->tables()->where('is_active', true)->max('capacity') ?? 0);
+                                @endphp
+                                @for ($i = 1; $i <= $maxBookableGuests; $i++)
                                     <option value="{{ $i }}">{{ $i }}
-                                        {{ $i == 1 ? 'Person' : 'People' }}</option>
+                                        {{ $i === 1 ? 'Person' : 'People' }}</option>
                                 @endfor
                             </select>
                         </div>
 
-                        {{-- Booking Button --}}
-                        @auth
-                            <a href="{{ route('booking.create', $restaurant->id) }}"
-                                class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
-                                Book Restaurant
-                            </a>
-                        @endauth
+                        <div class="mb-2">
+                            <label class="form-label fw-bold text-navy small">Available Time</label>
+                            <select name="time" id="reservationTime"
+                                class="form-select border rounded-3 py-2 text-muted input-box" required>
+                                <option value="">Select time</option>
+                            </select>
+                        </div>
+                        <div id="reservationAvailabilityMessage" class="small text-muted mb-4"></div>
 
-                        @guest
-                            <a href="{{ route('booking.create', $restaurant->id) }}"
-                                class="btn custom-btn-a w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center mb-3">
-                                Book as a Guest
-                            </a>
-
-                            <a href="{{ route('login') }}"
-                                class="btn custom-btn-b w-100 py-2.5 rounded-3 fw-semibold text-decoration-none d-block text-center">
-                                Book as a User (Login)
-                            </a>
-                        @endguest
+                        <button type="submit" id="reservationSubmitButton"
+                            class="btn custom-btn-a w-100 py-2 rounded-3 fw-semibold" disabled>
+                            Continue to Booking
+                        </button>
                     </form>
                 </div>
             </div>
@@ -968,6 +953,52 @@
         const prevBtn = document.getElementById('prevMonthBtn');
         const nextBtn = document.getElementById('nextMonthBtn');
         const dateInput = document.getElementById('selectedReservationDate');
+        const guestsInput = document.getElementById('reservationGuests');
+        const timeInput = document.getElementById('reservationTime');
+        const availabilityMessage = document.getElementById('reservationAvailabilityMessage');
+        const submitButton = document.getElementById('reservationSubmitButton');
+        const availabilityEndpoint = @json(route('booking.availability', $restaurant));
+        const todayString = new Date().toLocaleDateString('en-CA');
+
+        async function refreshReservationAvailability() {
+            if (!dateInput?.value || !guestsInput?.value || !timeInput) return;
+
+            timeInput.disabled = true;
+            submitButton.disabled = true;
+            availabilityMessage.textContent = 'Checking availability...';
+
+            try {
+                const url = new URL(availabilityEndpoint, window.location.origin);
+                url.searchParams.set('date', dateInput.value);
+                url.searchParams.set('guests', guestsInput.value);
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) throw new Error('Unable to load availability.');
+
+                const data = await response.json();
+                timeInput.innerHTML = '<option value="">Select time</option>';
+                data.slots.forEach(slot => {
+                    const option = document.createElement('option');
+                    option.value = slot;
+                    option.textContent = slot;
+                    timeInput.appendChild(option);
+                });
+
+                timeInput.disabled = false;
+                submitButton.disabled = data.slots.length === 0;
+                availabilityMessage.textContent = data.slots.length ?
+                    `${data.slots.length} available time slot(s).` :
+                    'No available time slots for this date and party size.';
+            } catch (error) {
+                timeInput.innerHTML = '<option value="">Select time</option>';
+                availabilityMessage.textContent = error.message;
+            }
+        }
+
+        guestsInput?.addEventListener('change', refreshReservationAvailability);
 
         const months = [
             "January", "February", "March", "April", "May", "June",
@@ -999,12 +1030,15 @@
                 const isSelected = i === selectedDate.getDate() && month === selectedDate.getMonth() && year ===
                     selectedDate.getFullYear();
 
-                let classList = "calendar-date active-month-day";
-                if (isSelected) classList += " active";
+                const dateValue = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const isPast = dateValue < todayString;
+                let classList = "calendar-date";
+                if (!isPast) classList += " active-month-day";
+                if (isPast) classList += " text-muted muted-day";
+                if (isSelected && !isPast) classList += " active";
                 if (isToday && !isSelected) classList += " bg-light border text-navy";
 
-                daysHTML +=
-                    `<div class="${classList}" data-date="${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}">${i}</div>`;
+                daysHTML += `<div class="${classList}" ${isPast ? '' : `data-date="${dateValue}"`}>${i}</div>`;
             }
 
             // 3. Padding days (Next month blocks)
@@ -1021,8 +1055,9 @@
                 day.addEventListener('click', function() {
                     const targetValue = this.getAttribute('data-date');
                     dateInput.value = targetValue;
-                    selectedDate = new Date(targetValue);
+                    selectedDate = new Date(`${targetValue}T00:00:00`);
                     renderCalendar();
+                    refreshReservationAvailability();
                 });
             });
         }
@@ -1036,6 +1071,9 @@
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
         });
+
+        renderCalendar();
+        refreshReservationAvailability();
 
         const zoomModalElement = document.getElementById('photoZoomModal');
         const zoomModalImage = document.getElementById('photoZoomModalImage');
@@ -1058,8 +1096,13 @@
 
             reviewsTabButton.addEventListener('shown.bs.tab', function() {
                 reviewsPane.setAttribute('tabindex', '-1');
-                reviewsPane.focus({ preventScroll: true });
-                reviewsPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                reviewsPane.focus({
+                    preventScroll: true
+                });
+                reviewsPane.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             });
         }
 
@@ -1078,13 +1121,15 @@
                 const likeUrl = this.dataset.likeUrl;
                 const postId = this.dataset.postId;
                 const icon = this.querySelector('i');
-                const countElement = document.querySelector(`[data-like-count-for="${postId}"]`);
+                const countElement = document.querySelector(
+                    `[data-like-count-for="${postId}"]`);
 
                 try {
                     const response = await fetch(likeUrl, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]').content,
                             'Accept': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         }
@@ -1103,7 +1148,8 @@
                     const isLiked = data.isLiked;
 
                     this.dataset.liked = isLiked ? '1' : '0';
-                    icon.className = `bi ${isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted'} fs-4`;
+                    icon.className =
+                        `bi ${isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted'} fs-4`;
 
                     if (countElement) {
                         countElement.textContent = data.likes_count;
@@ -1119,6 +1165,5 @@
             zoomModalImage.alt = 'Zoomed photo';
         });
 
-        renderCalendar();
     });
 </script>

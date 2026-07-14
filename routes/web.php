@@ -53,7 +53,12 @@ Route::get('/restaurant/{restaurant}', [RestaurantSearchController::class, 'show
 Route::get('/booking/confirmation/{reservation}', [BookingController::class, 'confirmation'])
   ->name('booking.confirmation');
 
+Route::get('/booking/{restaurant}/availability', [BookingController::class, 'availability'])
+  ->whereNumber('restaurant')
+  ->name('booking.availability');
+
 Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
+  ->whereNumber('restaurant')
   ->name('booking.create');
 
 Route::post('/booking', [BookingController::class, 'store'])
@@ -231,6 +236,8 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
 
   // Index
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::get('/dashboard/manual-availability', [DashboardController::class, 'manualAvailability'])->name('dashboard.manual_availability');
+  Route::post('/dashboard/manual-reservations', [DashboardController::class, 'storeManualReservation'])->name('dashboard.manual_reservations.store');
   Route::post('/tables', [DashboardController::class, 'storeTable'])->name('tables.store');
   Route::put('/tables/{table}', [DashboardController::class, 'updateTable'])->name('tables.update');
   Route::delete('/tables/{table}', [DashboardController::class, 'destroyTable'])->name('tables.destroy');
@@ -285,6 +292,9 @@ Route::get('/customer/search', [CustomerController::class, 'index'])->name('cust
 
 // Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth', 'customer']], function () {
+
+  Route::get('/search', [CustomerController::class, 'index'])->name('search');
+
   // Food Category
   Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
   Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');

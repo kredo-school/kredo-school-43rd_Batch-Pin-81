@@ -54,23 +54,53 @@ class DemoSeeder extends Seeder
             'demo/reviews/ramen-review.jpg',
             'demo/reviews/reported-review.jpg',
             'demo/reviews/hidden-review.jpg',
+            'demo/menus/restaurant-6-food.jpg',
+            'demo/menus/restaurant-6-drink.jpg',
+            'demo/photos/restaurant-6-interior.jpg',
+            'demo/menus/restaurant-7-food.jpg',
+            'demo/menus/restaurant-7-drink.jpg',
+            'demo/photos/restaurant-7-interior.jpg',
+            'demo/menus/restaurant-8-food.jpg',
+            'demo/menus/restaurant-8-drink.jpg',
+            'demo/photos/restaurant-8-interior.jpg',
+            'demo/menus/restaurant-9-food.jpg',
+            'demo/menus/restaurant-9-drink.jpg',
+            'demo/photos/restaurant-9-interior.jpg',
+            'demo/menus/restaurant-10-food.jpg',
+            'demo/menus/restaurant-10-drink.jpg',
+            'demo/photos/restaurant-10-interior.jpg',
+            'demo/menus/restaurant-11-food.jpg',
+            'demo/menus/restaurant-11-drink.jpg',
+            'demo/photos/restaurant-11-interior.jpg',
+            'demo/menus/restaurant-12-food.jpg',
+            'demo/menus/restaurant-12-drink.jpg',
+            'demo/photos/restaurant-12-interior.jpg',
+            'demo/menus/restaurant-13-food.jpg',
+            'demo/menus/restaurant-13-drink.jpg',
+            'demo/photos/restaurant-13-interior.jpg',
+            'demo/menus/restaurant-14-food.jpg',
+            'demo/menus/restaurant-14-drink.jpg',
+            'demo/photos/restaurant-14-interior.jpg',
+            'demo/menus/restaurant-15-food.jpg',
+            'demo/menus/restaurant-15-drink.jpg',
+            'demo/photos/restaurant-15-interior.jpg',
         ];
 
         // Small valid JPEG placeholder. The goal is to make seeded image paths displayable
         // even when no real uploaded files exist yet.
         $placeholderJpeg = base64_decode(
             '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsL' .
-            'DBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/' .
-            '2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy' .
-            'MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB' .
-            '/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEAEAAAAAAAAAAAAAAAAAAAAA' .
-            '/9oADAMBAAIQAxAAAAH/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAEF' .
-            'An//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDAQE/AX//xAAUEQEAAAAA' .
-            'AAAAAAAAAAAA/9oACAECAQE/AX//xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oA' .
-            'CAEBAAY/An//xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAE/IX//2gAM' .
-            'AwEAAgADAAAAEP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8QH//' .
-            'EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8QH//EABQQAQAAAAAAAAAA' .
-            'AAAAAAAAABD/2gAIAQEAAT8QH//Z'
+                'DBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/' .
+                '2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy' .
+                'MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB' .
+                '/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEAEAAAAAAAAAAAAAAAAAAAAA' .
+                '/9oADAMBAAIQAxAAAAH/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAEF' .
+                'An//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDAQE/AX//xAAUEQEAAAAA' .
+                'AAAAAAAAAAAA/9oACAECAQE/AX//xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oA' .
+                'CAEBAAY/An//xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAE/IX//2gAM' .
+                'AwEAAgADAAAAEP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8QH//' .
+                'EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8QH//EABQQAQAAAAAAAAAA' .
+                'AAAAAAAAABD/2gAIAQEAAT8QH//Z'
         );
 
         foreach ($imagePaths as $path) {
@@ -87,6 +117,15 @@ class DemoSeeder extends Seeder
             'Japanese BBQ',
             'Cafe',
             'Vegetarian Friendly',
+            'Tempura',
+            'Udon',
+            'Vegan',
+            'Izakaya',
+            'Curry',
+            'Italian',
+            'Thai',
+            'French',
+            'Bakery',
         ];
 
         foreach ($categories as $categoryName) {
@@ -123,6 +162,46 @@ class DemoSeeder extends Seeder
                 'categories' => ['Cafe', 'Vegetarian Friendly'],
                 'features' => ['Vegetarian Options', 'Vegan Options', 'Wi-Fi Available'],
             ],
+            6 => [
+                'categories' => ['Tempura'],
+                'features' => ['English Menu Available', 'Credit Cards Accepted', 'Reservations Required'],
+            ],
+            7 => [
+                'categories' => ['Udon'],
+                'features' => ['English Menu Available', 'Cash Only', 'Wi-Fi Available'],
+            ],
+            8 => [
+                'categories' => ['Vegan', 'Vegetarian Friendly'],
+                'features' => ['English Menu Available', 'Vegetarian Options', 'Vegan Options', 'Credit Cards Accepted'],
+            ],
+            9 => [
+                'categories' => ['Izakaya'],
+                'features' => ['English Menu Available', 'Credit Cards Accepted', 'Private Room Available'],
+            ],
+            10 => [
+                'categories' => ['Curry'],
+                'features' => ['English Menu Available', 'Vegetarian Options', 'Credit Cards Accepted'],
+            ],
+            11 => [
+                'categories' => ['Italian'],
+                'features' => ['English Menu Available', 'Credit Cards Accepted', 'Reservations Required'],
+            ],
+            12 => [
+                'categories' => ['Japanese BBQ'],
+                'features' => ['English Menu Available', 'Credit Cards Accepted', 'Private Room Available'],
+            ],
+            13 => [
+                'categories' => ['Thai', 'Vegetarian Friendly'],
+                'features' => ['English Menu Available', 'Vegetarian Options', 'Credit Cards Accepted'],
+            ],
+            14 => [
+                'categories' => ['French'],
+                'features' => ['English Menu Available', 'Credit Cards Accepted', 'Reservations Required'],
+            ],
+            15 => [
+                'categories' => ['Bakery', 'Cafe'],
+                'features' => ['English Menu Available', 'Vegetarian Options', 'Wi-Fi Available'],
+            ]
         ];
 
         foreach ($relations as $restaurantId => $relation) {
@@ -133,7 +212,7 @@ class DemoSeeder extends Seeder
 
             $restaurant->categories()->sync(
                 collect($relation['categories'])
-                    ->map(fn ($name) => $categoryIds[$name] ?? null)
+                    ->map(fn($name) => $categoryIds[$name] ?? null)
                     ->filter()
                     ->values()
                     ->all()
@@ -141,7 +220,7 @@ class DemoSeeder extends Seeder
 
             $restaurant->features()->sync(
                 collect($relation['features'])
-                    ->map(fn ($name) => $featureIds[$name] ?? null)
+                    ->map(fn($name) => $featureIds[$name] ?? null)
                     ->filter()
                     ->values()
                     ->all()
@@ -162,6 +241,42 @@ class DemoSeeder extends Seeder
             ['id' => 6, 'restaurant_id' => 2, 'table_name' => 'Ramen Table A', 'capacity' => 4, 'is_active' => true],
             ['id' => 7, 'restaurant_id' => 2, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
             ['id' => 8, 'restaurant_id' => 3, 'table_name' => 'Pending Table A', 'capacity' => 4, 'is_active' => true],
+            ['id' => 9, 'restaurant_id' => 4, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 10, 'restaurant_id' => 4, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 11, 'restaurant_id' => 4, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 12, 'restaurant_id' => 5, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 13, 'restaurant_id' => 5, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 14, 'restaurant_id' => 5, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 15, 'restaurant_id' => 6, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 16, 'restaurant_id' => 6, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 17, 'restaurant_id' => 6, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 18, 'restaurant_id' => 7, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 19, 'restaurant_id' => 7, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 20, 'restaurant_id' => 7, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 21, 'restaurant_id' => 8, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 22, 'restaurant_id' => 8, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 23, 'restaurant_id' => 8, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 24, 'restaurant_id' => 9, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 25, 'restaurant_id' => 9, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 26, 'restaurant_id' => 9, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 27, 'restaurant_id' => 10, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 28, 'restaurant_id' => 10, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 29, 'restaurant_id' => 10, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 30, 'restaurant_id' => 11, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 31, 'restaurant_id' => 11, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 32, 'restaurant_id' => 11, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 33, 'restaurant_id' => 12, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 34, 'restaurant_id' => 12, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 35, 'restaurant_id' => 12, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 36, 'restaurant_id' => 13, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 37, 'restaurant_id' => 13, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 38, 'restaurant_id' => 13, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 39, 'restaurant_id' => 14, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 40, 'restaurant_id' => 14, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 41, 'restaurant_id' => 14, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
+            ['id' => 42, 'restaurant_id' => 15, 'table_name' => 'Table A', 'capacity' => 2, 'is_active' => true],
+            ['id' => 43, 'restaurant_id' => 15, 'table_name' => 'Table B', 'capacity' => 4, 'is_active' => true],
+            ['id' => 44, 'restaurant_id' => 15, 'table_name' => 'Group Table', 'capacity' => 6, 'is_active' => true],
         ];
 
         foreach ($tables as $table) {
@@ -184,6 +299,26 @@ class DemoSeeder extends Seeder
             ['id' => 4, 'restaurant_id' => 2, 'menu_name' => 'Tonkotsu Ramen', 'price' => 1200, 'menu_category' => 'food', 'description' => 'Rich pork bone broth ramen.', 'image_path' => 'demo/menus/tonkotsu-ramen.jpg', 'menu_image' => 'demo/menus/tonkotsu-ramen.jpg'],
             ['id' => 5, 'restaurant_id' => 2, 'menu_name' => 'Gyoza', 'price' => 650, 'menu_category' => 'food', 'description' => 'Pan-fried dumplings.', 'image_path' => 'demo/menus/gyoza.jpg', 'menu_image' => 'demo/menus/gyoza.jpg'],
             ['id' => 6, 'restaurant_id' => 2, 'menu_name' => 'Iced Oolong Tea', 'price' => 450, 'menu_category' => 'drink', 'description' => 'Cold oolong tea.', 'image_path' => 'demo/menus/oolong.jpg', 'menu_image' => 'demo/menus/oolong.jpg'],
+            ['id' => 7, 'restaurant_id' => 6, 'menu_name' => 'Seasonal Tempura Set', 'price' => 2400, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-6-food.jpg', 'menu_image' => 'demo/menus/restaurant-6-food.jpg'],
+            ['id' => 8, 'restaurant_id' => 6, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-6-drink.jpg', 'menu_image' => 'demo/menus/restaurant-6-drink.jpg'],
+            ['id' => 9, 'restaurant_id' => 7, 'menu_name' => 'Handmade Udon Bowl', 'price' => 2500, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-7-food.jpg', 'menu_image' => 'demo/menus/restaurant-7-food.jpg'],
+            ['id' => 10, 'restaurant_id' => 7, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-7-drink.jpg', 'menu_image' => 'demo/menus/restaurant-7-drink.jpg'],
+            ['id' => 11, 'restaurant_id' => 8, 'menu_name' => 'Vegan Bento Plate', 'price' => 2600, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-8-food.jpg', 'menu_image' => 'demo/menus/restaurant-8-food.jpg'],
+            ['id' => 12, 'restaurant_id' => 8, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-8-drink.jpg', 'menu_image' => 'demo/menus/restaurant-8-drink.jpg'],
+            ['id' => 13, 'restaurant_id' => 9, 'menu_name' => 'Izakaya Sharing Plate', 'price' => 2700, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-9-food.jpg', 'menu_image' => 'demo/menus/restaurant-9-food.jpg'],
+            ['id' => 14, 'restaurant_id' => 9, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-9-drink.jpg', 'menu_image' => 'demo/menus/restaurant-9-drink.jpg'],
+            ['id' => 15, 'restaurant_id' => 10, 'menu_name' => 'Tokyo Spice Curry', 'price' => 2800, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-10-food.jpg', 'menu_image' => 'demo/menus/restaurant-10-food.jpg'],
+            ['id' => 16, 'restaurant_id' => 10, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-10-drink.jpg', 'menu_image' => 'demo/menus/restaurant-10-drink.jpg'],
+            ['id' => 17, 'restaurant_id' => 11, 'menu_name' => 'Fresh Pasta Lunch', 'price' => 2900, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-11-food.jpg', 'menu_image' => 'demo/menus/restaurant-11-food.jpg'],
+            ['id' => 18, 'restaurant_id' => 11, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-11-drink.jpg', 'menu_image' => 'demo/menus/restaurant-11-drink.jpg'],
+            ['id' => 19, 'restaurant_id' => 12, 'menu_name' => 'Yakiniku Assortment', 'price' => 3000, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-12-food.jpg', 'menu_image' => 'demo/menus/restaurant-12-food.jpg'],
+            ['id' => 20, 'restaurant_id' => 12, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-12-drink.jpg', 'menu_image' => 'demo/menus/restaurant-12-drink.jpg'],
+            ['id' => 21, 'restaurant_id' => 13, 'menu_name' => 'Thai Green Curry', 'price' => 3100, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-13-food.jpg', 'menu_image' => 'demo/menus/restaurant-13-food.jpg'],
+            ['id' => 22, 'restaurant_id' => 13, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-13-drink.jpg', 'menu_image' => 'demo/menus/restaurant-13-drink.jpg'],
+            ['id' => 23, 'restaurant_id' => 14, 'menu_name' => 'Bistro Course Plate', 'price' => 3200, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-14-food.jpg', 'menu_image' => 'demo/menus/restaurant-14-food.jpg'],
+            ['id' => 24, 'restaurant_id' => 14, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-14-drink.jpg', 'menu_image' => 'demo/menus/restaurant-14-drink.jpg'],
+            ['id' => 25, 'restaurant_id' => 15, 'menu_name' => 'Bakery Sandwich Set', 'price' => 3300, 'menu_category' => 'food', 'description' => 'Popular signature dish prepared for demo testing.', 'image_path' => 'demo/menus/restaurant-15-food.jpg', 'menu_image' => 'demo/menus/restaurant-15-food.jpg'],
+            ['id' => 26, 'restaurant_id' => 15, 'menu_name' => 'House Drink', 'price' => 550, 'menu_category' => 'drink', 'description' => 'Restaurant house drink.', 'image_path' => 'demo/menus/restaurant-15-drink.jpg', 'menu_image' => 'demo/menus/restaurant-15-drink.jpg'],
         ];
 
         foreach ($menus as $menu) {
@@ -201,6 +336,26 @@ class DemoSeeder extends Seeder
             ['restaurant_id' => 2, 'menu_id' => 4, 'photo_path' => 'demo/photos/ramen.jpg', 'photo_category' => 'food'],
             ['restaurant_id' => 2, 'menu_id' => 5, 'photo_path' => 'demo/photos/gyoza.jpg', 'photo_category' => 'food'],
             ['restaurant_id' => 2, 'menu_id' => null, 'photo_path' => 'demo/photos/ramen-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 6, 'menu_id' => 7, 'photo_path' => 'demo/menus/restaurant-6-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 6, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-6-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 7, 'menu_id' => 9, 'photo_path' => 'demo/menus/restaurant-7-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 7, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-7-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 8, 'menu_id' => 11, 'photo_path' => 'demo/menus/restaurant-8-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 8, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-8-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 9, 'menu_id' => 13, 'photo_path' => 'demo/menus/restaurant-9-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 9, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-9-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 10, 'menu_id' => 15, 'photo_path' => 'demo/menus/restaurant-10-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 10, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-10-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 11, 'menu_id' => 17, 'photo_path' => 'demo/menus/restaurant-11-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 11, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-11-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 12, 'menu_id' => 19, 'photo_path' => 'demo/menus/restaurant-12-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 12, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-12-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 13, 'menu_id' => 21, 'photo_path' => 'demo/menus/restaurant-13-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 13, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-13-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 14, 'menu_id' => 23, 'photo_path' => 'demo/menus/restaurant-14-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 14, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-14-interior.jpg', 'photo_category' => 'interior'],
+            ['restaurant_id' => 15, 'menu_id' => 25, 'photo_path' => 'demo/menus/restaurant-15-food.jpg', 'photo_category' => 'food'],
+            ['restaurant_id' => 15, 'menu_id' => null, 'photo_path' => 'demo/photos/restaurant-15-interior.jpg', 'photo_category' => 'interior'],
         ];
 
         foreach ($photos as $photo) {
