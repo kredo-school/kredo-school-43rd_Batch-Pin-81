@@ -281,7 +281,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
 
 Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
   Route::get('owner_account', [OwnerAccountController::class, 'edit'])->name('owner_account.edit');
-  Route::any('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
+  Route::post('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
   Route::post('owner_account/verify', [OwnerAccountController::class, 'verifyCode'])->name('owner_account.verify');
   Route::put('owner_account', [OwnerAccountController::class, 'update'])->name('owner_account.update');
   Route::get('/contact', [RestaurantContactController::class, 'index'])->name('contact.index');

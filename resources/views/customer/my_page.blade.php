@@ -1709,7 +1709,7 @@
         function handleLinkMouseEnter(element) {
             if (element.classList.contains('link-following')) {
                 element.innerText = 'Unfollow';
-                element.style.color = '#ed4956'; // インスタ風の赤
+                element.style.color = '#ed4956';
             }
         }
 

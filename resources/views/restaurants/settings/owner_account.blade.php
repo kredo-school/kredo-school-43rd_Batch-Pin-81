@@ -1,6 +1,5 @@
 @extends('layouts.restaurant')
 
-
 @section('title', 'Restaurant Owner Account')
 
 @section('content')
@@ -72,7 +71,6 @@
             color: #fff;
         }
 
-        /* 🔒 2段階認証用：背景全体をロックするオーバーレイスタリング */
         .verification-overlay {
             position: fixed;
             top: 0;
@@ -217,10 +215,17 @@
     <div class="container main-container">
         <h1 class="page-title">Owner Account</h1>
 
-        {{-- フラッシュメッセージ（成功・エラー） --}}
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div id="pcAlertContainer" class="alert alert-success alert-dismissible fade show d-none d-md-block"
+                role="alert">
                 {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -236,13 +241,13 @@
             </div>
         @endif
 
-        <div class="card-custom">
-            <h2 class="card-title-custom">Account Information</h2>
+        <form action="{{ route('restaurant.settings.owner_account.update') }}" method="POST">
+            @csrf
+            @method('PUT')
 
-            <form action="{{ route('restaurant.settings.owner_account.update') }}" method="POST">
-                @csrf
-                @method('PUT')
-
+            <!-- Account Information Section -->
+            <div class="card-custom">
+                <h2 class="card-title-custom">Account Information</h2>
                 <div class="row g-4">
                     <div class="col-md-6">
                         <label class="form-label form-label-custom">Last Name</label>
@@ -258,10 +263,11 @@
 
                     <div class="col-12">
                         <label class="form-label form-label-custom">Email</label>
-                        <input type="email" class="form-control form-control-custom text-muted"
-                            value="{{ $restaurant->email ?? '' }}" readonly>
-                        <div class="form-text text-muted" style="font-size: 12px; margin-top: 4px;">Email cannot be changed
-                            directly.</div>
+                        <input type="email" name="email" class="form-control form-control-custom"
+                            value="{{ old('email', $user->email ?? '') }}" required>
+                        <div class="form-text text-muted" style="font-size: 12px; margin-top: 4px;">
+                            ※ Changing your email will require re-verification upon next login.
+                        </div>
                     </div>
 
                     <div class="col-12">
@@ -281,134 +287,141 @@
                         <input type="password" name="password_confirmation" class="form-control form-control-custom"
                             placeholder="Confirm new password">
                     </div>
+                </div>
+            </div>
 
-                    <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-save">Save Changes</button>
+            <!-- Payment Information Section -->
+            <div class="card mt-4 shadow-sm border-0" style="border-radius: 12px; background-color: #fff">
+                <div class="card-body p-4">
+                    <h5 class="mb-1" style="color: #0f2c59; font-weight: 700;">
+                        <i class="bi bi-bank me-2"></i>Payment Information
+                    </h5>
+                    <p class="text-muted small mb-4">Bank account for receiving payments from Pin+81</p>
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label small fw-bold" style="color: #0f2c59;">Bank Name</label>
+                            <input type="text" name="bank_name" class="form-control"
+                                placeholder="e.g., Sumitomo Mitsui Banking Corporation"
+                                value="{{ old('bank_name', $restaurant->bank_name ?? '') }}"
+                                style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" style="color: #0f2c59;">Branch Code</label>
+                            <input type="text" name="branch_code" class="form-control" placeholder="123"
+                                value="{{ old('branch_code', $restaurant->branch_code ?? '') }}"
+                                style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold" style="color: #0f2c59;">Account Number</label>
+                            <input type="text" name="account_number" class="form-control" placeholder="1234567"
+                                value="{{ old('account_number', $restaurant->account_number ?? '') }}"
+                                style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small fw-bold" style="color: #0f2c59;">Account Holder Name
+                                (Katakana)</label>
+                            <input type="text" name="account_holder_name" class="form-control" placeholder="セイ メイ"
+                                value="{{ old('account_holder_name', $restaurant->account_holder_name ?? '') }}"
+                                style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
+                            <div class="form-text text-muted" style="font-size: 11px; margin-top: 4px;">
+                                ※ Enter in Katakana. Space between Last/First name depends on your bank (No space for most
+                                banks, half-width space if required).
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="card mt-4 shadow-sm border-0" style="border-radius: 12px; background-color: #fff">
-            <div class="card-body p-4">
-                <h5 class="mb-1" style="color: #0f2c59; font-weight: 700;">
-                    <i class="bi bi-bank me-2"></i>Payment Information
-                </h5>
-                <p class="text-muted small mb-4">Bank account for receiving payments from Pin+81</p>
+            </div>
 
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <label class="form-label small fw-bold" style="color: #0f2c59;">Bank Name</label>
-                        <input type="text" name="bank_name" class="form-control"
-                            placeholder="e.g., Sumitomo Mitsui Banking Corporation"
-                            value="{{ old('bank_name', $restaurant->bank_name ?? '') }}"
-                            style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold" style="color: #0f2c59;">Branch Code</label>
-                        <input type="text" name="branch_code" class="form-control" placeholder="123"
-                            value="{{ old('branch_code', $restaurant->branch_code ?? '') }}"
-                            style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
-                    </div>
-                    <div class="col-md-8">
-                        <label class="form-label small fw-bold" style="color: #0f2c59;">Account Number</label>
-                        <input type="text" name="account_number" class="form-control" placeholder="1234567"
-                            value="{{ old('account_number', $restaurant->account_number ?? '') }}"
-                            style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label small fw-bold" style="color: #0f2c59;">Account Holder Name
-                            (Katakana)</label>
-                        <input type="text" name="account_holder_name" class="form-control" placeholder="Full Name"
-                            value="{{ old('account_holder_name', $restaurant->account_holder_name ?? '') }}"
-                            style="border-radius: 8px; padding: 10px; background-color: #f8fafc;">
-                    </div>
+            <!-- Subscription Plan Section -->
+            <h5 class="mt-5 mb-3" style="color: #0a2540; font-weight: 700; font-family: sans-serif;">Subscription Plan
+            </h5>
+            <div class="row g-4 style-exact-photo">
+                @php
+                    $currentPlan = old('subscription_plan', $restaurant->subscription_plan ?? 'basic');
+                @endphp
+
+                <div class="col-md-4">
+                    <label class="plan-trigger w-100 h-100 m-0">
+                        <input type="radio" name="subscription_plan" value="basic" class="d-none"
+                            {{ $currentPlan === 'basic' ? 'checked' : '' }}>
+                        <div class="card h-100 shadow-sm plan-card-base">
+                            <div class="card-body d-flex flex-column text-start p-4">
+                                <h4 class="plan-name">Basic</h4>
+                                <div class="plan-price">
+                                    <span class="price-amount">¥5,000</span><span class="price-period">/month</span>
+                                </div>
+                                <ul class="plan-features flex-grow-1">
+                                    <li>✓ Up to 50 reservations/month</li>
+                                    <li>✓ No-show Protection (Credit Card Deposit)</li>
+                                    <li>✓ Basic analytics</li>
+                                    <li>✓ Email support</li>
+                                </ul>
+                                <button type="button" class="plan-btn">Select Basic</button>
+                            </div>
+                        </div>
+                    </label>
                 </div>
 
-                <button type="submit" class="btn btn-save mt-4 px-4 py-2">Save Payment Info</button>
-            </div>
-        </div>
-
-        <h5 class="mt-5 mb-3" style="color: #0a2540; font-weight: 700; font-family: sans-serif;">Subscription Plan</h5>
-        <div class="row g-4 style-exact-photo">
-
-            <div class="col-md-4">
-                <label class="plan-trigger w-100 h-100 m-0">
-                    <input type="radio" name="subscription_plan" value="basic" class="d-none" checked>
-                    <div class="card h-100 shadow-sm plan-card-base">
-                        <div class="card-body d-flex flex-column text-start p-4">
-                            <h4 class="plan-name">Basic</h4>
-                            <div class="plan-price">
-                                <span class="price-amount">¥5,000</span><span class="price-period">/month</span>
+                <div class="col-md-4">
+                    <label class="plan-trigger w-100 h-100 m-0">
+                        <input type="radio" name="subscription_plan" value="pro" class="d-none"
+                            {{ $currentPlan === 'pro' ? 'checked' : '' }}>
+                        <div class="card h-100 shadow-sm plan-card-base">
+                            <div class="card-body d-flex flex-column text-start p-4">
+                                <h4 class="plan-name">Pro</h4>
+                                <div class="plan-price">
+                                    <span class="price-amount">¥15,000</span><span class="price-period">/month</span>
+                                </div>
+                                <ul class="plan-features flex-grow-1">
+                                    <li>✓ Unlimited Online Reservations</li>
+                                    <li>✓ Advanced analytics</li>
+                                    <li>✓ Priority support</li>
+                                    <li>✓ Custom branding</li>
+                                </ul>
+                                <button type="button" class="plan-btn">Select Pro</button>
                             </div>
-                            <ul class="plan-features flex-grow-1">
-                                <li>✓ Up to 50 reservations/month</li>
-                                <li>✓ Basic analytics</li>
-                                <li>✓ Email support</li>
-                            </ul>
-                            <button type="submit" class="plan-btn">Current Plan</button>
                         </div>
-                    </div>
-                </label>
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="plan-trigger w-100 h-100 m-0">
+                        <input type="radio" name="subscription_plan" value="enterprise" class="d-none"
+                            {{ $currentPlan === 'enterprise' ? 'checked' : '' }}>
+                        <div class="card h-100 shadow-sm plan-card-base">
+                            <div class="card-body d-flex flex-column text-start p-4">
+                                <h4 class="plan-name">Enterprise</h4>
+                                <div class="plan-price">
+                                    <span class="price-amount">Custom</span>
+                                </div>
+                                <ul class="plan-features flex-grow-1">
+                                    <li>✓ Everything in Pro</li>
+                                    <li>✓ Multi-location support</li>
+                                    <li>✓ Dedicated manager</li>
+                                    <li>✓ API access</li>
+                                </ul>
+                                <button type="button" class="plan-btn">Select Enterprise</button>
+                            </div>
+                        </div>
+                    </label>
+                </div>
             </div>
 
-            <div class="col-md-4">
-                <label class="plan-trigger w-100 h-100 m-0">
-                    <input type="radio" name="subscription_plan" value="pro" class="d-none">
-                    <div class="card h-100 shadow-sm plan-card-base">
-                        <div class="card-body d-flex flex-column text-start p-4">
-                            <h4 class="plan-name">Pro</h4>
-                            <div class="plan-price">
-                                <span class="price-amount">¥15,000</span><span class="price-period">/month</span>
-                            </div>
-                            <ul class="plan-features flex-grow-1">
-                                <li>✓ Unlimited reservations</li>
-                                <li>✓ Advanced analytics</li>
-                                <li>✓ Priority support</li>
-                                <li>✓ Custom branding</li>
-                            </ul>
-                            <button type="submit" class="plan-btn">Upgrade to Pro</button>
-                        </div>
-                    </div>
-                </label>
+            <div class="col-12 mt-4 text-end">
+                <button type="submit" class="btn btn-save id-btn-submit-all px-5 py-3 fs-5">Save All Changes</button>
             </div>
-
-            <div class="col-md-4">
-                <label class="plan-trigger w-100 h-100 m-0">
-                    <input type="radio" name="subscription_plan" value="enterprise" class="d-none">
-                    <div class="card h-100 shadow-sm plan-card-base">
-                        <div class="card-body d-flex flex-column text-start p-4">
-                            <h4 class="plan-name">Enterprise</h4>
-                            <div class="plan-price">
-                                <span class="price-amount">Custom</span>
-                            </div>
-                            <ul class="plan-features flex-grow-1">
-                                <li>✓ Everything in Pro</li>
-                                <li>✓ Multi-location support</li>
-                                <li>✓ Dedicated manager</li>
-                                <li>✓ API access</li>
-                            </ul>
-                            <button type="submit" class="plan-btn">Contact Sales</button>
-                        </div>
-                    </div>
-                </label>
-            </div>
-        </div>
+        </form>
     </div>
 
     {{-- 🔑 2段階認証用オーバーレイモーダル (未認証時のみ出現) --}}
     @if (!$isVerified)
         <div class="verification-overlay" id="verificationOverlay">
             <div class="verification-modal">
-                {{-- 🛠️ 開発中：デザイン確認のために一時的に残す場合（onclickを書き換え） --}}
                 <button type="button" class="modal-close-btn"
-                    onclick="document.getElementById('verificationOverlay').style.display='none';"><i
-                        class="bi bi-x-lg"></i></button>
-
-                {{-- 🔒 本番運用：完全に無効化して非表示にする場合（丸ごとコメントアウト、または削除）
-                <button type="button" class="modal-close-btn" onclick="window.history.back();"><i class="bi bi-x-lg"></i></button>
-
-                ×ボタンを押したら別のページへリダイレクトさせる
-                <button type="button" class="modal-close-btn" onclick="location.href='{{ route('restaurant.dashboard') }}';"><i class="bi bi-x-lg"></i></button> --}}
+                    onclick="location.href='{{ url('/restaurant/dashboard') }}';">
+                    <i class="bi bi-x-lg"></i>
+                </button>
 
                 <div class="d-flex align-items-center gap-2 mb-2" style="color: #0f2c59;">
                     <i class="bi bi-shield-lock-fill fs-4"></i>
@@ -446,26 +459,39 @@
         </div>
     @endif
 
+    <div class="modal fade" id="mobileSuccessModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm p-3">
+            <div class="modal-content border-0 shadow" style="border-radius: 16px;">
+                <div class="modal-body text-center p-4">
+                    <div class="text-success mb-3">
+                        <i class="bi bi-check-circle-fill" style="font-size: 3rem; color: #198754;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color: #0f2c59;">Updated!</h5>
+                    <p id="mobileModalMessage" class="text-muted small mb-3"></p>
+                    <button type="button" class="btn text-white w-100 py-2" data-bs-dismiss="modal"
+                        style="background-color: #0f2c59; border-radius: 8px;">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        //「SMS」に切り替えた瞬間に、ボタンの文字が自動で電話番号に切り替わるように
         function updateSendButton() {
             const methodSelect = document.getElementById('verificationMethod');
             const sendButton = document.getElementById('btnSendCode');
-
-            // ボタンに仕込んだ宛先データを取得
             const email = sendButton.getAttribute('data-email');
             const phone = sendButton.getAttribute('data-phone');
 
-            // 選択された方法に応じてボタンのテキストを書き換え
             if (methodSelect.value === 'email') {
                 sendButton.textContent = `Send Code to ${email}`;
             } else if (methodSelect.value === 'sms') {
                 sendButton.textContent = `Send Code to ${phone}`;
             }
         }
-        // 認証コードを送信するAjax処理
+
         function sendCode() {
             const btn = document.getElementById('btnSendCode');
+            const method = document.getElementById('verificationMethod').value;
             btn.disabled = true;
             btn.innerText = 'Sending...';
 
@@ -475,12 +501,15 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({
+                        method: method
+                    })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Verification code sent to your email.');
+                        alert(`Verification code sent via ${method}.`);
                         btn.innerText = 'Resend Code';
                         btn.disabled = false;
                     }
@@ -492,7 +521,6 @@
                 });
         }
 
-        // 入力されたコードを検証するAjax処理
         function verifyCode() {
             const codeInput = document.getElementById('verificationCode');
             const errorDiv = document.getElementById('errorMessage');
@@ -529,5 +557,20 @@
                     errorDiv.innerText = 'An error occurred. Please try again.';
                 });
         }
+        document.addEventListener("DOMContentLoaded", function() {
+            @if (session('success'))
+                if (window.innerWidth < 768) {
+                    document.getElementById('mobileModalMessage').innerText =
+                        "⚙️ Account information updated successfully.";
+
+                    var modalEl = document.getElementById('mobileSuccessModal');
+                    var myModal = new bootstrap.Modal(modalEl);
+                    myModal.show();
+                    modalEl.addEventListener('hidden.bs.modal', function() {
+                        document.activeElement.blur();
+                    });
+                }
+            @endif
+        });
     </script>
 @endsection
