@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    /**
-     * 👤 Display Customer My Page
-     */
+    // 👤 Display Customer My Page
     public function myPage()
     {
         $user = Auth::user();
@@ -52,9 +50,7 @@ class PostController extends Controller
         return view('customer.my_page', compact('user', 'posts', 'visitedRestaurants', 'followers', 'followings'));
     }
 
-    /**
-     * 💬 Display Restaurant Reviews List
-     */
+    // 💬 Display Restaurant Reviews List
     public function showRestaurantReviews($restaurant_id)
     {
         // Fetch posts directly with rating column stored in posts table
@@ -123,10 +119,7 @@ class PostController extends Controller
 
         return view('restaurants.reviews', compact('reviews', 'stats'));
     }
-
-    /**
-     * 📥 Store a New Review Post
-     */
+    // 📥 Store a New Review Post
     public function store(Request $request, $restaurant_id = null)
     {
         // 1. Strictly validate the incoming parameters (including the live rating)
@@ -170,13 +163,10 @@ class PostController extends Controller
             'status'        => 'visible',
         ]);
 
-        return redirect('/restaurant/' . $finalRestaurantId . '/reviews')
-            ->with('success', 'Review posted successfully!');
+        return back()->with('success', 'Review posted successfully!');
     }
 
-    /**
-     * 🔍 General Routing Stubs
-     */
+    // 🔍 General Routing Stubs
     public function index(Request $request)
     {
         $restaurants = Restaurant::query()
@@ -197,9 +187,7 @@ class PostController extends Controller
         return view('customers.restaurants.index', compact('restaurants'));
     }
 
-    /**
-     * 📝 Update an existing description
-     */
+    // 📝 Update an existing description
     public function update(Request $request, Post $post)
     {
         if ($post->user_id !== Auth::id()) {
@@ -217,9 +205,7 @@ class PostController extends Controller
         return redirect()->back()->with('success', 'Post updated successfully.');
     }
 
-    /**
-     * 🗑️ Delete Post
-     */
+    // 🗑️ Delete Post
     public function destroy(Post $post)
     {
         if ($post->user_id !== Auth::id()) {
@@ -231,9 +217,7 @@ class PostController extends Controller
         return redirect()->route('customer.my_page')->with('success', 'Post deleted successfully.');
     }
 
-    /**
-     * 🚨 Report Malicious Content
-     */
+    // 🚨 Report Malicious Content
     public function report(Post $post)
     {
         try {
@@ -254,12 +238,20 @@ class PostController extends Controller
 
     public function userProfile(User $user)
     {
-        $reviews = Post::with(['restaurant', 'likes'])
+        // Numbers of Followers & Following
+        $followers = method_exists($user, 'followers') ? $user->followers : collect([]);
+        $followings = method_exists($user, 'followings') ? $user->followings : collect([]);
+
+        $visitedRestaurants = collect([]);
+
+        $posts = Post::with(['comments.user', 'user', 'likes'])
+            ->withCount('likes')
             ->where('user_id', $user->id)
             ->latest()
             ->get();
 
-        return view('customer.user_profile', compact('user', 'reviews'));
+        // 自分のマイページと同じ変数セット（posts）のまま、他人のデータを送り込む
+        return view('customer.my_page', compact('user', 'posts', 'visitedRestaurants', 'followers', 'followings'));
     }
 }
 

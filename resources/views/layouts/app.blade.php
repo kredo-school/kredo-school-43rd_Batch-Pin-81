@@ -261,7 +261,7 @@
 
                     <a href="{{ route('customer.mypage') }}" class="nav-link text-decoration-none"
                         style="-webkit-text-stroke: 0.5px; color: #97a2b5; padding: 6px;" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" data-bs-title="Reviews">
+                        data-bs-placement="bottom" data-bs-title="Posts">
                         <i class="bi bi-star fs-5"></i>
                     </a>
 
