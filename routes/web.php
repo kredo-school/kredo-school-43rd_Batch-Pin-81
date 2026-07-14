@@ -197,6 +197,12 @@ Route::middleware(['auth', 'admin'])
     // Show / Hide
     Route::patch('/reviews/{id}/toggle', [ReviewController::class, 'toggleStatus'])
       ->name('admin.reviews.toggle');
+    // Dismiss
+    Route::patch('/reviews/{id}/dismiss', [ReviewController::class, 'dismissReport'])
+      ->name('admin.reviews.dismiss');
+    // Remove
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])
+      ->name('admin.reviews.destroy');
 
     // Contact dashboard
     Route::get('/contacts', [ContactController::class, 'index'])
