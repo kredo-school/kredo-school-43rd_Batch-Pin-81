@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -91,5 +92,10 @@ class User extends Authenticatable
     public function followings()
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
+    }
+
+    public function isFollowing(int $userId): bool
+    {
+        return $this->followings()->where('following_id', $userId)->exists();
     }
 }
