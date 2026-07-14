@@ -3,19 +3,31 @@
 @section('title', 'Book restaurant')
 
 @section('content')
-    <div class="container my-5 d-flex justify-content-center" style="font-family: Inter, sans-serif;">
-        <div class="card p-4 shadow-sm border-0 bg-white" style="max-width: 620px; width: 100%; border-radius: 16px;">
-            <div class="card-body">
-                <a href="{{ route('restaurant.show', $restaurant) }}"
-                    class="btn btn-link text-decoration-none text-secondary p-0 mb-3">
-                    <i class="fa-solid fa-chevron-left me-1"></i> Back
-                </a>
-                <h3 class="fw-bold text-navy mb-1">Complete Your Reservation</h3>
-                <p class="text-muted small mb-4">{{ $restaurant->restaurant_name }}</p>
 
-                <form action="{{ route('booking.store') }}" method="POST" id="bookingForm">
-                    @csrf
-                    <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
+<div class="container my-5 d-flex justify-content-center" style="font-family: inter">
+    <div class="card p-4 shadow-sm border-0 signup-card bg-white" style="max-width: 600px; width: 100%; border-radius: 16px;">
+        <div class="card-body">
+            <a href="{{ route('restaurant.show', $restaurant) }}"
+                class="btn btn-link text-decoration-none text-secondary p-0 mb-3">
+                <i class="fa-solid fa-chevron-left me-1"></i> Back
+            </a>
+            
+                
+            <h3 class="fw-bold text-navy mb-2">
+                Complete Your Reservation{{ auth()->guest() ? ' (Guest)' : '' }}
+            </h3>
+            @guest
+                <p class="text-muted small mb-4">
+                    Booking as a guest. Want to save your favorites and view your booking history?
+                    <a class="text-navy fw-semibold text-decoration-none hover-underline" href="{{ route('register') }}">Create an account</a>
+                </p>
+            @endguest
+
+            <p class="text-muted small mb-4">{{ $restaurant->restaurant_name }}</p>
+
+            <form action="{{ route('booking.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
 
                     @if ($errors->any())
                         <div class="alert alert-danger py-2 small mb-3">

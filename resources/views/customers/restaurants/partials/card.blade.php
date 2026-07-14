@@ -41,15 +41,17 @@
 
                         @php
                             $averageRating = $restaurant->posts_avg_rating ?? 0;
-                            $percentage = ($averageRating / 5) * 100;
+                            $filledStars = (int) floor($averageRating);
+                            $hasHalfStar = ($averageRating - $filledStars) >= 0.5;
                         @endphp
                         {{-- Desktop --}}
                         <div class="star-rating d-none d-md-flex align-items-center">
-                            <div class="star-rating-top" style="width: {{ $percentage }}%">
-                                ★★★★★
-                            </div>
-                            <div class="star-rating-bottom">
-                                ★★★★★
+                            <div class="star-rating-stars" aria-label="{{ number_format($averageRating, 1) }} out of 5 stars">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span class="star-rating-star {{ $i <= $filledStars ? 'filled' : ($i === $filledStars + 1 && $hasHalfStar ? 'half' : 'empty') }}">
+                                        ★
+                                    </span>
+                                @endfor
                             </div>
                             <span class="fs-6">{{ number_format($averageRating, 1) }}</span>
                         </div>
@@ -139,7 +141,10 @@
 
                             @auth
                                 @foreach ($availableTimes as $time)
-                                    <a href="{{ route('booking.create', $restaurant->id) }}?time={{ urlencode($time) }}"
+                                    <a href="{{ route('booking.create', [
+                                        'restaurant' => $restaurant->id,
+                                        'time' => $time,
+                                    ]) }}"
                                         class="time-btn" data-time="{{ $time }}"
                                         data-restaurant-id="{{ $restaurant->id }}">
                                         {{ $time }}
@@ -247,15 +252,31 @@
         font-size: 1.5rem;
     }
 
-    .star-rating-top {
-        color: #ffc107;
-        position: absolute;
-        overflow: hidden;
-        white-space: nowrap;
+    .star-rating-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 1px;
+        margin-right: 6px;
     }
 
-    .star-rating-bottom {
+    .star-rating-star {
+        display: inline-block;
+        line-height: 1;
+    }
+
+    .star-rating-star.filled {
+        color: #ffc107;
+    }
+
+    .star-rating-star.empty {
         color: #ddd;
+    }
+
+    .star-rating-star.half {
+        background: linear-gradient(90deg, #ffc107 50%, #ddd 50%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
     }
 
     .restaurant-name,
@@ -303,6 +324,8 @@
     }
 
     .time-btn {
+        position: relative;
+        z-index: 5;
         color: #0a2540 !important;
         background-color: transparent;
         border: 1px solid #FCE7F3;
@@ -313,11 +336,14 @@
         text-decoration: none;
         /* Remove underline */
         display: inline-block;
+        cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     .time-btn:hover {
         background-color: #FCE7F3 !important;
         color: #0a2540 !important;
+        border-color: #FCE7F3 !important;
         text-decoration: none;
     }
 </style>

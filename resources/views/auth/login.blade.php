@@ -75,11 +75,6 @@
                     <p class="text-center text-muted small mb-3">
                         {{ __("Don't have an account?") }} <a href="{{ route('register') }}">{{ __('Sign up') }}</a>
                     </p>
-
-                    <!-- Partner Link -->
-                    <p class="text-center">
-                        <a href="#">{{ __('Partner with us') }}</a>
-                    </p>
                 </form>
             </div>
         </div>

@@ -287,6 +287,9 @@ Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.set
 // Restaurant Reviews
 Route::get('/restaurant/{restaurant}/reviews', [PostController::class, 'showRestaurantReviews'])->name('restaurant.reviews');
 
+// Customer search page should be accessible to both guests and logged-in users.
+Route::get('/customer/search', [CustomerController::class, 'index'])->name('customer.search');
+
 // Customer
 Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['auth', 'customer']], function () {
 
