@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Feature;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
@@ -10,9 +12,17 @@ use Illuminate\Support\Facades\Auth;
 
 class RestaurantSearchController extends Controller
 {
-    public function view()
+    public function view(Request $request)
     {
-        // $restaurants = Restaurant::all();
+        $selectedCategories = collect($request->input('cuisines', []))->filter()->values();
+        $selectedFeatures = collect($request->input('features', []))->filter()->values();
+        $minimumRating = $request->filled('rating')
+            ? (float) rtrim((string) $request->input('rating'), '+')
+            : null;
+        $distanceLimit = $this->distanceLimitInKm($request->input('distance'));
+        $originLatitude = $request->filled('origin_latitude') ? (float) $request->input('origin_latitude') : null;
+        $originLongitude = $request->filled('origin_longitude') ? (float) $request->input('origin_longitude') : null;
+
         $restaurants = Restaurant::with([
             'photos',
             'categories',
@@ -30,11 +40,47 @@ class RestaurantSearchController extends Controller
                 [Auth::id()]
             )
             ->approved()
-            ->withAvg('posts', 'rating')
-            ->get(); // Approvedされたレストランのみを取得するために->approved()を追加ーリカコ
+            ->withAvg('posts', 'rating');
 
+        if ($selectedCategories->isNotEmpty()) {
+            $restaurants->whereHas('categories', function ($query) use ($selectedCategories) {
+                $query->whereIn('category_name', $selectedCategories);
+            });
+        }
 
-        return view('customers.restaurants.index', compact('restaurants'));
+        if ($selectedFeatures->isNotEmpty()) {
+            $restaurants->whereHas('features', function ($query) use ($selectedFeatures) {
+                $query->whereIn('feature_name', $selectedFeatures);
+            });
+        }
+
+        $restaurants = $restaurants->get();
+
+        if ($minimumRating !== null) {
+            $restaurants = $restaurants->filter(function (Restaurant $restaurant) use ($minimumRating) {
+                return (float) ($restaurant->posts_avg_rating ?? 0) >= $minimumRating;
+            })->values();
+        }
+
+        if ($distanceLimit !== null && $originLatitude !== null && $originLongitude !== null) {
+            $restaurants = $restaurants->filter(function (Restaurant $restaurant) use ($distanceLimit, $originLatitude, $originLongitude) {
+                if ($restaurant->latitude === null || $restaurant->longitude === null) {
+                    return false;
+                }
+
+                return $this->distanceInKm(
+                    $originLatitude,
+                    $originLongitude,
+                    (float) $restaurant->latitude,
+                    (float) $restaurant->longitude
+                ) <= $distanceLimit;
+            })->values();
+        }
+
+        $filterCategories = $this->filterCategories();
+        $filterFeatures = $this->filterFeatures();
+
+        return view('customers.restaurants.index', compact('restaurants', 'filterCategories', 'filterFeatures'));
     }
 
     public function show(Restaurant $restaurant)
@@ -114,5 +160,68 @@ class RestaurantSearchController extends Controller
         $restaurants = $query->get();
 
         return view('customer.areas', compact('restaurants', 'area'));
+    }
+
+    private function filterCategories(): array
+    {
+        $categories = Category::query()
+            ->orderBy('category_name')
+            ->pluck('category_name')
+            ->all();
+
+        return !empty($categories)
+            ? $categories
+            : [
+                'Japanese',
+                'Korean',
+                'Italian',
+                'Chinese',
+                'French',
+                'Cafe',
+            ];
+    }
+
+    private function filterFeatures(): array
+    {
+        $features = Feature::query()
+            ->orderBy('feature_name')
+            ->pluck('feature_name')
+            ->all();
+
+        return !empty($features)
+            ? $features
+            : [
+                'English Menu',
+                'Online Payment',
+                'Credit Cards',
+                'Takeout Available',
+                'Free Wi-Fi',
+                'Parking Available',
+            ];
+    }
+
+    private function distanceLimitInKm(?string $distance): ?float
+    {
+        return match ($distance) {
+            'Within 1 km' => 1.0,
+            'Within 5 km' => 5.0,
+            'Within 10 km' => 10.0,
+            default => null,
+        };
+    }
+
+    private function distanceInKm(float $fromLatitude, float $fromLongitude, float $toLatitude, float $toLongitude): float
+    {
+        $earthRadius = 6371;
+
+        $latitudeDelta = deg2rad($toLatitude - $fromLatitude);
+        $longitudeDelta = deg2rad($toLongitude - $fromLongitude);
+
+        $a = sin($latitudeDelta / 2) ** 2
+            + cos(deg2rad($fromLatitude))
+            * cos(deg2rad($toLatitude))
+            * sin($longitudeDelta / 2) ** 2;
+
+        return $earthRadius * (2 * asin(min(1, sqrt($a))));
     }
 }

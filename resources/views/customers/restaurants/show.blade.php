@@ -5,7 +5,10 @@
 @section('content')
 
     <div class="container bg-light px-lg-5 py-4">
-        <div class="row g-4">
+
+        <a href="{{ url()->previous() }}" class="pt-5 mb-3"><i class="fa-solid fa-chevron-left text-dark fs-3"></i></a>
+
+        <div class="row g-4 mt-2">
 
             {{-- LEFT SIDE: Restaurant Photos, Details & Tabs --}}
             <div class="col-12 col-lg-9 order-lg-1 order-1">

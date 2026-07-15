@@ -14,12 +14,15 @@
                 method="GET"
                 action="{{ $filterAction ?? url('/restaurants/view') }}">
 
+                <input type="hidden" name="origin_latitude" id="originLatitude" value="{{ request('origin_latitude') }}">
+                <input type="hidden" name="origin_longitude" id="originLongitude" value="{{ request('origin_longitude') }}">
+
                 <!-- Body -->
                 <div class="modal-body mt-5 mx-4 mb-2" style="color: #0a2540; font-family: inter">
 
-                    {{-- Cuisine --}}
+                    {{-- Categories --}}
                     @php
-                        $cuisines = [
+                        $cuisines = $filterCategories ?? [
                             'Japanese',
                             'Korean',
                             'Italian',
@@ -30,7 +33,7 @@
                     @endphp
 
                     <div class="mb-4">
-                        <h6 class="fw-semibold mb-4">Cuisine</h6>
+                        <h6 class="fw-semibold mb-4">Categories</h6>
 
                         <div class="row g-2">
                             @foreach ($cuisines as $cuisine)
@@ -62,7 +65,7 @@
 
                     {{-- Features --}}
                     @php
-                        $features = [
+                        $features = $filterFeatures ?? [
                             'English Menu',
                             'Online Payment',
                             'Credit Cards',
@@ -150,6 +153,16 @@
 </div>
 
 <script>
+    const originLatitudeInput = document.getElementById('originLatitude');
+    const originLongitudeInput = document.getElementById('originLongitude');
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            originLatitudeInput.value = position.coords.latitude;
+            originLongitudeInput.value = position.coords.longitude;
+        });
+    }
+
     document.getElementById('clearFilters').addEventListener('click', function () {
 
         // Uncheck all checkboxes
@@ -159,6 +172,9 @@
         // Reset selects
         document.querySelectorAll('#filterForm select')
             .forEach(select => select.selectedIndex = 0);
+
+        originLatitudeInput.value = '';
+        originLongitudeInput.value = '';
 
     });
 </script>
