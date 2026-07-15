@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Feature;
 use App\Models\Post;
 use App\Models\Reservation;
 use App\Models\Restaurant;
@@ -169,6 +171,9 @@ class PostController extends Controller
     // 🔍 General Routing Stubs
     public function index(Request $request)
     {
+        $filterCategories = $this->filterCategories();
+        $filterFeatures = $this->filterFeatures();
+
         $restaurants = Restaurant::query()
             ->select('restaurants.*')
             ->selectRaw(
@@ -184,7 +189,7 @@ class PostController extends Controller
             ->approved()
             ->get(); // Approvedされたレストランのみを取得するために->approved()を追加 : リカコ
 
-        return view('customers.restaurants.index', compact('restaurants'));
+        return view('customers.restaurants.index', compact('restaurants', 'filterCategories', 'filterFeatures'));
     }
 
     // 📝 Update an existing description
@@ -252,6 +257,44 @@ class PostController extends Controller
 
         // 自分のマイページと同じ変数セット（posts）のまま、他人のデータを送り込む
         return view('customer.my_page', compact('user', 'posts', 'visitedRestaurants', 'followers', 'followings'));
+    }
+
+    private function filterCategories(): array
+    {
+        $categories = Category::query()
+            ->orderBy('category_name')
+            ->pluck('category_name')
+            ->all();
+
+        return !empty($categories)
+            ? $categories
+            : [
+                'Japanese',
+                'Korean',
+                'Italian',
+                'Chinese',
+                'French',
+                'Cafe',
+            ];
+    }
+
+    private function filterFeatures(): array
+    {
+        $features = Feature::query()
+            ->orderBy('feature_name')
+            ->pluck('feature_name')
+            ->all();
+
+        return !empty($features)
+            ? $features
+            : [
+                'English Menu',
+                'Online Payment',
+                'Credit Cards',
+                'Takeout Available',
+                'Free Wi-Fi',
+                'Parking Available',
+            ];
     }
 }
 

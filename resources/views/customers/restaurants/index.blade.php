@@ -10,6 +10,9 @@
             <div class="mb-3 filter-bar d-none d-md-block" style="background-color: #fffefc;">
 
                 <div class="d-flex justify-content-between align-items-center mb-2">
+
+                    <a href="{{ url()->previous() }}" ><i class="fa-solid fa-chevron-left text-dark fs-3"></i></a>
+
                     <h5 class="h4 fw-bold" style="color: #0a2540;">
                         {{ $restaurants->count() }} Restaurants Found
                     </h5>

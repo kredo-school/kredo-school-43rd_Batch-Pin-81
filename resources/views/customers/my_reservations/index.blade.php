@@ -4,9 +4,15 @@
 
 @section('content')
 
+
+
     <div class="container py-4" style="font-family: inter; color:#0a2540;">
 
+        
+
         <div class="mb-5">
+
+            <a href="{{ url()->previous() }}" class="pt-5 mb-3"><i class="fa-solid fa-chevron-left text-dark fs-3"></i></a>
 
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -18,7 +24,7 @@
             @endif
 
 
-            <h2 class="section-title mb-3">Upcoming</h2>
+            <h2 class="section-title my-3">Upcoming</h2>
 
             @forelse($upcomingReservations ?? [] as $booking)
                 <div class="reservation-card p-3 mb-3 shadow-sm">
