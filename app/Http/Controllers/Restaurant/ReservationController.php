@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Restaurant;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Restaurant;
+use App\Notifications\ReservationSubmittedNotification;
 use App\Services\ReservationAvailabilityService;
 use Illuminate\Http\Request;
-use App\Notifications\ReservationSubmittedNotification;
 use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
@@ -75,13 +75,8 @@ class ReservationController extends Controller
         $reservation->status = $validated['status'];
         $reservation->save();
 
-        // 👇 Send the notification here
-        $restaurantOwner = $reservation->restaurant->user;
-
-        if ($restaurantOwner) {
-            $restaurantOwner->notify(
-                new ReservationSubmittedNotification($reservation)
-            );
+        if ($validated['status'] === 'confirmed' && $reservation->user) {
+            $reservation->user->notify(new ReservationSubmittedNotification($reservation));
         }
 
         return redirect()

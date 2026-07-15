@@ -25,11 +25,15 @@
                                         <div class="d-flex align-items-center">
                                             <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm border border-pink"
                                                 style="width: 44px; height: 44px; min-width: 44px; background-color: #FCE7F3;">
-                                                <i class="fa-solid fa-calendar-day {{ $isUnread ? 'style-pink-text' : 'style-pink-text-light' }}" style="font-size: 1.05rem;"></i>
+                                                @if(data_get($notification->data, 'status') === 'confirmed')
+                                                    <i class="fa-solid fa-calendar-check {{ $isUnread ? 'style-pink-text' : 'style-pink-text-light' }}" style="font-size: 1.05rem;"></i>
+                                                @else
+                                                    <i class="fa-solid fa-calendar-day {{ $isUnread ? 'style-pink-text' : 'style-pink-text-light' }}" style="font-size: 1.05rem;"></i>
+                                                @endif
                                             </div>
                                             <div>
-                                                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">Reservation Submitted</h6>
-                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'A reservation has been submitted.') }}</p>
+                                                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">{{ data_get($notification->data, 'title', 'Reservation Update') }}</h6>
+                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'Your reservation has been updated.') }}</p>
                                                 <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
                                             </div>
                                         </div>
@@ -96,7 +100,7 @@
                             </a>
                         @break
                                                                                         
-                        {{-- @case('new_follower')
+                        @case('new_follower')
                             <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
                                 <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
                                     <div class="d-flex align-items-start justify-content-between w-100">
@@ -186,7 +190,7 @@
                                     </div>
                                 </div>
                             </a>
-                        @break --}}
+                        @break
 
                     @endswitch
                 @empty
