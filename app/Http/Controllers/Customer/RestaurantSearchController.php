@@ -75,7 +75,14 @@ class RestaurantSearchController extends Controller
 
         if (!empty($category)) {
             $query->where(function ($q) use ($category) {
-                $q->where('restaurant_name', 'LIKE', '%' . $category . '%')
+                $q->whereHas('categories', function ($categoryQuery) use ($category) {
+                    $categoryQuery->where(
+                        'category_name',
+                        'LIKE',
+                        '%' . $category . '%'
+                    );
+                })
+                    ->orWhere('restaurant_name', 'LIKE', '%' . $category . '%')
                     ->orWhere('description', 'LIKE', '%' . $category . '%');
             });
         }
@@ -94,8 +101,14 @@ class RestaurantSearchController extends Controller
             ->withAvg('posts', 'rating');
 
         if (!empty($area)) {
-            $query->where('city', 'like', '%' . $area . '%')
-                ->orWhere('street_address_building', 'like', '%' . $area . '%');
+            $query->where(function ($q) use ($area) {
+                $q->where('city', 'LIKE', '%' . $area . '%')
+                    ->orWhere(
+                        'street_address_building',
+                        'LIKE',
+                        '%' . $area . '%'
+                    );
+            });
         }
 
         $restaurants = $query->get();

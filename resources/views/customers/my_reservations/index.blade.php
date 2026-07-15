@@ -72,7 +72,7 @@
                                             data-bs-target="#editModal-{{ $booking->id }}">
                                             Edit
                                         </button>
-                                    
+
                                         <button
                                             type="button"
                                             class="btn btn-action-outline"

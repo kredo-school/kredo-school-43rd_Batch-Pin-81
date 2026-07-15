@@ -10,7 +10,8 @@ class AreaController extends Controller
 {
     public function index()
     {
-        $areas = Restaurant::select('city as name')
+        $areas = Restaurant::approved()
+            ->select('city as name')
             ->whereNotNull('city')
             ->distinct()
             ->get()
@@ -22,6 +23,7 @@ class AreaController extends Controller
     public function show($area)
     {
         $restaurants = Restaurant::with(['photos', 'categories', 'features'])
+            ->approved()
             ->withAvg('posts', 'rating')
             ->where(function ($query) use ($area) {
                 $query->where('city', 'LIKE', '%' . $area . '%')

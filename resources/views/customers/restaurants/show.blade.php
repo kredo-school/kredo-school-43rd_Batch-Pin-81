@@ -268,7 +268,12 @@
                                         <div class="menu-item row g-3 align-items-center border-bottom pb-3 mb-3">
                                             <div class="col-md-2 col-4">
                                                 @if ($menu->menu_image)
-                                                    <img src="{{ asset('assets/images/menu/' . $menu->menu_image) }}"
+                                                    @php
+                                                        $menuImageUrl = str_starts_with($menu->menu_image, 'demo/')
+                                                            ? asset('storage/' . $menu->menu_image)
+                                                            : asset('assets/images/menu/' . $menu->menu_image);
+                                                    @endphp
+                                                    <img src="{{ $menuImageUrl }}"
                                                         alt="{{ $menu->menu_name }}"
                                                         class="img-fluid rounded-3 w-100 object-fit-cover"
                                                         style="aspect-ratio: 1 / 1; min-height: 84px;">
@@ -299,7 +304,12 @@
                                         <div class="menu-item row g-3 align-items-center border-bottom pb-3 mb-3">
                                             <div class="col-md-2 col-4">
                                                 @if ($menu->menu_image)
-                                                    <img src="{{ asset('assets/images/menu/' . $menu->menu_image) }}"
+                                                    @php
+                                                        $menuImageUrl = str_starts_with($menu->menu_image, 'demo/')
+                                                            ? asset('storage/' . $menu->menu_image)
+                                                            : asset('assets/images/menu/' . $menu->menu_image);
+                                                    @endphp
+                                                    <img src="{{ $menuImageUrl }}"
                                                         alt="{{ $menu->menu_name }}"
                                                         class="img-fluid rounded-3 w-100 object-fit-cover"
                                                         style="aspect-ratio: 1 / 1; min-height: 84px;">
