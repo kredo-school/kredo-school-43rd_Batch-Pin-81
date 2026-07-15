@@ -69,7 +69,7 @@
 
                                     <div class="reservation-actions d-flex gap-2 flex-wrap">
                                         <button type="button" class="btn btn-action-outline" data-bs-toggle="modal"
-                                            data-bs-target="#editModal">
+                                            data-bs-target="#editModal-{{ $booking->id }}">
                                             Edit
                                         </button>
                                     
@@ -93,6 +93,7 @@
                     </div>
                 </div>
 
+                @include('customers.my_reservations.modals.edit', ['booking' => $booking])
                 @include('customers.my_reservations.modals.cancel', ['booking' => $booking])
                 @include('customers.my_reservations.modals.notify_late', ['booking' => $booking])
             @empty
@@ -173,9 +174,6 @@
         </div>
 
     </div>
-
-    {{-- include  the modal here --}}
-    @include('customers.my_reservations.modals.edit')
 
     <div class="chat-widget-btn">
         <i class="bi bi-chat-left-text-fill fs-4"></i>

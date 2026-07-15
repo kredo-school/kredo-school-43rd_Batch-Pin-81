@@ -78,20 +78,14 @@ class DashboardController extends Controller
             ->orderBy('reservation_time')
             ->get();
 
-        $now = now();
-        $oneHourLater = $now->copy()->addHour();
         $immediateReservation = null;
 
-        if ($date === $now->toDateString()) {
-            $immediateReservation = Reservation::where('restaurant_id', $restaurant->id)
-                ->whereDate('reservation_date', $date)
-                ->where('status', 'pending')
-                ->whereTime('reservation_time', '>=', $now->format('H:i:s'))
-                ->whereTime('reservation_time', '<=', $oneHourLater->format('H:i:s'))
-                ->with(['user', 'table'])
-                ->orderBy('reservation_time')
-                ->first();
-        }
+        $immediateReservation = Reservation::where('restaurant_id', $restaurant->id)
+            ->where('status', 'pending')
+            ->where('booking_source', 'online')
+            ->with(['user', 'table'])
+            ->latest('created_at')
+            ->first();
 
         return view('restaurants.dashboard.index', [
             'restaurant' => $restaurant,

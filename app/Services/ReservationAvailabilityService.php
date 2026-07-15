@@ -459,12 +459,7 @@ class ReservationAvailabilityService
 
     public function statusForStart(string $date, string $time): string
     {
-        $start = Carbon::parse($date . ' ' . $time);
-        $minutesUntilStart = now()->diffInMinutes($start, false);
-
-        return $minutesUntilStart <= 60
-            ? 'pending'
-            : 'confirmed';
+        return 'pending';
     }
 
     /**

@@ -45,6 +45,17 @@
                                                     <div><strong>Time:</strong> {{ $notification->data['reservation_time'] ?? '-' }}</div>
                                                     <div><strong>Code:</strong> {{ $notification->data['reservation_code'] ?? '-' }}</div>
                                                 </div>
+                                                @if(!empty($notification->data['changed_fields']))
+                                                    <div class="small text-secondary mt-2 p-2 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                                                        <div class="fw-semibold mb-1">Changed details</div>
+                                                        @foreach($notification->data['changed_fields'] as $change)
+                                                            <div>
+                                                                <strong>{{ $change['label'] ?? 'Field' }}:</strong>
+                                                                {{ $change['before'] ?? '-' }} -> {{ $change['after'] ?? '-' }}
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                                 <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
                                             </div>
                                         </div>

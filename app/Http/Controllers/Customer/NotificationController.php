@@ -23,12 +23,10 @@ class NotificationController extends Controller
 
         $notification->markAsRead();
 
-        $redirectUrl = $notification->data['url'] ?? match ($notification->data['type'] ?? '') {
-            'reservation' => data_get($notification->data, 'reservation_id')
-                ? route('booking.confirmation', $notification->data['reservation_id'])
-                : route('customer.notifications'),
+        $redirectUrl = match ($notification->data['type'] ?? '') {
+            'reservation' => route('my_reservations'),
             'contact_reply' => route('contact.index'),
-            default => route('customer.notifications'),
+            default => $notification->data['url'] ?? route('customer.notifications'),
         };
 
         return redirect()->to($redirectUrl);

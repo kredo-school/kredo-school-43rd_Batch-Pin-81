@@ -1,13 +1,13 @@
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal-{{ $booking->id }}" tabindex="-1" aria-labelledby="editModalLabel-{{ $booking->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="font-family: inter; background-color: #fffefc; color:#0a2540;">
 
-            <form action="#" method="POST">
+            <form action="{{ route('my_reservations.update', ['reservation' => $booking->id]) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="editModalLabel">
+                    <h5 class="modal-title fw-bold" id="editModalLabel-{{ $booking->id }}">
                         Modify Reservation
                     </h5>
 
@@ -28,9 +28,9 @@
 
                         <input
                             type="date"
-                            name="date"
+                            name="reservation_date"
                             class="form-control input-box"
-                            value="{{ date('Y-m-d') }}">
+                            value="{{ old('reservation_date', $booking->date ?? $booking->reservation_date) }}">
                     </div>
 
                     <div class="mb-3">
@@ -40,9 +40,9 @@
 
                         <input
                             type="time"
-                            name="time"
+                            name="reservation_time"
                             class="form-control input-box"
-                            value="19:00">
+                            value="{{ old('reservation_time', $booking->time ?? $booking->reservation_time) }}">
                     </div>
 
                     <div class="mb-3">
@@ -51,26 +51,14 @@
                         </label>
 
                         <select
-                            name="guests"
+                            name="num_of_people"
                             class="form-select input-box">
                             @for($i = 1; $i <= 10; $i++)
-                                <option value="{{ $i }}">
+                                <option value="{{ $i }}" @selected(old('num_of_people', $booking->guests ?? $booking->num_of_people) == $i)>
                                     {{ $i }} {{ $i == 1 ? 'Guest' : 'Guests' }}
                                 </option>
                             @endfor
                         </select>
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label fw-semibold">
-                            Special Requests
-                        </label>
-
-                        <textarea
-                            name="notes"
-                            rows="3"
-                            class="form-control input-box"
-                            placeholder="Optional"></textarea>
                     </div>
 
                 </div>
