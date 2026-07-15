@@ -10,7 +10,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
 
-class ReservationSubmittedNotification extends Notification
+class ReservationConfirmedNotification extends Notification
 {
     use Queueable;
 
