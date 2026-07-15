@@ -24,12 +24,13 @@ use App\Http\Controllers\Restaurant\NotificationController as RestaurantNotifica
 use App\Http\Controllers\Restaurant\OwnerAccountController;
 use App\Http\Controllers\Restaurant\PhotoController;
 use App\Http\Controllers\Restaurant\ProfileController as RestaurantProfileController;
-use App\Http\Controllers\Restaurant\ReservationController;
+use App\Http\Controllers\Restaurant\ReservationController as RestaurantReservationController;
 use App\Http\Controllers\Restaurant\ContactController as RestaurantContactController;
 use App\Http\Controllers\Restaurant\DashboardController;
 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RestaurantController as AdminRestaurantController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CategoryFeatureController;
 use App\Http\Controllers\Admin\ReviewController;
@@ -188,7 +189,7 @@ Route::middleware(['auth', 'admin'])
       ->name('admin.restaurants.destroy');
 
     // Reservations dashboard
-    Route::get('/reservations', [ReservationController::class, 'index'])
+    Route::get('/reservations', [AdminReservationController::class, 'index'])
       ->name('admin.reservations');
 
     // Reviews dashboard 
@@ -197,6 +198,12 @@ Route::middleware(['auth', 'admin'])
     // Show / Hide
     Route::patch('/reviews/{id}/toggle', [ReviewController::class, 'toggleStatus'])
       ->name('admin.reviews.toggle');
+    // Dismiss
+    Route::patch('/reviews/{id}/dismiss', [ReviewController::class, 'dismissReport'])
+      ->name('admin.reviews.dismiss');
+    // Remove
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])
+      ->name('admin.reviews.destroy');
 
     // Contact dashboard
     Route::get('/contacts', [ContactController::class, 'index'])
@@ -244,8 +251,8 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
   Route::delete('/tables/{table}', [DashboardController::class, 'destroyTable'])->name('tables.destroy');
 
   // Reservation
-  Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations');
-  Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update_status');
+  Route::get('/reservations', [RestaurantReservationController::class, 'index'])->name('reservations');
+  Route::patch('/reservations/{reservation}/status', [RestaurantReservationController::class, 'updateStatus'])->name('reservations.update_status');
 
 
   // Menu
@@ -274,7 +281,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
 
 Route::middleware(['auth'])->prefix('restaurant/settings')->name('restaurant.settings.')->group(function () {
   Route::get('owner_account', [OwnerAccountController::class, 'edit'])->name('owner_account.edit');
-  Route::any('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
+  Route::post('owner_account/send-code', [OwnerAccountController::class, 'sendVerificationCode'])->name('owner_account.send_code');
   Route::post('owner_account/verify', [OwnerAccountController::class, 'verifyCode'])->name('owner_account.verify');
   Route::put('owner_account', [OwnerAccountController::class, 'update'])->name('owner_account.update');
   Route::get('/contact', [RestaurantContactController::class, 'index'])->name('contact.index');

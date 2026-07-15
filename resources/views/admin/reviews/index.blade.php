@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Reviews')
+@section('title', 'Review Management')
 
 @section('content')
 
@@ -77,11 +77,11 @@
                         <tr style="{{ $review->is_reported ? 'background-color: #fff0f0;' : '' }}">
 
                             <td class="py-3 px-4 fw-semibold text-navy">
-                                {{ optional($review->user)->name ?? 'Unknown User' }}
+                                {{ $review->user ? $review->user->first_name . ' ' . $review->user->last_name : 'Unknown User' }}
                             </td>
 
                             <td class="py-3 text-secondary">
-                                {{ optional($review->restaurant)->name ?? 'N/A' }}
+                                {{ optional($review->restaurant)->restaurant_name ?? 'N/A' }}
                             </td>
 
                             <td class="py-3 text-secondary small">
@@ -107,10 +107,16 @@
                             </td>
 
                             <td class="py-3">
-                                <div class="d-flex align-items-center justify-content-center bg-light text-muted rounded border"
-                                    style="width: 50px; height: 50px;">
-                                    <i class="fa-regular fa-image fs-5"></i>
-                                </div>
+                                @if ($review->image && file_exists(public_path($review->image)))
+                                    <img src="{{ asset($review->image) }}" alt="Review Image"
+                                        class="rounded border shadow-sm"
+                                        style="width: 50px; height: 50px; object-fit: cover;">
+                                @else
+                                    <div class="d-flex align-items-center justify-content-center bg-light text-muted rounded border shadow-sm"
+                                        style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                @endif
                             </td>
 
                             <td class="py-3 text-center">
@@ -144,19 +150,29 @@
                                     </form>
 
                                     @if ($review->is_reported)
-                                        <button type="button"
-                                            class="btn btn-outline-danger btn-sm px-2 py-1 bg-white rounded shadow-sm text-danger border-danger-subtle">
-                                            Dismiss
-                                        </button>
-                                        <button type="button"
-                                            class="btn btn-danger btn-sm px-2 py-1 rounded shadow-sm text-white">
-                                            Remove
-                                        </button>
-                                    @endif
+                                        <form action="{{ route('admin.reviews.dismiss', $review->id) }}" method="POST"
+                                            class="d-inline mb-0">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                class="btn btn-outline-danger btn-sm px-2 py-1 bg-white rounded shadow-sm text-danger border-danger-subtle">
+                                                Dismiss
+                                            </button>
+                                        </form>
 
+                                        <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST"
+                                            class="d-inline mb-0"
+                                            onsubmit="return confirm('Are you sure you want to permanently remove this review?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="btn btn-danger btn-sm px-2 py-1 rounded shadow-sm text-white">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
-
                         </tr>
                     @empty
                         <tr>

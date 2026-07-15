@@ -3,53 +3,58 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderBy('created_at', 'desc')->get();
-
-        return view('admin.users', compact('users'));
+        return $this->renderIndex($request);
     }
 
-    public function customers()
+    public function customers(Request $request)
     {
-        $users = User::where('role_id', 1)
-            ->latest()
-            ->get();
-
-        return view(
-            'admin.users',
-            compact('users')
-        );
+        return $this->renderIndex($request, 1);
     }
 
-    public function restaurants()
+    public function restaurants(Request $request)
     {
-        $users = User::where('role_id', 2)
-            ->latest()
-            ->get();
-
-        return view(
-            'admin.users',
-            compact('users')
-        );
+        return $this->renderIndex($request, 2);
     }
 
-    public function admin()
+    public function admin(Request $request)
     {
-        $users = User::where('role_id', 3)
-            ->latest()
+        return $this->renderIndex($request, 3);
+    }
+
+    private function renderIndex(Request $request, ?int $roleId = null)
+    {
+        $search = trim((string) $request->query('search', ''));
+
+        $query = User::query();
+
+        if ($roleId !== null) {
+            $query->where('role_id', $roleId);
+        }
+
+        if ($search !== '') {
+            $query->where(function (Builder $userQuery) use ($search) {
+                $userQuery->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ['%' . $search . '%'])
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%');
+            });
+        }
+
+        $users = $query
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        return view(
-            'admin.users',
-            compact('users')
-        );
+        return view('admin.users', compact('users', 'search'));
     }
 
     public function updateRole(Request $request, User $user)

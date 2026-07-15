@@ -10,7 +10,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
 
-class ReservationSubmittedNotification extends Notification
+class ReservationConfirmedNotification extends Notification
 {
     use Queueable;
 
@@ -34,30 +34,32 @@ class ReservationSubmittedNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('New Reservation Received')
+            ->subject('Reservation Accepted')
             ->greeting('Hello!')
-            ->line('You have received a new reservation.')
-            ->line('Customer: ' . $this->reservation->user->name)
+            ->line('Your reservation has been accepted by the restaurant.')
+            ->line('Reservation Code: ' . $this->reservation->reservation_code)
             ->line('Date: ' . $this->reservation->reservation_date)
             ->line('Time: ' . $this->reservation->reservation_time)
             ->line('Guests: ' . $this->reservation->num_of_people)
-            ->action('View Reservations', url('/restaurant/dashboard'))
+            ->action('View Reservation', route('my_reservations'))
             ->line('Thank you for using Pin+81!');
     }
 
     public function toDatabase($notifiable)
     {
-        $customerName = $this->reservation->user?->full_name ?? 'Guest';
-
         return [
             'type' => 'reservation',
+            'title' => 'Reservation Accepted',
             'reservation_id' => $this->reservation->id,
             'reservation_code' => $this->reservation->reservation_code,
-            'customer_name' => $customerName,
+            'customer_name' => $this->reservation->user?->full_name ?? 'Guest',
             'reservation_date' => $this->reservation->reservation_date,
             'reservation_time' => $this->reservation->reservation_time,
             'num_of_people' => $this->reservation->num_of_people,
-            'message' => "{$customerName} submitted a reservation.",
+            'status' => 'confirmed',
+            'message' => 'Your reservation has been accepted by the restaurant.',
+            'url' => route('my_reservations'),
+            'button_text' => 'View Reservation',
         ];
     }
 

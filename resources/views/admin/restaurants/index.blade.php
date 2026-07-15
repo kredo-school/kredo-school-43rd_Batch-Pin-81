@@ -14,22 +14,26 @@
         .btn-dark-blue {
             background-color: #0a2540;
             color: #fff !important;
+            border-radius: 10px;
         }
 
         .btn-dark-blue:hover {
             background-color: #0a2540;
             color: #fff !important;
+            border-radius: 10px;
         }
 
         .btn-unactive {
             background: #fff;
             color: #0a2540;
             border: 1px solid #0a2540;
+            border-radius: 10px;
         }
 
         .btn-unactive:hover {
             background-color: #0a2540;
             color: #fff !important;
+            border-radius: 10px;
         }
 
         .btn-dark-blue:approved,
@@ -61,6 +65,17 @@
 
         .table-responsive {
             overflow: visible;
+        }
+
+        .search-shell {
+            min-width: 320px;
+        }
+
+        .search-shell .form-control {
+            border-radius: 999px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            min-height: 44px;
         }
 
         /* Pending */
@@ -196,17 +211,34 @@
         Restaurants
     </h1>
 
-    <div class="mb-4">
-        <a href="{{ route('admin.restaurants') }}"
-            class="btn {{ request()->routeIs('admin.restaurants') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">All</a>
-        <a href="{{ route('admin.restaurants.pending') }}"
-            class="btn {{ request()->routeIs('admin.restaurants.pending') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Pending</a>
-        <a href="{{ route('admin.restaurants.approved') }}"
-            class="btn {{ request()->routeIs('admin.restaurants.approved') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Approved</a>
-        <a href="{{ route('admin.restaurants.rejected') }}"
-            class="btn {{ request()->routeIs('admin.restaurants.rejected') ? 'btn-dark-blue' : 'btn-unactive' }}">Rejected</a>
-        <a href="{{ route('admin.restaurants.suspended') }}"
-            class="btn {{ request()->routeIs('admin.restaurants.suspended') ? 'btn-dark-blue' : 'btn-unactive' }}">Suspended</a>
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+        <div class="mb-2 mb-md-0">
+            <a href="{{ route('admin.restaurants', ['search' => $search]) }}"
+                class="btn {{ request()->routeIs('admin.restaurants') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">All</a>
+            <a href="{{ route('admin.restaurants.pending', ['search' => $search]) }}"
+                class="btn {{ request()->routeIs('admin.restaurants.pending') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Pending</a>
+            <a href="{{ route('admin.restaurants.approved', ['search' => $search]) }}"
+                class="btn {{ request()->routeIs('admin.restaurants.approved') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Approved</a>
+            <a href="{{ route('admin.restaurants.rejected', ['search' => $search]) }}"
+                class="btn {{ request()->routeIs('admin.restaurants.rejected') ? 'btn-dark-blue' : 'btn-unactive' }} me-2">Rejected</a>
+            <a href="{{ route('admin.restaurants.suspended', ['search' => $search]) }}"
+                class="btn {{ request()->routeIs('admin.restaurants.suspended') ? 'btn-dark-blue' : 'btn-unactive' }}">Suspended</a>
+        </div>
+
+        <form action="{{ url()->current() }}" method="GET" class="search-shell d-flex gap-2 align-items-center">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 rounded-start-pill text-secondary">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="search" value="{{ $search }}"
+                    class="form-control border-start-0 rounded-end-pill"
+                    placeholder="Search restaurant, owner, location, status">
+            </div>
+            <button type="submit" class="btn btn-dark-blue rounded-pill px-4">Search</button>
+            @if (!empty($search))
+                <a href="{{ route('admin.restaurants') }}" class="text-decoration-none fw-semibold text-secondary">Reset</a>
+            @endif
+        </form>
     </div>
 
     <div class="card border-0 shadow-sm rounded-4">

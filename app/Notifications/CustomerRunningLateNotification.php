@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Carbon\Carbon;
 
 
 class CustomerRunningLateNotification extends Notification
@@ -39,11 +40,15 @@ class CustomerRunningLateNotification extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $lateMinutesText = $this->lateMinutes
+            ? ' by ' . $this->lateMinutes . ' minutes'
+            : '';
+
         return [
             'type' => 'customer_running_late',
             'title' => 'Customer Running Late',
             'message' => $this->reservation->user->name .
-                ' has informed you they are running late.',
+                ' has informed you they are running late' . $lateMinutesText . '.',
             'reservation_id' => $this->reservation->id,
             'customer_name' => $this->reservation->user->name,
             'reservation_date' => $this->reservation->reservation_date,
@@ -51,7 +56,11 @@ class CustomerRunningLateNotification extends Notification
             'num_of_people' => $this->reservation->num_of_people,
             'reservation_code' => $this->reservation->reservation_code,
             'late_minutes' => $this->lateMinutes,
-            'url' => route('restaurant.reservations.show', $this->reservation),
+            'url' => route('restaurant.dashboard', [
+                'date' => Carbon::parse($this->reservation->reservation_date)->format('Y-m-d'),
+                'start_time' => Carbon::parse($this->reservation->reservation_time)->format('H:i'),
+                'focus' => $this->reservation->id,
+            ]),
             'button_text' => 'View Reservation',
         ];
     }

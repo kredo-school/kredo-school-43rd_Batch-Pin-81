@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             FeatureSeeder::class,
             RestaurantSeeder::class,
+            FeatureSeeder::class,
             DemoSeeder::class,
             ReservationSeeder::class,
         ]);

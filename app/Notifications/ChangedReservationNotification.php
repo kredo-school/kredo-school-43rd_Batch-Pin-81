@@ -8,15 +8,18 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+
 class ChangedReservationNotification extends Notification
 {
     use Queueable;
 
     public Reservation $reservation;
+    public array $changes;
 
-    public function __construct(Reservation $reservation)
+    public function __construct(Reservation $reservation, array $changes = [])
     {
         $this->reservation = $reservation;
+        $this->changes = $changes;
     }
 
     /**
@@ -35,17 +38,34 @@ class ChangedReservationNotification extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $changedFields = collect($this->changes)
+            ->map(function (array $change, string $field): array {
+                return [
+                    'field' => $field,
+                    'label' => $change['label'] ?? ucfirst(str_replace('_', ' ', $field)),
+                    'before' => $change['before'] ?? null,
+                    'after' => $change['after'] ?? null,
+                ];
+            })
+            ->values()
+            ->all();
+
+        $summary = !empty($changedFields)
+            ? 'Updated: ' . collect($changedFields)->pluck('label')->implode(', ')
+            : "{$this->reservation->user->name} updated their reservation.";
+
         return [
             'type' => 'changed_reservation',
             'title' => 'Reservation Updated',
-            'message' => "{$this->reservation->user->name} updated their reservation.",
+            'message' => $summary,
             'reservation_id' => $this->reservation->id,
             'customer_name' => $this->reservation->user->name,
             'reservation_date' => $this->reservation->reservation_date,
             'reservation_time' => $this->reservation->reservation_time,
             'num_of_people' => $this->reservation->num_of_people,
             'reservation_code' => $this->reservation->reservation_code,
-            'url' => route('restaurant.reservations.show', $this->reservation),
+            'changed_fields' => $changedFields,
+            'url' => route('restaurant.reservations'),
             'button_text' => 'View Reservation',
         ];
     }

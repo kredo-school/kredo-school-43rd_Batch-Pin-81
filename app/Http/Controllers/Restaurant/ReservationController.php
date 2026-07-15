@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Restaurant;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Restaurant;
+use App\Notifications\ReservationConfirmedNotification;
+use App\Notifications\ReservationCanceledByRestaurantNotification;
 use App\Services\ReservationAvailabilityService;
 use Illuminate\Http\Request;
-use App\Notifications\ReservationSubmittedNotification;
 use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
@@ -68,6 +69,12 @@ class ReservationController extends Controller
 
         if ($validated['status'] === 'cancelled') {
             $reservation->cancelled_by = 'restaurant';
+
+            $reservation->save();
+
+            $reservation->user->notify(
+                new ReservationCanceledByRestaurantNotification($reservation)
+            );
         } else {
             $reservation->cancelled_by = null;
         }
@@ -75,18 +82,15 @@ class ReservationController extends Controller
         $reservation->status = $validated['status'];
         $reservation->save();
 
-        // 👇 Send the notification here
-        $restaurantOwner = $reservation->restaurant->user;
-
-        if ($restaurantOwner) {
-            $restaurantOwner->notify(
-                new ReservationSubmittedNotification($reservation)
-            );
+        // Notify customer
+        if ($validated['status'] === 'confirmed' && $reservation->user) {
+            $reservation->user->notify(new ReservationConfirmedNotification($reservation));
         }
 
         return redirect()
             ->back()
-            ->with('success', 'Reservation status updated successfully.');
+            ->with('success', 'Reservation status updated successfully.')
+            ->with('success', 'Reservation cancelled successfully.');
     }
 
     private function currentRestaurant(): Restaurant

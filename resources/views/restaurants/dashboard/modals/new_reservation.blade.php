@@ -109,7 +109,7 @@
                             New Reservation!
                         </h4>
                         <p class="text-secondary small fw-medium mb-0" id="newReservationModalSub" style="font-size: 14px;">
-                            Immediate booking within 1 hour
+                            Customer booking waiting for your approval
                         </p>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 14px;"></button>
@@ -204,7 +204,7 @@
 
         function hideNewResDeclineConfirm() {
             document.getElementById('newReservationModalLabel').innerText = 'New Reservation!';
-            document.getElementById('newReservationModalSub').innerText = 'Immediate booking within 1 hour';
+            document.getElementById('newReservationModalSub').innerText = 'Customer booking waiting for your approval';
             document.getElementById('newResMainView').classList.remove('d-none');
             document.getElementById('newResDeclineConfirmView').classList.add('d-none');
             document.getElementById('newResConfirmActions').classList.add('d-none');
