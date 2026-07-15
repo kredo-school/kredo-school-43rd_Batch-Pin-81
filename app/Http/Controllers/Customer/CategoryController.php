@@ -29,6 +29,7 @@ class CategoryController extends Controller
     public function show($category)
     {
         $restaurants = Restaurant::with(['photos', 'categories', 'features'])
+            ->approved()
             ->withAvg('posts', 'rating')
             ->where(function ($query) use ($category) {
                 $query->whereHas('categories', function ($q) use ($category) {

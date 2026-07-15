@@ -37,6 +37,14 @@ class UserSeeder extends Seeder
             ['id' => 20, 'first_name' => 'Mio', 'last_name' => 'Ikeda', 'username' => 'thai_mio_owner', 'email' => 'restaurant13@example.com', 'role_id' => User::ROLE_RESTAURANT],
             ['id' => 21, 'first_name' => 'Riku', 'last_name' => 'Hashimoto', 'username' => 'bistro_riku_owner', 'email' => 'restaurant14@example.com', 'role_id' => User::ROLE_RESTAURANT],
             ['id' => 22, 'first_name' => 'Hina', 'last_name' => 'Yamada', 'username' => 'bakery_hina_owner', 'email' => 'restaurant15@example.com', 'role_id' => User::ROLE_RESTAURANT],
+
+            // Additional presentation restaurant owners (restaurant IDs 16-21)
+            ['id' => 23, 'first_name' => 'Kenta', 'last_name' => 'Fujimoto', 'username' => 'sushi_ginza_kenta', 'email' => 'restaurant16@example.com', 'role_id' => User::ROLE_RESTAURANT],
+            ['id' => 24, 'first_name' => 'Ayaka', 'last_name' => 'Okada', 'username' => 'sushi_asakusa_ayaka', 'email' => 'restaurant17@example.com', 'role_id' => User::ROLE_RESTAURANT],
+            ['id' => 25, 'first_name' => 'Shota', 'last_name' => 'Ishikawa', 'username' => 'ramen_roppongi_shota', 'email' => 'restaurant18@example.com', 'role_id' => User::ROLE_RESTAURANT],
+            ['id' => 26, 'first_name' => 'Nana', 'last_name' => 'Maeda', 'username' => 'ramen_shinjuku_nana', 'email' => 'restaurant19@example.com', 'role_id' => User::ROLE_RESTAURANT],
+            ['id' => 27, 'first_name' => 'Koji', 'last_name' => 'Nakajima', 'username' => 'kaiseki_kiyomi_owner', 'email' => 'restaurant20@example.com', 'role_id' => User::ROLE_RESTAURANT],
+            ['id' => 28, 'first_name' => 'Miki', 'last_name' => 'Fukuda', 'username' => 'yakitori_en_owner', 'email' => 'restaurant21@example.com', 'role_id' => User::ROLE_RESTAURANT],
         ];
 
         foreach ($users as $user) {
