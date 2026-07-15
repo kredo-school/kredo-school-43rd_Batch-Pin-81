@@ -46,6 +46,35 @@
                             </a>
                         @break
 
+                        @case('reservation_canceled')
+                            <button
+                                type="button"
+                                class="w-100 border-0 bg-transparent p-0 text-start"
+                                onclick="openReservationCancelledModal(this)"
+                                data-read-url="{{ route('customer.notifications.read', $notification) }}"
+                            >
+                                <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
+                                    <div class="d-flex align-items-start justify-content-between w-100">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm border border-pink"
+                                                style="width: 44px; height: 44px; min-width: 44px; background-color: #FCE7F3;">
+                                                <i class="fa-solid fa-calendar-xmark {{ $isUnread ? 'style-pink-text' : 'style-pink-text-light' }}" style="font-size: 1.05rem;"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">{{ data_get($notification->data, 'title', 'Reservation has been cancelled') }}</h6>
+                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'Your reservation has been cancelled by the restaurant.') }}</p>
+                                                <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+
+                                        @if($isUnread)
+                                            <span class="badge badge-new fw-bold px-2 py-1 rounded-3">New</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </button>
+                        @break
+
                         @case('contact_reply')
                             <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
                                 <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
@@ -203,6 +232,40 @@
         </div>
     </div>
 
+    <div class="modal fade" id="reservationCancelledModal" tabindex="-1" aria-labelledby="reservationCancelledModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg" style="border: none; border-radius: 16px;">
+                <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="reservationCancelledModalLabel" style="color: #0A2540;">Reservation has been cancelled</h5>
+                        <p class="text-muted small mb-0">We’re sorry for the inconvenience.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body pt-3" style="color: #0A2540;">
+                    <p class="mb-3">
+                        Your reservation was cancelled by the restaurant due to:
+                    </p>
+
+                    <ul class="mb-3 ps-3">
+                        <li>Kitchen or building emergencies</li>
+                        <li>Double-booked tables</li>
+                    </ul>
+
+                    <p class="mb-0 text-secondary">
+                        We apologize for the inconvenience and appreciate your understanding.
+                    </p>
+                </div>
+
+                <div class="modal-footer" style="border-top: none; padding-top: 0;">
+                    <a href="{{ route('customer.search') }}" class="btn btn-sm text-white" style="background-color: #0A2540; border-radius: 8px;">Find another Restaurant</a>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         /* 💡 未読カードオブジェクト専用の枠線オブジェクトを、レストランと同じ薄ピンク（#FCE7F3）に変更 */
         .border-unread {
@@ -247,4 +310,25 @@
             box-shadow: 0 6px 15px rgba(194, 24, 91, 0.06) !important;
         }
     </style>
+
+    <script>
+        function openReservationCancelledModal(trigger) {
+            const readUrl = trigger?.dataset?.readUrl;
+
+            if (readUrl) {
+                fetch(readUrl, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    credentials: 'same-origin',
+                }).catch(() => {});
+            }
+
+            const modalElement = document.getElementById('reservationCancelledModal');
+            if (modalElement && window.bootstrap) {
+                bootstrap.Modal.getOrCreateInstance(modalElement).show();
+            }
+        }
+    </script>
 @endsection
