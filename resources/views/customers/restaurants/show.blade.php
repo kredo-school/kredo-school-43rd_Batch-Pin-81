@@ -68,19 +68,32 @@
 
                         @php
                             $averageRating = $restaurant->posts_avg_rating ?? 0;
-                            $percentage = ($averageRating / 5) * 100;
+                            $filledStars = (int) floor($averageRating);
+                            $hasHalfStar = ($averageRating - $filledStars) >= 0.5;
                         @endphp
-                        {{-- Desktop --}}
-                        <div class="star-rating d-none d-md-flex align-items-center me-4" id="restaurantReviewsShortcut"
-                            role="button" tabindex="0" aria-label="Open reviews tab">
-                            <div class="star-rating-top" style="width: {{ $percentage }}%">
-                                ★★★★★
+                        <div class="d-flex align-items-center gap-3 ms-auto flex-wrap justify-content-end">
+                            {{-- Desktop --}}
+                            <div class="star-rating d-none d-md-flex align-items-center" id="restaurantReviewsShortcut"
+                                role="button" tabindex="0" aria-label="Open reviews tab">
+                                <div class="star-rating-stars" aria-label="{{ number_format($averageRating, 1) }} out of 5 stars">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <span class="star-rating-star {{ $i <= $filledStars ? 'filled' : ($i === $filledStars + 1 && $hasHalfStar ? 'half' : 'empty') }}">
+                                            ★
+                                        </span>
+                                    @endfor
+                                </div>
+                                <span class="fs-6 mx-1">{{ number_format($averageRating, 1) }}</span>
+                                <span class="small text-secondary">({{ $restaurant->posts_count ?? 0 }})</span>
                             </div>
-                            <div class="star-rating-bottom">
-                                ★★★★★
-                            </div>
-                            <span class="fs-6 mx-1">{{ number_format($averageRating, 1) }}</span>
-                            <span class="small text-secondary">({{ $restaurant->posts_count ?? 0 }})</span>
+                            @auth
+                                <button type="button" class="favorite-btn mb-0"
+                                    data-favorite-url="{{ route('favorites.store', $restaurant->id) }}"
+                                    data-unfavorite-url="{{ route('favorites.destroy', $restaurant->id) }}"
+                                    data-favorited="{{ $restaurant->is_favorited ? '1' : '0' }}"
+                                    aria-label="{{ $restaurant->is_favorited ? 'Remove from favorites' : 'Add to favorites' }}">
+                                    <i class="fa-{{ $restaurant->is_favorited ? 'solid' : 'regular' }} fa-heart {{ $restaurant->is_favorited ? 'text-warning' : 'text-dark' }}"></i>
+                                </button>
+                            @endauth
                         </div>
                     </div>
 
@@ -713,20 +726,56 @@
         line-height: 1;
     }
 
-    .star-rating-top {
-        position: absolute;
-        top: 0;
-        left: 0;
-        overflow: hidden;
-        white-space: nowrap;
-        color: #ffc107;
-        /* Gold */
+    .star-rating-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 1px;
+        margin-right: 6px;
     }
 
-    .star-rating-bottom {
-        white-space: nowrap;
-        color: #d9d9d9;
-        /* Gray */
+    .star-rating-star {
+        display: inline-block;
+        line-height: 1;
+    }
+
+    .star-rating-star.filled {
+        color: #ffc107;
+    }
+
+    .star-rating-star.empty {
+        color: #ddd;
+    }
+
+    .star-rating-star.half {
+        background: linear-gradient(90deg, #ffc107 50%, #ddd 50%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .favorite-form {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .favorite-btn {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        width: auto;
+        height: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0.1rem 0.25rem;
+        appearance: none;
+    }
+
+    .favorite-btn i {
+        font-size: 1.9rem;
+        margin: 4px;
     }
 
     /* Continuous Container Rail Tab Settings */
@@ -1167,6 +1216,44 @@
                     if (countElement) {
                         countElement.textContent = data.likes_count;
                     }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        document.querySelectorAll('.favorite-btn[data-favorite-url]').forEach((button) => {
+            button.addEventListener('click', async function() {
+                const favoriteUrl = this.dataset.favoriteUrl;
+                const unfavoriteUrl = this.dataset.unfavoriteUrl;
+                const isFavorited = this.dataset.favorited === '1';
+                const icon = this.querySelector('i');
+
+                try {
+                    const response = await fetch(isFavorited ? unfavoriteUrl : favoriteUrl, {
+                        method: isFavorited ? 'DELETE' : 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        window.location.href = '{{ route('login') }}';
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Failed to update favorite');
+                    }
+
+                    const data = await response.json();
+                    const nextFavorited = Boolean(data.isFavorited);
+
+                    this.dataset.favorited = nextFavorited ? '1' : '0';
+                    this.setAttribute('aria-label', nextFavorited ? 'Remove from favorites' : 'Add to favorites');
+                    icon.className = `fa-${nextFavorited ? 'solid' : 'regular'} fa-heart ${nextFavorited ? 'text-warning' : 'text-dark'}`;
                 } catch (error) {
                     console.error(error);
                 }

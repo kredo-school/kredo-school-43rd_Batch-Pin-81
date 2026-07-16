@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\NewFollowerNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,6 +21,8 @@ class FollowController extends Controller
         } else {
             $me->followings()->attach($user->id);
             $isFollowing = true;
+
+            $user->notify(new NewFollowerNotification($me));
         }
         $followersCount = $user->followers()->count();
 

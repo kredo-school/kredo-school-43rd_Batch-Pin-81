@@ -387,7 +387,7 @@
             @yield('content')
         </main>
 
-        <a href="#" class="chat-badge"><i class="bi bi-chat-text-fill"></i></a>
+        {{-- <a href="#" class="chat-badge"><i class="bi bi-chat-text-fill"></i></a> --}}
 
         <div class="mobile-bottom-nav d-md-none">
             <div class="nav-item"><a class="nav-link-item active" href="{{ route('customer.search') }}"><i
