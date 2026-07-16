@@ -237,7 +237,19 @@
 .modal-footer{
     border-top: 1px solid #e5e7eb;
 }
+.user-table-scroll {
+    max-height: 730px;
+    overflow-y: auto !important;
+    position: relative;
+}
 
+.sticky-th {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #f8f9fa !important;
+    z-index: 10;
+    border-bottom: 2px solid #dee2e6 !important;
+}
 </style>
 
 <div class="container-fluid">
@@ -312,19 +324,19 @@
 
     <div class="card border-0 shadow-sm rounded-4">
 
-        <div class="table-responsive">
+        <div class="table-responsive user-table-scroll">
 
-            <table class="table align-middle mb-0">
+            <table class="table align-middle mb-0" style="border-collapse: separate; border-spacing: 0;">
 
                 <thead class="bg-light">
 
                     <tr>
-                        <th>USER</th>
-                        <th>EMAIL</th>
-                        <th>ROLE</th>
-                        <th>STATUS</th>
-                        <th>JOINED</th>
-                        <th></th>
+                        <th class="sticky-th">USER</th>
+                        <th class="sticky-th">EMAIL</th>
+                        <th class="sticky-th">ROLE</th>
+                        <th class="sticky-th">STATUS</th>
+                        <th class="sticky-th">JOINED</th>
+                        <th class="sticky-th"></th>
                     </tr>
 
                 </thead>

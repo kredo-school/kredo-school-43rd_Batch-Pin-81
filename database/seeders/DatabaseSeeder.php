@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             FeatureSeeder::class,
             DemoSeeder::class,
             ReservationSeeder::class,
+            AreaSeeder::class,
         ]);
     }
 }
