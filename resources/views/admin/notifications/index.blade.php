@@ -17,9 +17,12 @@
 
             <button
                 type="button"
-                class="notification-item"
+                class="notification-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}"
                 data-bs-toggle="modal"
-                data-bs-target="#restaurantApplicationNotificationModal-{{ $notification->id }}">
+                data-bs-target="#restaurantApplicationNotificationModal-{{ $notification->id }}"
+                data-notification-id="{{ $notification->id }}"
+                data-mark-read-url="{{ route('admin.notifications.read', $notification->id) }}"
+                data-notification-read="{{ $notification->read_at ? 'true' : 'false' }}">
 
                 <div class="notification-content px-4">
 
@@ -76,9 +79,12 @@
 
             <button
                 type="button"
-                class="notification-item"
+                class="notification-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}"
                 data-bs-toggle="modal"
-                data-bs-target="#contactNotificationModal-{{ $notification->id }}">
+                data-bs-target="#contactNotificationModal-{{ $notification->id }}"
+                data-notification-id="{{ $notification->id }}"
+                data-mark-read-url="{{ route('admin.notifications.read', $notification->id) }}"
+                data-notification-read="{{ $notification->read_at ? 'true' : 'false' }}">
 
                 <div class="notification-content px-4">
 
@@ -111,6 +117,57 @@
             </button>
 
             @include('admin.modals.contact_notification_details', [
+                'notification' => $notification
+            ])
+
+        @break
+
+
+        {{-- =========================
+            Restaurant Contact Notification
+        ========================== --}}
+        @case('restaurant_contact')
+
+            <button
+                type="button"
+                class="notification-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}"
+                data-bs-toggle="modal"
+                data-bs-target="#restaurantContactNotificationModal-{{ $notification->id }}"
+                data-notification-id="{{ $notification->id }}"
+                data-mark-read-url="{{ route('admin.notifications.read', $notification->id) }}"
+                data-notification-read="{{ $notification->read_at ? 'true' : 'false' }}">
+
+                <div class="notification-content px-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-1">
+                            {{ $notification->data['title'] }}
+                        </h5>
+
+                        <span class="status-badge status-pending ms-auto">
+                            New Restaurant Contact
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <p class="mb-2 text-muted">
+                            {{ $notification->data['restaurant_name'] }} sent a contact message.
+                        </p>
+
+                        <small class="text-muted">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </button>
+
+            @include('admin.modals.restaurant_contact_notification_details', [
                 'notification' => $notification
             ])
 
@@ -204,6 +261,28 @@
     text-align:left;
 }
 
+.notification-item.is-read{
+    background:#f3f4f6;
+    border-color:#d1d5db;
+    box-shadow:none;
+}
+
+.notification-item.is-read:hover{
+    transform:none;
+    box-shadow:none;
+}
+
+.notification-item.is-read h5,
+.notification-item.is-read p,
+.notification-item.is-read small{
+    color:#6b7280 !important;
+}
+
+.notification-item.is-read .status-badge{
+    background:#e5e7eb;
+    color:#4b5563;
+}
+
 .notification-item:hover{
     transform: translateY(-2px);
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
@@ -254,7 +333,74 @@
     background:#fee2e2;
     color:#dc2626;
 }
+
+.notification-item[data-notification-read="false"] {
+    border-color: #cbd5e1;
+}
+
+.notification-item[data-notification-read="true"] {
+    opacity: 0.92;
+}
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        const unreadDot = document.getElementById('unread-notifications-dot');
+        const notificationItems = document.querySelectorAll('.notification-item[data-mark-read-url]');
+
+        const updateUnreadDot = () => {
+            const hasUnreadNotifications = Array.from(notificationItems)
+                .some((item) => item.dataset.notificationRead === 'false');
+
+            if (!hasUnreadNotifications && unreadDot) {
+                unreadDot.remove();
+            }
+        };
+
+        notificationItems.forEach((item) => {
+            const modalSelector = item.getAttribute('data-bs-target');
+            if (!modalSelector) {
+                return;
+            }
+
+            const modalElement = document.querySelector(modalSelector);
+            if (!modalElement) {
+                return;
+            }
+
+            modalElement.addEventListener('shown.bs.modal', async () => {
+                if (item.dataset.notificationRead === 'true') {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(item.dataset.markReadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    });
+
+                    if (!response.ok && response.status !== 204) {
+                        return;
+                    }
+
+                    item.dataset.notificationRead = 'true';
+                    item.classList.remove('is-unread');
+                    item.classList.add('is-read');
+                    updateUnreadDot();
+                } catch (error) {
+                    console.error('Unable to mark notification as read.', error);
+                }
+            }, { once: true });
+        });
+
+        updateUnreadDot();
+    });
+</script>
 
 @endsection
 

@@ -10,8 +10,6 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::query()->forceDelete();
-
         $users = [
             ['id' => 1, 'first_name' => 'Admin', 'last_name' => 'User', 'username' => 'admin', 'email' => 'admin@example.com', 'role_id' => User::ROLE_ADMIN],
             ['id' => 2, 'first_name' => 'John', 'last_name' => 'Doe', 'username' => 'john_doe', 'email' => 'customer@example.com', 'role_id' => User::ROLE_USER],
@@ -48,17 +46,20 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            User::create([
-                'id' => $user['id'],
-                'first_name' => $user['first_name'],
-                'last_name' => $user['last_name'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'avatar' => null,
-                'role_id' => $user['role_id'],
-                'is_active' => true,
-                'password' => Hash::make('password'),
-            ]);
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                [
+                    'id' => $user['id'],
+                    'first_name' => $user['first_name'],
+                    'last_name' => $user['last_name'],
+                    'username' => $user['username'],
+                    'email' => $user['email'],
+                    'avatar' => null,
+                    'role_id' => $user['role_id'],
+                    'is_active' => true,
+                    'password' => Hash::make('password'),
+                ]
+            );
         }
     }
 }

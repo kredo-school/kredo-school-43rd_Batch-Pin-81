@@ -99,7 +99,7 @@
                             </a>
                         @break
 
-                        @case('restaurant')
+                        @case('restaurant_application') 
                             <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
                                 <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
                                     <div class="d-flex align-items-start justify-content-between w-100">

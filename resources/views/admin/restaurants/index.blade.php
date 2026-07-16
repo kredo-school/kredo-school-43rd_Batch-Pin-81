@@ -119,7 +119,6 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
         }
 
-        /* CSS-only dropdown (no JS): show on hover or keyboard focus */
         .dropdown {
             position: relative;
         }
@@ -129,17 +128,11 @@
         }
 
         .dropdown .dropdown-menu {
-            display: none;
             position: absolute;
             top: calc(100% + 6px);
             right: 0;
             left: auto;
             z-index: 2000;
-        }
-
-        .dropdown:hover .dropdown-menu,
-        .dropdown:focus-within .dropdown-menu {
-            display: block;
         }
 
         .status-option {

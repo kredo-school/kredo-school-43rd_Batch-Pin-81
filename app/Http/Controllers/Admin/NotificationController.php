@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Restaurant;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\DatabaseNotification;
 
 
 
@@ -12,7 +15,10 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $notifications = auth()->user()
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notifications = $user
             ->notifications()
             ->latest()
             ->paginate(20);
@@ -30,7 +36,14 @@ class NotificationController extends Controller
             }
 
             if ($notificationType === 'contact') {
-                $contact = Contact::with('user')
+                $contact = Contact::with(['user'])
+                    ->find($notification->data['contact_id'] ?? null);
+
+                $notification->contact = $contact;
+            }
+
+            if ($notificationType === 'restaurant_contact') {
+                $contact = Contact::with(['user', 'restaurant'])
                     ->find($notification->data['contact_id'] ?? null);
 
                 $notification->contact = $contact;
@@ -38,24 +51,17 @@ class NotificationController extends Controller
 
             return $notification;
         });
-            
+
 
         return view('admin.notifications.index', compact('notifications'));
     }
 
-    // private function markNotificationAsRead(?string $notificationId): void
-    // {
-    //     if (!$notificationId) {
-    //         return;
-    //     }
+    public function read(DatabaseNotification $notification)
+    {
+        abort_if($notification->notifiable_id !== Auth::id(), 403);
 
-    //     $notification = auth()
-    //         ->user()
-    //         ->notifications()
-    //         ->find($notificationId);
+        $notification->markAsRead();
 
-    //     if ($notification) {
-    //         $notification->markAsRead();
-    //     }
-    // }
+        return response()->noContent();
+    }
 }

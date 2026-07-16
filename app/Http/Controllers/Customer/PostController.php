@@ -28,7 +28,7 @@ class PostController extends Controller
         $oneWeekAgoStr = Carbon::now()->subDays(7)->toDateString();
 
         $visitedRestaurants = Reservation::where('user_id', $user->id)
-            ->where('status', 'Visited')
+            ->where('status', 'completed')
             //->whereDate('reservation_date', '>=', $oneWeekAgoStr) TEST時のみ無効化
             ->whereDate('reservation_date', '<=', $todayStr)
             ->with('restaurant')
