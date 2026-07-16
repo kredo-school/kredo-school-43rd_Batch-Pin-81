@@ -26,6 +26,7 @@ class NotificationController extends Controller
         $redirectUrl = match ($notification->data['type'] ?? '') {
             'reservation' => route('my_reservations'),
             'contact_reply' => route('contact.index'),
+            'restaurant_application', 'restaurant_approved' => route('restaurant.dashboard'),
             default => $notification->data['url'] ?? route('customer.notifications'),
         };
 

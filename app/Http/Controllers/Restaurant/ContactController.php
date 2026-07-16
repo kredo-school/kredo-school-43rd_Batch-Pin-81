@@ -8,6 +8,9 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Notifications\RestaurantContactReceivedNotification;
+use Illuminate\Support\Facades\Notification;
 
 class ContactController extends Controller
 {
@@ -34,7 +37,7 @@ class ContactController extends Controller
             'attachments.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        Contact::create([
+        $contact = Contact::create([
             'user_id' => Auth::id(),
             'restaurant_id' => $restaurant->id,
             'parent_id' => null,
@@ -43,6 +46,14 @@ class ContactController extends Controller
             'attachments' => $this->storeAttachments($request),
             'status' => 'open',
         ]);
+
+        // Notify all admins
+        $admins = User::where('role_id', User::ROLE_ADMIN)->get();
+
+        Notification::send(
+            $admins,
+            new RestaurantContactReceivedNotification($contact)
+        );
 
         return redirect()->back()->with('success', 'Message sent successfully!');
     }

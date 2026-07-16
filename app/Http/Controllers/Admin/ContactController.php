@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Notifications\ContactReplyNotification;
+use App\Notifications\RestaurantContactReplyNotification;
 
 
 class ContactController extends Controller
@@ -74,7 +75,7 @@ class ContactController extends Controller
             'attachments.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        Contact::create([
+        $reply = Contact::create([
             'user_id' => Auth::id(),
             'restaurant_id' => $contact->restaurant_id,
             'parent_id' => $contact->id,
@@ -87,9 +88,17 @@ class ContactController extends Controller
         $contact->update(['status' => 'replied']);
 
         // Notify the customer who created the original contact
-        $contact->user->notify(
-            new ContactReplyNotification($contact, $validated['message'])
-        );
+        if (Auth::user()->role_id == 1) {
+            // Customer replied -> notify restaurant
+            $contact->restaurant->user->notify(
+                new ContactReplyNotification($contact, $reply)
+            );
+        } elseif (Auth::user()->role_id == 2) {
+            // Admin replied -> notify restaurant
+            $contact->user->notify(
+                new RestaurantContactReplyNotification($contact, $reply)
+            );
+        }
 
         return redirect()
             ->route('admin.contacts.index', ['contact' => $contact->id])

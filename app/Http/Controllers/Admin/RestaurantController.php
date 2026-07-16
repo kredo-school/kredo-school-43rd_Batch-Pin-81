@@ -75,20 +75,7 @@ class RestaurantController extends Controller
 
   public function approve(Request $request, Restaurant $restaurant)
   {
-    $restaurant->update([
-      'status' => Restaurant::STATUS_APPROVED,
-    ]);
-
-    $restaurant->user->update([
-      'role_id' => 2,
-    ]);
-
-    $restaurant->user->notify(
-      new RestaurantApplicationStatus(
-        'approved',
-        $restaurant
-      )
-    );
+    $this->updateRestaurantStatus($restaurant, Restaurant::STATUS_APPROVED);
 
     if ($request->filled('notification_id')) {
       DB::table('notifications')
@@ -101,9 +88,7 @@ class RestaurantController extends Controller
 
   public function reject(Request $request, Restaurant $restaurant)
   {
-    $restaurant->update([
-      'status' => Restaurant::STATUS_REJECTED,
-    ]);
+    $this->updateRestaurantStatus($restaurant, Restaurant::STATUS_REJECTED);
 
     $restaurant->user->notify(
       new RestaurantApplicationStatus(
@@ -127,11 +112,36 @@ class RestaurantController extends Controller
       'status' => 'required|string|in:pending,approved,rejected,suspended',
     ]);
 
-    $restaurant->update([
-      'status' => $request->status,
-    ]);
+    $this->updateRestaurantStatus($restaurant, $request->status);
 
     return back()->with('success', 'Restaurant status updated successfully.');
+  }
+
+  private function updateRestaurantStatus(Restaurant $restaurant, string $status): void
+  {
+    $restaurant->update([
+      'status' => $status,
+    ]);
+
+    if ($status === Restaurant::STATUS_APPROVED) {
+      $restaurant->user->update([
+        'role_id' => 2,
+      ]);
+
+      $restaurant->user->notify(
+        new RestaurantApplicationStatus(
+          'approved',
+          $restaurant
+        )
+      );
+      return;
+    }
+
+    if (in_array($status, [Restaurant::STATUS_PENDING, Restaurant::STATUS_REJECTED, Restaurant::STATUS_SUSPENDED], true)) {
+      $restaurant->user->update([
+        'role_id' => 1,
+      ]);
+    }
   }
 
   public function show(Restaurant $restaurant)

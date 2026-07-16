@@ -39,6 +39,18 @@ use App\Http\Controllers\Admin\ContactController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/register', [RegisterController::class, 'create'])
+  ->name('register');
+
+Route::post('/register', [RegisterController::class, 'store']);
+
+Route::get('/login', [LoginController::class, 'create'])
+  ->name('login');
+
+Route::post('/login', [LoginController::class, 'store']);
+
+
 # Main Search (app.blade.php)
 Route::get('/restaurants/search', [RestaurantController::class, 'search'])->name('restaurants.search'); // For everyone
 
@@ -66,17 +78,12 @@ Route::get('/booking/{restaurant}', [BookingController::class, 'create'])
 Route::post('/booking', [BookingController::class, 'store'])
   ->name('booking.store');
 
+// Notification
+Route::get('/customer/notifications', [CustomerNotificationController::class, 'index'])->name('customer.notifications');
 
-Route::middleware('guest')->group(function () {
 
-  Route::get('/register', [RegisterController::class, 'create'])
-    ->name('register');
-  Route::post('/register', [RegisterController::class, 'store']);
 
-  Route::get('/login', [LoginController::class, 'create'])
-    ->name('login');
-  Route::post('/login', [LoginController::class, 'store']);
-});
+
 
 Route::middleware('auth')->group(function () {
 
@@ -135,6 +142,8 @@ Route::middleware(['auth', 'admin'])
     // Notifications
     Route::get('/notifications', [AdminNotificationController::class, 'index'])
       ->name('admin.notifications');
+    Route::post('/notifications/{notification}/read', [AdminNotificationController::class, 'read'])
+      ->name('admin.notifications.read');
 
     // Users dashboard
     Route::get('/users', [AdminUserController::class, 'index'])
@@ -270,6 +279,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
   Route::delete('photos/{id}', [PhotoController::class, 'destroy'])->name('photos.destroy');
 
   Route::get('/notifications', [RestaurantNotificationController::class, 'index'])->name('notifications');
+  Route::get('/notifications/{notification}', [RestaurantNotificationController::class, 'read'])->name('notifications.read');
 
   // Reviews
   Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
@@ -345,7 +355,4 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.', 'middleware' => ['aut
   Route::post('/contact', [CustomerContactController::class, 'send'])->name('contact.send');
   Route::patch('/contact/{contact}/resolve', [CustomerContactController::class, 'resolve'])->name('contact.resolve');
   Route::delete('/contact/{contact}', [CustomerContactController::class, 'destroy'])->name('contact.destroy');
-
-  // Notification
-  Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
 });

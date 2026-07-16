@@ -23,8 +23,6 @@
 
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
