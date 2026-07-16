@@ -236,6 +236,16 @@ Route::middleware(['auth', 'admin'])
 
     Route::delete('/features/{feature}', [CategoryFeatureController::class, 'destroyFeature'])
       ->name('admin.features.destroy');
+
+    // Areas (Edit / Update / Delete)
+    Route::post('/areas', [CategoryFeatureController::class, 'storeArea'])
+      ->name('admin.areas.store');
+
+    Route::patch('/areas/{area}', [CategoryFeatureController::class, 'updateArea'])
+      ->name('admin.areas.update');
+
+    Route::delete('/areas/{area}', [CategoryFeatureController::class, 'destroyArea'])
+      ->name('admin.areas.destroy');
   });
 
 #RESTAURANT

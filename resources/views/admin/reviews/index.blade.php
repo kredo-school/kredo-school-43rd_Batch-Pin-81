@@ -58,9 +58,9 @@
             </div>
         @endif
 
-        <div class="table-responsive bg-white shadow-sm rounded-3">
+        <div class="table-responsive bg-white shadow-sm rounded-3" style="max-height: 720px; overflow-y: auto;">
             <table class="table table-hover align-middle mb-0" style="min-width: 1100px;">
-                <thead class="table-light text-secondary small text-uppercase">
+                <thead class="sticky-top top-0 table-light text-secondary small text-uppercase" style="z-index: 1000;">
                     <tr>
                         <th class="py-3 px-4" style="width: 12%;">Name</th>
                         <th class="py-3" style="width: 15%;">Restaurant</th>

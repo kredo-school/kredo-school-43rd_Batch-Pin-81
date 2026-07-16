@@ -59,10 +59,20 @@
             background: #f8f9fa;
         }
 
-        .sidebar {
-            width: 280px;
-            min-height: 100vh;
-            background: white;
+        @media (min-width: 992px) {
+            .sidebar {
+                width: 280px;
+                flex-shrink: 0;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+            }
+
+            .content-area {
+                height: 100vh;
+                overflow-y: hidden;
+            }
+
         }
 
         .admin-panel {
@@ -120,21 +130,6 @@
         .footer-a:hover {
             text-decoration: underline !important;
         }
-
-        /* Mobile */
-
-        @media (max-width: 991.98px) {
-
-            .sidebar {
-                width: 100%;
-                min-height: auto;
-            }
-
-            .content-area {
-                width: 100%;
-            }
-
-        }
     </style>
 
 </head>
@@ -150,7 +145,8 @@
         <div class="row">
 
             <!-- SIDEBAR -->
-            <div class="col-12 col-lg-auto border-end p-3 sidebar d-flex flex-column min-vh-100">
+            <div class="col-12 col-lg-auto border-end p-3 sidebar d-flex flex-column min-vh-lg-100"
+                style="background: white;">
 
                 <!-- Mobile Toggle -->
                 <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="collapse"
@@ -160,7 +156,7 @@
                 </button>
 
                 <!-- Sidebar Content -->
-                <div class="d-flex flex-column h-100 flex-grow-1" id="sidebarMenu">
+                <div class="collapse d-lg-flex flex-column h-100 flex-grow-1" id="sidebarMenu">
 
                     <!-- Header -->
                     <header class="border-bottom text-center py-3">
@@ -267,7 +263,7 @@
                     </div>
 
                     <!-- Footer -->
-                    <footer class="border-top mt-auto pt-3 text-center">
+                    <footer class="border-top mt-3 mt-lg-auto pt-3 text-center">
 
                         <a href="{{ route('customer.search') }}" class="text-decoration-none footer-a">
 
@@ -282,7 +278,7 @@
             </div>
 
             <!-- MAIN CONTENT -->
-            <div class="col content-area p-4" style="min-width: 0;">
+            <div class="col-12 col-lg p-4 content-area" style="min-width: 0;">
 
                 @yield('content')
 
