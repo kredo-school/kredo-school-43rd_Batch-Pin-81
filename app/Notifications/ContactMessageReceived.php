@@ -40,7 +40,7 @@ class ContactMessageReceived extends Notification implements ShouldQueue
         return [
             'type' => 'contact',
             'contact_id' => $this->contact->id,
-            'title' => $this->contact->title,
+            'title' => 'Customer Contact',
             'message' => $this->contact->message,
             'user_name' => $this->contact->user->name,
             'user_id' => $this->contact->user_id,
