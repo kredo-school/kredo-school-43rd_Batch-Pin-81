@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Feature;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
-use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
