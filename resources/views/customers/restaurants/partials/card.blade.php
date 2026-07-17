@@ -1,7 +1,7 @@
 <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden position-relative"
     style="background: #fff; font-family: inter;">
-    <a href="{{ route('restaurant.show', $restaurant) }}" class="stretched-link"></a>
-    <form action="{{ route('favorites.store', $restaurant->id) }}" method="POST" class="favorite-form position-absolute top-0 end-0 m-2">
+    <form action="{{ route('favorites.store', $restaurant->id) }}" method="POST"
+        class="favorite-form position-absolute top-0 end-0 m-2">
         @csrf
         <button
             type="submit"
@@ -11,11 +11,11 @@
         </button>
     </form>
 
-    <div>
-        <div class="row g-0">
-
-            <!-- Image -->
-            <div class="col-4 col-md-12">
+    <div class="row g-0">
+        <div class="col-4 col-md-12">
+            <a href="{{ route('restaurant.show', $restaurant) }}"
+                class="restaurant-card-link d-block text-decoration-none text-reset"
+                aria-label="Open {{ $restaurant->restaurant_name }} details">
                 @if ($restaurant->photos->isNotEmpty())
                     <img src="{{ asset('storage/' . $restaurant->photos->first()->photo_path) }}"
                         alt="{{ $restaurant->restaurant_name }}" class="restaurant-photos">
@@ -29,13 +29,14 @@
                         </div>
                     </div>
                 @endif
-            </div>
+            </a>
+        </div>
 
-            <!-- Content -->
-            <div class="col-8 col-md-12">
-                <div class="card-body">
-
-                    {{-- Name & Rating --}}
+        <div class="col-8 col-md-12">
+            <div class="card-body">
+                <a href="{{ route('restaurant.show', $restaurant) }}"
+                    class="restaurant-card-link d-block text-decoration-none text-reset"
+                    aria-label="Open {{ $restaurant->restaurant_name }} details">
                     <div class="d-flex justify-content-between align-items-center mb-0 restaurant-name">
                         <h4 class="fw-bold mb-0">{{ $restaurant->restaurant_name }}</h4>
 
@@ -44,7 +45,7 @@
                             $filledStars = (int) floor($averageRating);
                             $hasHalfStar = ($averageRating - $filledStars) >= 0.5;
                         @endphp
-                        {{-- Desktop --}}
+
                         <div class="star-rating d-none d-md-flex align-items-center">
                             <div class="star-rating-stars" aria-label="{{ number_format($averageRating, 1) }} out of 5 stars">
                                 @for ($i = 1; $i <= 5; $i++)
@@ -56,131 +57,112 @@
                             <span class="fs-6">{{ number_format($averageRating, 1) }}</span>
                         </div>
 
-
-                        {{-- Mobile --}}
                         <div class="d-md-none">
                             <i class="fa-solid fa-star text-warning"></i><span class="small text-nowrap">
                                 {{ number_format($restaurant->posts_avg_rating ?? 0, 1) }}</span>
                         </div>
                     </div>
 
-                    {{-- Category --}}
                     <div class="d-flex justify-content-start category">
                         @foreach ($restaurant->categories as $category)
                             <span>{{ $category->category_name }}</span>
                         @endforeach
                     </div>
 
-                    {{-- Location --}}
                     <div class="d-flex justify-content-start location">
                         <p class="mb-1">
                             <i class="fa-solid fa-location-dot location-icon"></i>
                             {{ $restaurant->city }}
                         </p>
                     </div>
+                </a>
 
-                    {{-- Avalable time --}}
-                    <div class="mb-2">
-                        @php
-                            $availableTimes = $restaurant->available_times ?? [];
+                <div class="pt-0">
+        @php
+            $availableTimes = $restaurant->available_times ?? [];
 
-                            if (empty($availableTimes)) {
-                                $now = \Carbon\Carbon::now();
-                                $endTime = $now->copy()->addHour();
+            if (empty($availableTimes)) {
+                $now = \Carbon\Carbon::now();
+                $endTime = $now->copy()->addHour();
 
-                                $minutes = ceil($now->minute / 15) * 15;
-                                $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
+                $minutes = ceil($now->minute / 15) * 15;
+                $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
 
-                                $availableTimes = [];
+                $availableTimes = [];
 
-                                while ($slot <= $endTime) {
-                                    $availableTimes[] = $slot->format('H:i');
-                                    $slot->addMinutes(15);
-                                }
-                            }
-                        @endphp
+                while ($slot <= $endTime) {
+                    $availableTimes[] = $slot->format('H:i');
+                    $slot->addMinutes(15);
+                }
+            }
+        @endphp
 
-                        <p class="mb-1 avalable-time">
-                            <i class="fa-regular fa-clock time-icon"></i>
-                            Available Now
-                        </p>
+        <p class="mb-1 avalable-time">
+            <i class="fa-regular fa-clock time-icon"></i>
+            Available Now
+        </p>
 
-                        {{-- Mobile --}}
-                        <div class="d-md-none">
-                            <div class="time-slider">
-                                @foreach ($availableTimes as $time)
+        <div class="d-md-none">
+            <div class="time-slider">
+                @foreach ($availableTimes as $time)
+                    @auth
+                        <a href="{{ route('booking.create', [
+                            'restaurant' => $restaurant->id,
+                            'time' => $time
+                        ]) }}" class="time-btn">
+                            {{ $time }}
+                        </a>
+                    @endauth
 
-                                    @auth
-                                        <a href="{{ route('booking.create', [
-                                            'restaurant' => $restaurant->id,
-                                            'time' => $time
-                                        ]) }}"
-                                        class="time-btn">
-                                            {{ $time }}
-                                        </a>
-                                    @endauth
+                    @guest
+                        <button type="button" class="time-btn" data-time="{{ $time }}"
+                            data-bs-toggle="modal" data-bs-target="#bookingOptionsModal">
+                            {{ $time }}
+                        </button>
+                    @endguest
+                @endforeach
+            </div>
+        </div>
 
-                                    @guest
-                                        <button
-                                            type="button"
-                                            class="time-btn"
-                                            data-time="{{ $time }}"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#bookingOptionsModal">
-                                            {{ $time }}
-                                        </button>
-                                    @endguest
+        <div class="d-none d-md-block">
+            @auth
+                @foreach ($availableTimes as $time)
+                    <a href="{{ route('booking.create', [
+                        'restaurant' => $restaurant->id,
+                        'time' => $time,
+                    ]) }}" class="time-btn" data-time="{{ $time }}"
+                        data-restaurant-id="{{ $restaurant->id }}">
+                        {{ $time }}
+                    </a>
+                @endforeach
+            @endauth
 
-                                @endforeach
-                            </div>
+            @guest
+                @foreach ($availableTimes as $time)
+                    <button type="button" class="time-btn" data-restaurant-id="{{ $restaurant->id }}"
+                        data-bs-toggle="modal" data-bs-target="#bookingOptionsModal" data-time="{{ $time }}">
+                        {{ $time }}
+                    </button>
+                @endforeach
+            @endguest
+        </div>
 
-                        </div>
-
-                        {{-- Desktop --}}
-                        <div class="d-none d-md-block">
-
-                            @auth
-                                @foreach ($availableTimes as $time)
-                                    <a href="{{ route('booking.create', [
-                                        'restaurant' => $restaurant->id,
-                                        'time' => $time,
-                                    ]) }}"
-                                        class="time-btn" data-time="{{ $time }}"
-                                        data-restaurant-id="{{ $restaurant->id }}">
-                                        {{ $time }}
-                                    </a>
-                                @endforeach
-                            @endauth
-
-                            @guest
-                                @foreach ($availableTimes as $time)
-                                    <button type="button" class="time-btn" data-restaurant-id="{{ $restaurant->id }}"
-                                        data-bs-toggle="modal" data-bs-target="#bookingOptionsModal"
-                                        data-time="{{ $time }}">
-                                        {{ $time }}
-                                    </button>
-                                @endforeach
-                            @endguest
-
-                        </div>
-
-                    </div>
-
-                    {{-- Features --}}
-                    <div class="d-flex flex-wrap gap-1 ">
-                        @if($restaurant->features && $restaurant->features->isNotEmpty())
-                            @foreach($restaurant->features as $feature)
-                                <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                    style="background-color: #e8ebf1; font-size: 10px;">
-                                    {{ $feature->feature_name }}
-                                </span>
-                            @endforeach
-                        @endif
-                        
+        @if ($restaurant->features && $restaurant->features->isNotEmpty())
+            <div class="mt-2">
+                <div class="feature-chip-scroll">
+                    <div class="feature-chip-rail">
+                        @foreach ($restaurant->features as $feature)
+                            <span class="badge feature-chip rounded-pill fw-normal px-2 py-1 text-muted"
+                                style="background-color: #e8ebf1; font-size: 10px;">
+                                {{ $feature->feature_name }}
+                            </span>
+                        @endforeach
                     </div>
                 </div>
             </div>
-
+        @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -213,6 +195,10 @@
 
     .favorite-form {
         z-index: 3;
+    }
+
+    .restaurant-card-link {
+        color: inherit;
     }
 
     .favorite-btn {
@@ -286,8 +272,49 @@
         color: #0a2540;
     }
 
+    .feature-chip-scroll {
+        width: 100%;
+    }
+
+    .feature-chip-rail {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        gap: 0.25rem;
+        min-width: max-content;
+        width: max-content;
+    }
+
+    .feature-chip {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .feature-chip-scroll {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+    }
+
+    .feature-chip-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .feature-chip-rail {
+        display: inline-flex;
+    }
+
     /* Mobile */
     @media (max-width: 767.98px) {
+        .favorite-form {
+            left: 0 !important;
+            right: auto !important;
+            margin: 0.5rem !important;
+        }
+
         .restaurant-photos {
             height: 100%;
             min-height: 140px;
