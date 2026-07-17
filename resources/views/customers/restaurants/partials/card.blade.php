@@ -1,6 +1,6 @@
 <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden position-relative"
     style="background: #fff; font-family: inter;">
-    <a href="{{ route('restaurant.show', $restaurant) }}" class="stretched-link"></a>
+    <a href="/restaurant/{{ $restaurant->id }}" class="stretched-link"></a>
     <form action="{{ route('favorites.store', $restaurant->id) }}" method="POST" class="favorite-form position-absolute top-0 end-0 m-2">
         @csrf
         <button

@@ -85,7 +85,7 @@ class RestaurantSearchController extends Controller
 
     public function show(Restaurant $restaurant)
     {
-        abort_unless($restaurant->status === Restaurant::STATUS_APPROVED, 404); // レストランがApprovedされていない場合、万が一カスタマーがURLからレストランページへアクセスしようとした場合は404エラーを返す
+        abort_unless($restaurant->status === Restaurant::STATUS_APPROVED, 404);
 
         $restaurant->load([
             'photos',
@@ -108,7 +108,67 @@ class RestaurantSearchController extends Controller
             ? $restaurant->availableSlots()
             : collect([]);
 
-        return view('customers.restaurants.show', compact('restaurant', 'availableSlots'));
+        $realReviews = \App\Models\Post::with(['user', 'likes', 'comments.user'])
+            ->where('restaurant_id', $restaurant->id)
+            ->latest()
+            ->get();
+
+        $totalCount = $realReviews->count();
+
+        $averageRating = $totalCount > 0 ? round($realReviews->avg('rating'), 1) : 4.8;
+        
+        $starsData = [
+            5 => ['count' => 172, 'percentage' => 70],
+            4 => ['count' => 49,  'percentage' => 20],
+            3 => ['count' => 12,  'percentage' => 5],
+            2 => ['count' => 12,  'percentage' => 5],
+            1 => ['count' => 12,  'percentage' => 5],
+        ];
+
+        if ($totalCount > 0) {
+            $counts = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+            foreach ($realReviews as $r) {
+                $rating = $r->rating ?? 5;
+                if (isset($counts[$rating])) {
+                    $counts[$rating]++;
+                }
+            }
+            foreach ($counts as $star => $count) {
+                $starsData[$star] = [
+                    'count' => $count,
+                    'percentage' => round(($count / $totalCount) * 100)
+                ];
+            }
+            $statsTotalReviews = $totalCount;
+            $reviewCollection = $realReviews;
+        } else {
+            $statsTotalReviews = 0;
+            $reviewCollection = collect([]);
+        }
+
+        $reportedCount = \App\Models\Post::where('restaurant_id', $restaurant->id)
+            ->where('is_reported', true)
+            ->count();
+
+        $stats = [
+            'average_rating' => $averageRating,
+            'total_reviews'  => $statsTotalReviews,
+            'stars'          => $starsData,
+            'reported_count' => $reportedCount
+        ];
+
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 5;
+        $currentItems = $reviewCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        $reviews = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $reviewCollection->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+        return view('customers.restaurants.show', compact('restaurant', 'availableSlots', 'reviews', 'stats'));
     }
 
     public function categories(Request $request)

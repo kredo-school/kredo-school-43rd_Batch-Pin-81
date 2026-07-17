@@ -110,20 +110,17 @@ class RestaurantController extends Controller
 
     public function reviews()
     {
-        // 1. 現在ログインしている店舗（ユーザー）に紐づくレストラン情報を取得
         $restaurant = Restaurant::where('user_id', Auth::id())->first() ?? Restaurant::first();
 
         if (!$restaurant) {
             return redirect()->back()->with('error', 'レストラン情報が見つかりません。');
         }
 
-        // 2.すべての投稿データが保存されているPostモデルから、この店舗（restaurant_id）宛ての口コミだけを絞り込んで取得
         $reviews = Post::with(['user', 'comments.user']) // removed 'star'
             ->where('restaurant_id', $restaurant->id)
             ->latest()
             ->get();
 
-        // 3. 統計データ（星の平均など、先ほどのBladeで必要になる配列）を作成
         $stats = [
             // 'average_rating' => $reviews->avg('stats.rating') ?? 0,
             'average_rating' => $restaurant->posts()->avg('rating') ?? 0,
@@ -151,7 +148,6 @@ class RestaurantController extends Controller
                 : 0;
         }
 
-        // 店舗用のレビューBlade（restaurants/reviews.blade.php）にデータを渡して表示
         return view('restaurants.reviews', compact('reviews', 'stats'));
     }
 

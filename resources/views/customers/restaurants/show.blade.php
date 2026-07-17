@@ -32,16 +32,6 @@
                             @endforeach
                         </div>
 
-                        {{-- Carousel Controls --}}
-                        <button class="carousel-control-prev custom-minimal-control" style="font-size: 3rem" type="button"
-                            data-bs-target="#restaurantCarousel" data-bs-slide="prev">
-                            <i class="bi bi-chevron-left"></i>
-                        </button>
-                        <button class="carousel-control-next custom-minimal-control" style="font-size: 3rem" type="button"
-                            data-bs-target="#restaurantCarousel" data-bs-slide="next">
-                            <i class="bi bi-chevron-right"></i>
-                        </button>
-
                         {{-- Indicators --}}
                         <div class="carousel-indicators custom-indicators">
                             @foreach ($restaurant->photos as $index => $photo)
@@ -50,6 +40,22 @@
                                     aria-current="{{ $loop->first ? 'true' : 'false' }}"></button>
                             @endforeach
                         </div>
+
+                        <button class="carousel-control-prev custom-minimal-control border-0 bg-transparent" type="button"
+                            data-bs-target="#restaurantCarousel" data-bs-slide="prev"
+                            style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); z-index: 5; color: #fff; width: auto; height: auto;">
+                            <i class="bi bi-chevron-left"
+                                style="font-size: 2rem; text-shadow: 0px 2px 4px rgba(0,0,0,0.6);"></i>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+
+                        <button class="carousel-control-next custom-minimal-control border-0 bg-transparent" type="button"
+                            data-bs-target="#restaurantCarousel" data-bs-slide="next"
+                            style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); z-index: 5; color: #fff; width: auto; height: auto;">
+                            <i class="bi bi-chevron-right"
+                                style="font-size: 2rem; text-shadow: 0px 2px 4px rgba(0,0,0,0.6);"></i>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     @else
                         <div class="d-flex justify-content-center align-items-center image-container"
                             style="background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200') center/cover; min-height: 400px; border-radius: 8px; position: relative;">
@@ -105,7 +111,8 @@
                 <div class="custom-tabs-container mb-4">
                     <ul class="nav nav-pills custom-track-pills text-center" id="restaurantTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active text-navy" id="overview-tab" data-bs-toggle="pill"
+                            {{-- ★ 更生ポイント: ページネーション時は初期アクティブを外す --}}
+                            <button class="nav-link {{ request()->has('page') ? '' : 'active' }} text-navy" id="overview-tab" data-bs-toggle="pill"
                                 data-bs-target="#overview" type="button" role="tab">Overview</button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -117,7 +124,8 @@
                                 data-bs-target="#photos" type="button" role="tab">Photos</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link text-navy" id="reviews-tab" data-bs-toggle="pill"
+                            {{-- ★ 更生ポイント: ページネーション時は最初からこのタブをアクティブにする --}}
+                            <button class="nav-link {{ request()->has('page') ? 'active' : '' }} text-navy" id="reviews-tab" data-bs-toggle="pill"
                                 data-bs-target="#reviews" type="button" role="tab">Reviews</button>
                         </li>
                     </ul>
@@ -127,7 +135,8 @@
                 <div class="tab-content" id="restaurantTabsContent">
 
                     {{-- 1. OVERVIEW --}}
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    {{-- ★ 更生ポイント: ページネーション時は初期アクティブを外す --}}
+                    <div class="tab-pane fade {{ request()->has('page') ? '' : 'show active' }}" id="overview" role="tabpanel">
                         <div class="card bg-white border-0 shadow-sm rounded-4 p-4">
                             <h4 class="fw-bold text-navy mb-3">About</h4>
                             <p class="text-muted mb-4 lead fs-6">
@@ -137,9 +146,7 @@
 
                             <div class="mt-4">
                                 <div class="row g-4">
-                                    {{-- LEFT COLUMN: Location, Phone, Party Size --}}
                                     <div class="col-md-6 d-flex flex-column gap-4 overview">
-                                        {{-- Location --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-geo-alt fs-4 mt-1 icon"></i>
                                             <div>
@@ -154,7 +161,6 @@
                                             </div>
                                         </div>
 
-                                        {{-- Phone --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-telephone fs-4 mt-1 icon"></i>
                                             <div>
@@ -166,7 +172,6 @@
                                             </div>
                                         </div>
 
-                                        {{-- Party Size --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-people fs-4 mt-1 icon"></i>
                                             <div>
@@ -176,9 +181,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- RIGHT COLUMN: Hours, Website & SNS Links --}}
                                     <div class="col-md-6 d-flex flex-column gap-4 overview">
-                                        {{-- Hours --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-clock fs-4 mt-1 icon"></i>
                                             <div>
@@ -193,7 +196,6 @@
                                             </div>
                                         </div>
 
-                                        {{-- Website & SNS Links --}}
                                         <div class="d-flex align-items-start gap-3">
                                             <i class="bi bi-globe fs-4 mt-1 icon"></i>
                                             <div>
@@ -209,7 +211,6 @@
                                                     @endif
                                                 </p>
 
-                                                {{-- SNS Quick Links Row --}}
                                                 <div class="d-flex align-items-center gap-3 mt-2">
                                                     @if ($restaurant->instagram)
                                                         <a href="{{ $restaurant->instagram }}" target="_blank"
@@ -276,8 +277,7 @@
                                                             ? asset('storage/' . $menu->menu_image)
                                                             : asset('assets/images/menu/' . $menu->menu_image);
                                                     @endphp
-                                                    <img src="{{ $menuImageUrl }}"
-                                                        alt="{{ $menu->menu_name }}"
+                                                    <img src="{{ $menuImageUrl }}" alt="{{ $menu->menu_name }}"
                                                         class="img-fluid rounded-3 w-100 object-fit-cover"
                                                         style="aspect-ratio: 1 / 1; min-height: 84px;">
                                                 @else
@@ -312,8 +312,7 @@
                                                             ? asset('storage/' . $menu->menu_image)
                                                             : asset('assets/images/menu/' . $menu->menu_image);
                                                     @endphp
-                                                    <img src="{{ $menuImageUrl }}"
-                                                        alt="{{ $menu->menu_name }}"
+                                                    <img src="{{ $menuImageUrl }}" alt="{{ $menu->menu_name }}"
                                                         class="img-fluid rounded-3 w-100 object-fit-cover"
                                                         style="aspect-ratio: 1 / 1; min-height: 84px;">
                                                 @else
@@ -420,11 +419,12 @@
                         </div>
                     </div>
 
-                    {{-- 4. REVIEWS (💡 更生ポイント: ここをダミーから本物のループ画像対応に変更) --}}
-                    <div class="tab-pane fade" id="reviews" role="tabpanel">
-                        <div class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
+                    {{-- 4. REVIEWS --}}
+                    {{-- ★ 更生ポイント: ページネーション時は最初からこのタブを表示状態（show active）にする --}}
+                    <div class="tab-pane fade {{ request()->has('page') ? 'show active' : '' }}" id="reviews" role="tabpanel">
+                        <div id="review-list-container" class="card bg-white border-0 shadow-sm rounded-4 p-4 d-flex flex-column gap-4">
 
-                            @forelse ($restaurant->posts as $post)
+                            @forelse ($reviews as $post)
                                 @php
                                     $user = $post->user;
                                     $isLiked = auth()->check()
@@ -435,9 +435,18 @@
                                 <div class="review-item border-bottom pb-4 mb-2">
                                     <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
                                         <div class="d-flex align-items-center gap-3">
-                                            <img src="https://i.pravatar.cc/150?img={{ $post->user_id ?? 1 }}"
-                                                alt="Avatar" class="rounded-circle"
-                                                style="width: 48px; height: 48px; object-fit: cover;">
+
+                                            @if ($user && $user->avatar)
+                                                <img src="{{ Str::startsWith($user->avatar, ['http://', 'https://']) ? $user->avatar : (Str::startsWith($user->avatar, 'storage/') ? asset($user->avatar) : asset('storage/' . $user->avatar)) }}"
+                                                    alt="Avatar" class="rounded-circle"
+                                                    style="width: 48px; height: 48px; object-fit: cover;">
+                                            @else
+                                                <div class="d-inline-flex align-items-center justify-content-center text-muted rounded-circle bg-light"
+                                                    style="width: 48px; height: 48px; font-size: 48px; line-height: 1;">
+                                                    <i class="fa-solid fa-circle-user"></i>
+                                                </div>
+                                            @endif
+
                                             <div>
                                                 <div class="d-flex align-items-center flex-wrap gap-2">
                                                     <a href="{{ $user ? route('customer.user.profile', $user) : '#' }}"
@@ -461,8 +470,7 @@
                                                     data-post-id="{{ $post->id }}"
                                                     data-liked="{{ $isLiked ? '1' : '0' }}" aria-label="Like review"
                                                     style="width: auto; height: auto;">
-                                                    <i
-                                                        class="bi {{ $isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted' }} fs-4"></i>
+                                                    <i class="bi {{ $isLiked ? 'bi-heart-fill text-danger' : 'bi-heart text-muted' }} fs-4"></i>
                                                 </button>
                                             @else
                                                 <a href="{{ route('login') }}"
@@ -479,12 +487,32 @@
 
                                     <div class="row g-3 align-items-start">
                                         @if ($post->image)
-                                            <div class="col-md-4 col-12">
-                                                <img src="{{ asset('storage/' . $post->image) }}" alt="Review Image"
-                                                    class="img-fluid rounded-4 shadow-sm w-100 object-fit-cover"
-                                                    style="max-height: 180px; cursor: pointer;"
-                                                    onclick="window.open(this.src)">
-                                            </div>
+                                            @php
+                                                $images = array_filter(explode(',', $post->image));
+                                            @endphp
+
+                                            @if (!empty($images))
+                                                <div class="col-12">
+                                                    <div class="row g-2 mb-2">
+                                                        @foreach ($images as $img)
+                                                            @php
+                                                                $img = trim($img);
+                                                                $src = Str::startsWith($img, ['http://', 'https://'])
+                                                                    ? $img
+                                                                    : (Str::startsWith($img, 'storage/')
+                                                                        ? asset($img)
+                                                                        : asset('storage/' . $img));
+                                                            @endphp
+                                                            <div class="col-md-4 col-sm-6 col-12">
+                                                                <img src="{{ $src }}" alt="Review Image"
+                                                                    class="img-fluid rounded-4 shadow-sm w-100 object-fit-cover"
+                                                                    style="height: 180px; cursor: pointer;"
+                                                                    onclick="window.open(this.src)">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
                                         @endif
 
                                         <div class="col text-muted mb-0 fs-6">
@@ -493,9 +521,12 @@
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-muted mb-0 text-center py-3">No reviews yet. Be the first to leave a review!
-                                </p>
+                                <p class="text-muted mb-0 text-center py-3">No reviews yet. Be the first to leave a review!</p>
                             @endforelse
+
+                            <div class="mt-4 d-flex flex-column align-items-center justify-content-center pagination-fix">
+                                {{ $reviews->fragment('reviews')->links('pagination::bootstrap-5') }}
+                            </div>
 
                         </div>
                     </div>
@@ -512,7 +543,6 @@
                         <input type="hidden" name="date" id="selectedReservationDate"
                             value="{{ now()->format('Y-m-d') }}">
 
-                        {{-- Calendar Widget Component --}}
                         <div class="mb-4">
                             <label class="form-label fw-bold text-navy small mb-2">Select Date</label>
                             <div class="calendar-widget border rounded-4 p-3">
@@ -616,17 +646,12 @@
         font-family: inter;
     }
 
-    /* ==========================================================================
-   1. PHOTO CAROUSEL CONTAINERS & RESPONSIVE WIDTHS
-   ========================================================================== */
     .image-container {
         height: 460px;
         width: 100%;
         background-color: #000;
-        /* Keeps the black backdrop edges matching your theme */
     }
 
-    /* Default Mobile: Image stretches 100% to fill screen and give a huge swipe target */
     .restaurant-image {
         width: 100%;
         height: 100%;
@@ -635,26 +660,20 @@
         background-color: #000;
     }
 
-    /* Shrink image container height on mobile screens */
     @media (max-width: 768px) {
         .image-container {
             height: 240px;
         }
     }
 
-    /* Large Screens: Center and shrink the photo to 70% width */
     @media (min-width: 769px) {
         .restaurant-image {
             width: 100%;
         }
     }
 
-    /* ==========================================================================
-   2. CHEVRON CONTROLS (Invisible on mobile to allow swiping, visible on desktop)
-   ========================================================================== */
     #restaurantCarousel {
         touch-action: pan-y;
-        /* Forces mobile browsers to pass horizontal swipes to Bootstrap */
     }
 
     .custom-minimal-control {
@@ -663,22 +682,18 @@
         width: 50px;
         height: 100%;
         display: flex !important;
-        /* Keeps container rendered on mobile so swipe listeners stay alive */
         align-items: center;
         justify-content: center;
     }
 
-    /* Mobile-First: Make the chevron icons completely invisible, but touch zone stays live */
     .custom-minimal-control i {
         font-size: 2.5rem;
-        /* Large, clickable arrow dimensions */
         color: #ffffff !important;
         text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.35);
         opacity: 0 !important;
         transition: opacity 0.2s ease;
     }
 
-    /* Desktop: Bring back the icons on larger screens */
     @media (min-width: 769px) {
         .custom-minimal-control i {
             opacity: 0.7 !important;
@@ -689,9 +704,6 @@
         }
     }
 
-    /* ==========================================================================
-   3. CAROUSEL INDICATORS (Clean round dots)
-   ========================================================================== */
     .custom-indicators [data-bs-target] {
         width: 8px;
         height: 8px;
@@ -705,7 +717,6 @@
         background-color: #fff;
     }
 
-    /* Stars */
     .star-rating {
         position: relative;
         display: inline-block;
@@ -720,16 +731,13 @@
         overflow: hidden;
         white-space: nowrap;
         color: #ffc107;
-        /* Gold */
     }
 
     .star-rating-bottom {
         white-space: nowrap;
         color: #d9d9d9;
-        /* Gray */
     }
 
-    /* Continuous Container Rail Tab Settings */
     .custom-tabs-container {
         background-color: var(--pill-bg) !important;
         padding: 6px !important;
@@ -774,30 +782,24 @@
         flex: none !important;
     }
 
-    /* Overview Icon color */
     .overview .icon {
         color: #fdd6eb !important;
     }
 
-    /* Outer Widget Wrapper */
     .calendar-widget {
         background-color: #ffffff;
         max-width: 100%;
         box-sizing: border-box;
     }
 
-    /* Force strict 7-column matrix distribution with zero bleed */
     .calendar-grid {
         display: grid !important;
         grid-template-columns: repeat(7, 1fr) !important;
-        /* Divides space into 7 equal tracks */
         gap: 4px 0px;
-        /* Controls row spacing cleanly without breaking widths */
         width: 100% !important;
         box-sizing: border-box;
     }
 
-    /* Day Headings (Su, Mo, Tu...) */
     .calendar-day {
         font-size: 0.8rem;
         display: flex;
@@ -805,12 +807,10 @@
         justify-content: center;
         font-weight: 600;
         color: #6c757d;
-        /* Clean Bootstrap secondary gray text */
         height: 32px;
         box-sizing: border-box;
     }
 
-    /* Base Date Circles Layout */
     .calendar-date {
         font-size: 0.9rem;
         font-weight: 500;
@@ -818,22 +818,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-
-        /* Responsive Circle Equation */
         width: 85%;
-        /* Dynamic width: fills 85% of its 1/7th column slice */
         aspect-ratio: 1 / 1;
-        /* Perfect Square Engine: guarantees height always matches width */
         border-radius: 50%;
-        /* Turns the perfect square into a flawless circle */
-
         box-sizing: border-box;
         margin: 0 auto;
-        /* Centers the circle within its grid track */
         transition: background-color 0.15s ease, color 0.15s ease;
     }
 
-    /* Interactive Hover States */
     .active-month-day {
         cursor: pointer;
     }
@@ -842,21 +834,17 @@
         background-color: #e9ecef;
     }
 
-    /* Selected Active Date Highlight Color Ring */
     .calendar-date.active {
         background-color: #0f2942 !important;
-        /* Deep navy theme matching your design */
         color: white !important;
         font-weight: bold;
     }
 
-    /* Today or Special In-Focus Neutral Ring Highlight Style (Optional) */
     .calendar-date.today-highlight {
         border: 1px solid #0f2942;
         color: #0f2942;
     }
 
-    /* Dimmed Text styling for previous/next month filler days */
     .muted-day {
         color: #ccc !important;
         cursor: default;
@@ -867,11 +855,9 @@
         box-shadow: 0 0 0 0.2rem rgba(233, 192, 228, 0.25) !important;
     }
 
-    /* Book as a Guest */
     .custom-btn-a {
         background-color: #FCE7F3 !important;
         color: #0a2540 !important;
-        /* text color */
         cursor: pointer !important;
         transition: 0.3s !important;
     }
@@ -881,11 +867,9 @@
         color: #0a2a5e !important;
     }
 
-    /* Book as a User */
     .custom-btn-b {
         background-color: transparent !important;
         color: #0a2540 !important;
-        /* text color */
         border: 1px solid #0a2540 !important;
         cursor: pointer !important;
         transition: 0.3s !important;
@@ -953,9 +937,28 @@
     .review-like-btn:hover {
         transform: scale(1.04);
     }
+
+    .pagination-fix nav,
+    .pagination-fix nav > div:last-child {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    
+    .pagination-fix nav p.text-muted {
+        margin-bottom: 0 !important;
+        text-align: center !important;
+    }
+
+    .pagination-fix nav ul.pagination {
+        margin-bottom: 0 !important;
+        justify-content: center !important;
+    }
 </style>
 
-{{-- Real-Time Dynamic Grid Generation Script --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let currentDate = new Date();
@@ -1031,17 +1034,15 @@
             const totalSquares = 42;
             let daysHTML = "";
 
-            // 1. Padding days (Previous month blocks)
             for (let x = firstDayIndex; x > 0; x--) {
                 daysHTML += `<div class="calendar-date text-muted muted-day">${prevLastDay - x + 1}</div>`;
             }
 
-            // 2. Main Active Days
             for (let i = 1; i <= lastDay; i++) {
                 const isToday = i === new Date().getDate() && month === new Date().getMonth() && year ===
                     new Date().getFullYear();
                 const isSelected = i === selectedDate.getDate() && month === selectedDate.getMonth() && year ===
-                    selectedDate.getFullYear();
+                    new Date().getFullYear();
 
                 const dateValue = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const isPast = dateValue < todayString;
@@ -1054,7 +1055,6 @@
                 daysHTML += `<div class="${classList}" ${isPast ? '' : `data-date="${dateValue}"`}>${i}</div>`;
             }
 
-            // 3. Padding days (Next month blocks)
             const drawnDays = firstDayIndex + lastDay;
             const nextMonthPadding = totalSquares - drawnDays;
             for (let j = 1; j <= nextMonthPadding; j++) {
@@ -1063,7 +1063,6 @@
 
             daysContainer.innerHTML = daysHTML;
 
-            // Add interactive event triggers
             document.querySelectorAll('.active-month-day').forEach(day => {
                 day.addEventListener('click', function() {
                     const targetValue = this.getAttribute('data-date');
@@ -1178,5 +1177,18 @@
             zoomModalImage.alt = 'Zoomed photo';
         });
 
+        {{-- ★ 更生ポイント: ページネーションリンク押下後の自動スクロール処理 --}}
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('page') || window.location.hash === '#reviews') {
+            setTimeout(() => {
+                const reviewSection = document.getElementById('reviews');
+                if (reviewSection) {
+                    reviewSection.scrollIntoView({ 
+                        behavior: 'auto', 
+                        block: 'start' 
+                    });
+                }
+            }, 100);
+        }
     });
 </script>
