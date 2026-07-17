@@ -219,7 +219,7 @@
                                                     @if ($restaurant->today_hours)
                                                         {{ $restaurant->today_hours }}
                                                     @else
-                                                        Close
+                                                        Closed today
                                                     @endif
                                                 </p>
                                             </div>
