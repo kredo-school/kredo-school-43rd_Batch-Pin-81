@@ -29,7 +29,7 @@ class RestaurantContactReceivedNotification extends Notification implements Shou
         return [
             'type' => 'restaurant_contact',
 
-            'title' => 'New Restaurant Contact',
+            'title' => 'Restaurant Contact',
 
             'message' => "{$this->contact->restaurant->name} has sent a new contact message.",
 

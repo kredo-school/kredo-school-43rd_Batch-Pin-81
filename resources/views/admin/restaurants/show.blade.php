@@ -206,7 +206,7 @@
                                         <button type="submit"
                                             class="status-option status-option-active d-flex justify-content-between">
 
-                                            <span>Active</span>
+                                            <span>Approved</span>
 
                                             @if ($restaurant->status == 'approved')
                                                 <span>✓</span>
@@ -288,11 +288,12 @@
                     </p>
 
                     <p class="mb-2">
-                        <strong>Category:</strong> {{ $restaurant->category->name ?? '-' }}
+                        <strong>Category:</strong> {{ $restaurant->category->category_name ?? '-' }}
                     </p>
 
                     <p class="mb-2">
-                        <strong>Features:</strong> {{ $restaurant->features->name ?? '-' }}
+                        <strong>Features:</strong>
+                        {{ $restaurant->features->pluck('feature_name')->filter()->implode(', ') ?: '-' }}
                     </p>
 
                     <p>

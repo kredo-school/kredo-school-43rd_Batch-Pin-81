@@ -93,7 +93,7 @@
                         <h5 class="mb-1">
                             {{ $notification->data['title'] }}
                         </h5>
-
+                        
                         <span class="status-badge status-pending ms-auto">
                             New Contact
                         </span>

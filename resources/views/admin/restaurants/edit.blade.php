@@ -25,19 +25,25 @@
     background-color:#294664 !important;
     color:#fff !important;
 }
+
+.restaurant-edit-form {
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    padding-right: 8px;
+}
 </style>
 
 <div class="container">
 
     <h1 class="mt-5 mb-4 page-title">Edit Restaurant</h1>
 
-    <form action="{{ route('admin.restaurants.update', $restaurant) }}" method="POST">
+    <form action="{{ route('admin.restaurants.update', $restaurant) }}" method="POST" class="restaurant-edit-form">
         @csrf
         @method('PATCH')
 
         {{-- RESTAURANT INFO --}}
         <div class="card mb-3 p-3">
-            <h4>Restaurant Info</h4>
+            <h3>Restaurant Info</h3>
 
             <input type="text" name="restaurant_name"
                   value="{{ $restaurant->restaurant_name }}"
@@ -79,7 +85,7 @@
 
         {{-- SOCIAL --}}
         <div class="card mb-3 p-3">
-            <h4>Social Links</h4>
+            <h3>Social Links</h3>
 
             <input type="text" name="website"
                   value="{{ $restaurant->website }}"
@@ -104,8 +110,8 @@
 
         {{-- SETTINGS --}}
         <div class="card mb-3 p-3">
-            <h4>Settings</h4>
 
+            <h3>Capacity</h3>
             <input type="number" name="capacity"
                   value="{{ $restaurant->capacity }}"
                   class="form-control mb-2 input-box"
@@ -117,8 +123,8 @@
             $days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
             @endphp
 
-            <div class="card p-3 mb-3">
-                <h4>Operating Hours</h4>
+            
+                <h3 class="mt-3">Operating Hours</h3>
 
                 <div id="hours-container">
 
@@ -177,7 +183,7 @@
                     @endforeach
 
                 </div>
-            </div>
+            
         </div>
 
         <div class="d-flex justify-content-end">
