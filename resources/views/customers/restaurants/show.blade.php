@@ -768,6 +768,7 @@
         overflow: hidden;
         white-space: nowrap;
         color: #ffc107;
+    }
     .star-rating-stars {
         display: inline-flex;
         align-items: center;
