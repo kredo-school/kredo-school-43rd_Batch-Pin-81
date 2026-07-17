@@ -128,7 +128,7 @@ class PostController extends Controller
         $request->validate([
             'restaurant_id' => 'required|exists:restaurants,id',
             'rating'        => 'required|integer|between:1,5',
-            'comment'   => 'required|string|max:1000',
+            'comment'   => 'nullable|string|max:1000',
             'media'         => 'nullable|array',
             'media.*'       => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,ogg,qt|max:51200',
         ]);

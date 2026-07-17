@@ -174,6 +174,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php /** @var \App\Models\Feature $feature */ ?>
                                     @forelse($features as $feature)
                                         <tr>
                                             <td class="ps-3 text-secondary fw-bold text-nowrap">#{{ $feature->id }}</td>
@@ -427,6 +428,7 @@
     @endforeach
 
     {{-- Feature Edit / Delete Modals --}}
+    <?php /** @var \App\Models\Feature $feature */ ?>
     @foreach ($features as $feature)
         <div class="modal fade" id="editFeatureModal{{ $feature->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
