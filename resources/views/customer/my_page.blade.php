@@ -169,6 +169,11 @@
                             <div id="carousel-{{ $post->id }}" class="carousel slide h-100 w-100"
                                 data-bs-ride="false">
                                 <div class="carousel-inner h-100 scroll-container-mobile">
+                                    {{-- デバッグ用：現在取得できている投稿の件数と中身を画面に強制出力する --}}
+<div style="background: #f8d7da; color: #721c24; padding: 15px; margin: 20px 0; border-radius: 5px; z-index: 9999; position: relative;">
+    <h3>【デバッグ】マイページ用の投稿データ数: {{ $posts->count() }} 件</h3>
+    <pre>{{ print_r($posts->pluck('id')->toArray(), true) }}</pre>
+</div>
                                     @foreach ($images as $index => $img)
                                         <div class="carousel-item h-100 @if ($index === 0) active @endif">
                                             <div
@@ -432,6 +437,15 @@
                 <form id="reviewForm" action="{{ route('customer.posts.store') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
+                    @if ($errors->any())
+    <div class="alert alert-danger" style="color: red; background: #ffebee; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
                     <div class="form-group fw-bold" style="color: #0a2540;">
                         <label for="restaurant">Restaurant Name <span style="color: red;">*Required</span></label>

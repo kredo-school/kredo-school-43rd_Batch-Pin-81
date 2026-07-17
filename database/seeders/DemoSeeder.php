@@ -541,33 +541,46 @@ class DemoSeeder extends Seeder
         DB::table('favorites')->delete();
         Post::query()->forceDelete();
 
+        $sourceDir = database_path('seeders/assets/demo/reviews');
+        $targetDir = storage_path('app/public/demo/reviews');
+
+        if (!File::exists($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true, true);
+        }
+        if (File::exists($sourceDir)) {
+            $files = File::files($sourceDir);
+            foreach ($files as $file) {
+                File::copy($file->getPathname(), $targetDir . '/' . $file->getFilename());
+            }
+        }
+
         $posts = [
-            ['id' => 1, 'user_id' => 2, 'restaurant_id' => 1, 'rating' => 5, 'description' => 'Amazing sushi and thoughtful English-speaking service.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 2, 'user_id' => 8, 'restaurant_id' => 1, 'rating' => 5, 'description' => 'The omakase was beautifully presented and worth the visit.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 3, 'user_id' => 9, 'restaurant_id' => 1, 'rating' => 4, 'description' => 'Comfortable interior and excellent seasonal fish.', 'image' => 'demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 4, 'user_id' => 10, 'restaurant_id' => 1, 'rating' => 2, 'description' => 'Reported review sample for moderation.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => true],
-            ['id' => 5, 'user_id' => 11, 'restaurant_id' => 1, 'rating' => 1, 'description' => 'Hidden review sample.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'hidden', 'is_reported' => true],
-            ['id' => 6, 'user_id' => 2, 'restaurant_id' => 2, 'rating' => 5, 'description' => 'Rich broth, fast service, and easy ordering in English.', 'image' => 'demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 7, 'user_id' => 8, 'restaurant_id' => 2, 'rating' => 4, 'description' => 'Great ramen and crispy gyoza.', 'image' => 'demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 8, 'user_id' => 9, 'restaurant_id' => 2, 'rating' => 5, 'description' => 'Perfect casual dinner near Shibuya Station.', 'image' => 'demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 9, 'user_id' => 2, 'restaurant_id' => 20, 'rating' => 5, 'description' => 'A beautiful seasonal course from tempura to matcha dessert.', 'image' => 'demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 10, 'user_id' => 8, 'restaurant_id' => 20, 'rating' => 5, 'description' => 'Elegant private room and attentive service.', 'image' => 'demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 11, 'user_id' => 9, 'restaurant_id' => 20, 'rating' => 4, 'description' => 'The wagyu and sashimi were excellent.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 12, 'user_id' => 10, 'restaurant_id' => 6, 'rating' => 4, 'description' => 'Light, crisp tempura in a calm dining room.', 'image' => 'demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 13, 'user_id' => 11, 'restaurant_id' => 7, 'rating' => 5, 'description' => 'Comforting noodles and friendly service.', 'image' => 'demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 14, 'user_id' => 12, 'restaurant_id' => 8, 'rating' => 4, 'description' => 'Creative plant-based dishes with good portions.', 'image' => 'demo/reviews/pizza-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 15, 'user_id' => 2, 'restaurant_id' => 9, 'rating' => 5, 'description' => 'A lively izakaya with great shared plates.', 'image' => 'demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 16, 'user_id' => 8, 'restaurant_id' => 10, 'rating' => 4, 'description' => 'Flavorful curry with adjustable spice.', 'image' => 'demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 17, 'user_id' => 9, 'restaurant_id' => 11, 'rating' => 5, 'description' => 'Excellent pizza and a relaxed atmosphere.', 'image' => 'demo/reviews/pizza-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 18, 'user_id' => 10, 'restaurant_id' => 12, 'rating' => 4, 'description' => 'High-quality wagyu and easy table-side grilling.', 'image' => 'demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 19, 'user_id' => 11, 'restaurant_id' => 13, 'rating' => 5, 'description' => 'Aromatic curry and helpful staff.', 'image' => 'demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 20, 'user_id' => 12, 'restaurant_id' => 14, 'rating' => 4, 'description' => 'A cozy bistro for a special dinner.', 'image' => 'demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 21, 'user_id' => 2, 'restaurant_id' => 15, 'rating' => 5, 'description' => 'Fresh bread and a pleasant morning cafe.', 'image' => 'demo/reviews/pizza-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 22, 'user_id' => 8, 'restaurant_id' => 16, 'rating' => 4, 'description' => 'Beautiful Ginza sushi at a welcoming counter.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 23, 'user_id' => 9, 'restaurant_id' => 17, 'rating' => 5, 'description' => 'A convenient family-friendly sushi restaurant.', 'image' => 'demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 24, 'user_id' => 10, 'restaurant_id' => 18, 'rating' => 4, 'description' => 'The black garlic ramen was deeply flavorful.', 'image' => 'demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 25, 'user_id' => 11, 'restaurant_id' => 19, 'rating' => 5, 'description' => 'Great vegetarian ramen option in Shinjuku.', 'image' => 'demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
-            ['id' => 26, 'user_id' => 12, 'restaurant_id' => 21, 'rating' => 4, 'description' => 'Juicy yakitori and a good craft beer selection.', 'image' => 'demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 1, 'user_id' => 2, 'restaurant_id' => 1, 'rating' => 5, 'description' => 'Amazing sushi and thoughtful English-speaking service.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 2, 'user_id' => 8, 'restaurant_id' => 1, 'rating' => 5, 'description' => 'The omakase was beautifully presented and worth the visit.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 3, 'user_id' => 9, 'restaurant_id' => 1, 'rating' => 4, 'description' => 'Comfortable interior and excellent seasonal fish.', 'image' => 'storage/demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 4, 'user_id' => 10, 'restaurant_id' => 1, 'rating' => 2, 'description' => 'Reported review sample for moderation.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => true],
+            ['id' => 5, 'user_id' => 11, 'restaurant_id' => 1, 'rating' => 1, 'description' => 'Hidden review sample.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'hidden', 'is_reported' => true],
+            ['id' => 6, 'user_id' => 2, 'restaurant_id' => 2, 'rating' => 5, 'description' => 'Rich broth, fast service, and easy ordering in English.', 'image' => 'storage/demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 7, 'user_id' => 8, 'restaurant_id' => 2, 'rating' => 4, 'description' => 'Great ramen and crispy gyoza.', 'image' => 'storage/demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 8, 'user_id' => 9, 'restaurant_id' => 2, 'rating' => 5, 'description' => 'Perfect casual dinner near Shibuya Station.', 'image' => 'storage/demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 9, 'user_id' => 2, 'restaurant_id' => 20, 'rating' => 5, 'description' => 'A beautiful seasonal course from tempura to matcha dessert.', 'image' => 'storage/demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 10, 'user_id' => 8, 'restaurant_id' => 20, 'rating' => 5, 'description' => 'Elegant private room and attentive service.', 'image' => 'storage/demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 11, 'user_id' => 9, 'restaurant_id' => 20, 'rating' => 4, 'description' => 'The wagyu and sashimi were excellent.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 12, 'user_id' => 10, 'restaurant_id' => 6, 'rating' => 4, 'description' => 'Light, crisp tempura in a calm dining room.', 'image' => 'storage/demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 13, 'user_id' => 11, 'restaurant_id' => 7, 'rating' => 5, 'description' => 'Comforting noodles and friendly service.', 'image' => 'storage/demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 14, 'user_id' => 12, 'restaurant_id' => 8, 'rating' => 4, 'description' => 'Creative plant-based dishes with good portions.', 'image' => 'storage/demo/reviews/pizza-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 15, 'user_id' => 2, 'restaurant_id' => 9, 'rating' => 5, 'description' => 'A lively izakaya with great shared plates.', 'image' => 'storage/demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 16, 'user_id' => 8, 'restaurant_id' => 10, 'rating' => 4, 'description' => 'Flavorful curry with adjustable spice.', 'image' => 'storage/demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 17, 'user_id' => 9, 'restaurant_id' => 11, 'rating' => 5, 'description' => 'Excellent pizza and a relaxed atmosphere.', 'image' => 'storage/demo/reviews/pizza-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 18, 'user_id' => 10, 'restaurant_id' => 12, 'rating' => 4, 'description' => 'High-quality wagyu and easy table-side grilling.', 'image' => 'storage/demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 19, 'user_id' => 11, 'restaurant_id' => 13, 'rating' => 5, 'description' => 'Aromatic curry and helpful staff.', 'image' => 'storage/demo/reviews/tempura-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 20, 'user_id' => 12, 'restaurant_id' => 14, 'rating' => 4, 'description' => 'A cozy bistro for a special dinner.', 'image' => 'storage/demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 21, 'user_id' => 2, 'restaurant_id' => 15, 'rating' => 5, 'description' => 'Fresh bread and a pleasant morning cafe.', 'image' => 'storage/demo/reviews/pizza-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 22, 'user_id' => 8, 'restaurant_id' => 16, 'rating' => 4, 'description' => 'Beautiful Ginza sushi at a welcoming counter.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 23, 'user_id' => 9, 'restaurant_id' => 17, 'rating' => 5, 'description' => 'A convenient family-friendly sushi restaurant.', 'image' => 'storage/demo/reviews/sushi-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 24, 'user_id' => 10, 'restaurant_id' => 18, 'rating' => 4, 'description' => 'The black garlic ramen was deeply flavorful.', 'image' => 'storage/demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 25, 'user_id' => 11, 'restaurant_id' => 19, 'rating' => 5, 'description' => 'Great vegetarian ramen option in Shinjuku.', 'image' => 'storage/demo/reviews/ramen-review.jpg', 'status' => 'visible', 'is_reported' => false],
+            ['id' => 26, 'user_id' => 12, 'restaurant_id' => 21, 'rating' => 4, 'description' => 'Juicy yakitori and a good craft beer selection.', 'image' => 'storage/demo/reviews/steak-review.jpg', 'status' => 'visible', 'is_reported' => false],
         ];
 
         foreach ($posts as $post) {
