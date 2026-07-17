@@ -9,6 +9,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RestaurantSearchController extends Controller
 {
@@ -103,6 +104,14 @@ class RestaurantSearchController extends Controller
             $restaurant->posts_avg_rating = 4.7;
             $restaurant->posts_count = 120;
         }
+
+        $restaurant->setAttribute('is_favorited', Auth::check()
+            ? DB::table('favorites')
+                ->where('user_id', Auth::id())
+                ->where('restaurant_id', $restaurant->id)
+                ->whereNull('deleted_at')
+                ->exists()
+            : false);
 
         $availableSlots = method_exists($restaurant, 'availableSlots')
             ? $restaurant->availableSlots()

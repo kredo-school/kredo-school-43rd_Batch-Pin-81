@@ -34,11 +34,11 @@ class NewFollowerNotification extends Notification implements ShouldQueue
         return [
             'type' => 'new_follower',
             'title' => 'New Follower',
-            'message' => "{$this->follower->name} started following you.",
+            'message' => ($this->follower->username ?? $this->follower->display_id ?? 'A user') . ' started following you.',
             'follower_id' => $this->follower->id,
-            'follower_name' => $this->follower->name,
-            'profile_photo' => $this->follower->profile_photo,
-            'url' => route('profile.show', $this->follower),
+            'follower_name' => $this->follower->username ?? $this->follower->display_id ?? 'User',
+            'profile_photo' => $this->follower->avatar,
+            'url' => route('customer.user.profile', $this->follower),
             'button_text' => 'View Profile',
         ];
     }

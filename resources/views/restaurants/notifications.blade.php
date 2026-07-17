@@ -228,6 +228,42 @@
                             </a>
                             @break
 
+                        @case('new_review')
+                            <a href="{{ $readRoute }}" class="text-decoration-none text-reset">
+                                <div class="card shadow-sm rounded-4 p-3 custom-notification-card {{ $isUnread ? 'border-unread' : 'border-read' }} bg-white">
+                                    <div class="d-flex align-items-start justify-content-between w-100">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3 shadow-sm border" style="width: 44px; height: 44px; min-width: 44px;">
+                                                <i class="fa-regular fa-star text-warning" style="font-size: 1.1rem;"></i>
+                                            </div>
+                                            <div>
+                                                <div class="d-flex align-items-center">
+                                                    <h6 class="fw-bold mb-1 text-navy" style="font-size: 0.95rem;">{{ $notification->data['title'] ?? 'New Review' }}</h6>
+                                                    @if($isUnread)
+                                                        <span class="badge badge-new ms-2">New</span>
+                                                    @endif
+                                                </div>
+                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">
+                                                    {{ $notification->data['customer_name'] ?? 'A customer' }}
+                                                    has posted a review for your restaurant.
+                                                </p>
+                                                @if(!empty($notification->data['message']))
+                                                    <div class="small text-secondary mt-2 p-2 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                                                        <div class="fw-semibold mb-1">Review message</div>
+                                                        <div>{{ $notification->data['message'] }}</div>
+                                                    </div>
+                                                @endif
+                                                <div class="small text-muted mb-1">
+                                                    <div><strong>Rating:</strong> {{ $notification->data['rating'] ?? '-' }}/5</div>
+                                                </div>
+                                                <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            @break
+
                         @default
                             <a href="{{ $readRoute }}" class="text-decoration-none text-reset">
                                 <div class="card shadow-sm rounded-4 p-3 custom-notification-card {{ $isUnread ? 'border-unread' : 'border-read' }} bg-white">

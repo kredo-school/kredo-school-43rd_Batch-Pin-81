@@ -76,6 +76,7 @@
                         @break
 
                         @case('contact_reply')
+                        @case('restaurant_contact_reply')
                             <a href="{{ route('customer.notifications.read', $notification) }}" class="text-decoration-none text-reset">
                                 <div class="card shadow-sm rounded-4 p-3 custom-notification-card bg-white {{ $isUnread ? 'border-unread' : 'border-light' }}">
                                     <div class="d-flex align-items-start justify-content-between w-100">
@@ -87,6 +88,12 @@
                                             <div>
                                                 <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">New Reply</h6>
                                                 <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'You have a new reply.') }}</p>
+                                                @if(data_get($notification->data, 'reply'))
+                                                    <div class="small text-secondary mt-2 p-2 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                                                        <div class="fw-semibold mb-1">Reply</div>
+                                                        <div>{{ data_get($notification->data, 'reply') }}</div>
+                                                    </div>
+                                                @endif
                                                 <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
                                             </div>
                                         </div>
@@ -148,9 +155,12 @@
 
                                             <div>
                                                 <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.95rem;">
-                                                    New Follower
+                                                    {{ data_get($notification->data, 'title', 'New Follower') }}
                                                 </h6>
-                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">{{ data_get($notification->data, 'message', 'Followed you') }}</p>
+                                                <p class="text-secondary mb-1" style="font-size: 0.85rem;">
+                                                    {{ data_get($notification->data, 'follower_name', 'A user') }}
+                                                    {{ data_get($notification->data, 'message', 'started following you.') }}
+                                                </p>
                                                 <span class="text-muted small" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</span>
                                             </div>
                                         </div>

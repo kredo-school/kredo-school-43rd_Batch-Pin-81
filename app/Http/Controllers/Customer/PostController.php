@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\NewReviewNotification;
 
 class PostController extends Controller
 {
@@ -156,7 +157,7 @@ class PostController extends Controller
         $finalMediaPath = !empty($mediaPaths) ? implode(',', $mediaPaths) : null;
 
         // 3. Save directly to the Database
-        Post::create([
+        $post = Post::create([
             'user_id'       => $user->id,
             'restaurant_id' => $finalRestaurantId,
             'rating'        => $request->rating,
@@ -164,6 +165,15 @@ class PostController extends Controller
             'image'         => $finalMediaPath,
             'status'        => 'visible',
         ]);
+
+        $post->load(['user', 'restaurant.user']);
+
+        // Notify restaurant
+        $restaurantOwner = $post->restaurant->user;
+
+        $restaurantOwner->notify(
+            new NewReviewNotification($post)
+        );
 
         return back()->with('success', 'Review posted successfully!');
     }

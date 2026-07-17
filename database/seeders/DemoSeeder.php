@@ -694,61 +694,61 @@ class DemoSeeder extends Seeder
         ]);
     }
 
-    private function seedNotifications(): void
-    {
-        DB::table('notifications')->delete();
+    // private function seedNotifications(): void
+    // {
+    //     DB::table('notifications')->delete();
 
-        $admin = User::where('email', 'admin@example.com')->firstOrFail();
-        $customer = User::where('email', 'customer@example.com')->firstOrFail();
-        $restaurantOwner = User::where('email', 'restaurant@example.com')->firstOrFail();
+    //     $admin = User::where('email', 'admin@example.com')->firstOrFail();
+    //     $customer = User::where('email', 'customer@example.com')->firstOrFail();
+    //     $restaurantOwner = User::where('email', 'restaurant@example.com')->firstOrFail();
 
-        DB::table('notifications')->insert([
-            [
-                'id' => (string) Str::uuid(),
-                'type' => 'demo.restaurant.application',
-                'notifiable_type' => User::class,
-                'notifiable_id' => $admin->id,
-                'data' => json_encode([
-                    'title' => 'New Restaurant Application',
-                    'message' => 'Yakitori Tori is waiting for approval.',
-                    'url' => route('admin.restaurants.pending'),
-                    'button_text' => 'Review Application',
-                ]),
-                'read_at' => null,
-                'created_at' => now()->subHours(3),
-                'updated_at' => now()->subHours(3),
-            ],
-            [
-                'id' => (string) Str::uuid(),
-                'type' => 'demo.reservation.submitted',
-                'notifiable_type' => User::class,
-                'notifiable_id' => $restaurantOwner->id,
-                'data' => json_encode([
-                    'title' => 'New Reservation Request',
-                    'message' => 'John Doe requested a reservation at Sushi Masaru.',
-                    'reservation_code' => 'RM005',
-                    'url' => route('restaurant.reservations'),
-                    'button_text' => 'View Reservations',
-                ]),
-                'read_at' => null,
-                'created_at' => now()->subMinutes(30),
-                'updated_at' => now()->subMinutes(30),
-            ],
-            [
-                'id' => (string) Str::uuid(),
-                'type' => 'demo.contact.reply',
-                'notifiable_type' => User::class,
-                'notifiable_id' => $customer->id,
-                'data' => json_encode([
-                    'title' => 'Admin replied to your inquiry',
-                    'message' => 'Please check the contact page for details.',
-                    'url' => route('customer.contact.index'),
-                    'button_text' => 'Open Contact',
-                ]),
-                'read_at' => now()->subMinutes(20),
-                'created_at' => now()->subDay(),
-                'updated_at' => now()->subDay(),
-            ],
-        ]);
-    }
+    //     DB::table('notifications')->insert([
+    //         [
+    //             'id' => (string) Str::uuid(),
+    //             'type' => 'demo.restaurant.application',
+    //             'notifiable_type' => User::class,
+    //             'notifiable_id' => $admin->id,
+    //             'data' => json_encode([
+    //                 'title' => 'New Restaurant Application',
+    //                 'message' => 'Yakitori Tori is waiting for approval.',
+    //                 'url' => route('admin.restaurants.pending'),
+    //                 'button_text' => 'Review Application',
+    //             ]),
+    //             'read_at' => null,
+    //             'created_at' => now()->subHours(3),
+    //             'updated_at' => now()->subHours(3),
+    //         ],
+    //         [
+    //             'id' => (string) Str::uuid(),
+    //             'type' => 'demo.reservation.submitted',
+    //             'notifiable_type' => User::class,
+    //             'notifiable_id' => $restaurantOwner->id,
+    //             'data' => json_encode([
+    //                 'title' => 'New Reservation Request',
+    //                 'message' => 'John Doe requested a reservation at Sushi Masaru.',
+    //                 'reservation_code' => 'RM005',
+    //                 'url' => route('restaurant.reservations'),
+    //                 'button_text' => 'View Reservations',
+    //             ]),
+    //             'read_at' => null,
+    //             'created_at' => now()->subMinutes(30),
+    //             'updated_at' => now()->subMinutes(30),
+    //         ],
+    //         [
+    //             'id' => (string) Str::uuid(),
+    //             'type' => 'demo.contact.reply',
+    //             'notifiable_type' => User::class,
+    //             'notifiable_id' => $customer->id,
+    //             'data' => json_encode([
+    //                 'title' => 'Admin replied to your inquiry',
+    //                 'message' => 'Please check the contact page for details.',
+    //                 'url' => route('customer.contact.index'),
+    //                 'button_text' => 'Open Contact',
+    //             ]),
+    //             'read_at' => now()->subMinutes(20),
+    //             'created_at' => now()->subDay(),
+    //             'updated_at' => now()->subDay(),
+    //         ],
+    //     ]);
+    // }
 }

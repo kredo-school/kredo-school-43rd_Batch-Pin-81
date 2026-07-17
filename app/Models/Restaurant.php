@@ -56,7 +56,6 @@ class Restaurant extends Model
         'cuisine_types' => 'array',
         'operating_hours' => 'array',
         'hours'           => 'array',
-        'features' => 'array',
     ];
 
     public function getHoursAttribute()
@@ -114,8 +113,9 @@ class Restaurant extends Model
 
     public function getTodayHoursAttribute(): ?string
     {
-        $todayKey = strtolower(now()->format('l'));
-        $dayHours = $this->hours[$todayKey] ?? [];
+        $todayKey = now()->format('l');
+        $hours = $this->operating_hours ?? [];
+        $dayHours = $hours[$todayKey] ?? $hours[strtolower($todayKey)] ?? [];
 
         if (empty($dayHours)) {
             return null;
@@ -128,7 +128,7 @@ class Restaurant extends Model
         $slots = [];
 
         foreach ($dayHours as $slot) {
-            if (empty($slot['open']) || empty($slot['close'])) {
+            if (!is_array($slot) || empty($slot['open']) || empty($slot['close'])) {
                 continue;
             }
 

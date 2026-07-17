@@ -149,6 +149,8 @@ class FavoriteController extends Controller
       ->where('restaurant_id', $id)
       ->first();
 
+    $isFavorited = false;
+
     if ($existingFavorite) {
       if ($existingFavorite->deleted_at !== null) {
         DB::table('favorites')
@@ -158,6 +160,10 @@ class FavoriteController extends Controller
             'deleted_at' => null,
             'updated_at' => now(),
           ]);
+
+        $isFavorited = true;
+      } else {
+        $isFavorited = true;
       }
     } else {
       DB::table('favorites')->insert([
@@ -166,6 +172,14 @@ class FavoriteController extends Controller
         'created_at' => now(),
         'updated_at' => now(),
         'deleted_at' => null,
+      ]);
+
+      $isFavorited = true;
+    }
+
+    if (request()->expectsJson()) {
+      return response()->json([
+        'isFavorited' => $isFavorited,
       ]);
     }
 
@@ -184,6 +198,12 @@ class FavoriteController extends Controller
         'deleted_at' => now(),
         'updated_at' => now(),
       ]);
+
+    if (request()->expectsJson()) {
+      return response()->json([
+        'isFavorited' => false,
+      ]);
+    }
 
     return redirect()
       ->back()

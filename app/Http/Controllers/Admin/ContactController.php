@@ -87,15 +87,12 @@ class ContactController extends Controller
 
         $contact->update(['status' => 'replied']);
 
-        // Notify the customer who created the original contact
-        if (Auth::user()->role_id == 1) {
-            // Customer replied -> notify restaurant
-            $contact->restaurant->user->notify(
-                new ContactReplyNotification($contact, $reply)
-            );
-        } elseif (Auth::user()->role_id == 2) {
-            // Admin replied -> notify restaurant
+        if ($contact->restaurant_id === null) {
             $contact->user->notify(
+                new ContactReplyNotification($contact, $reply->message)
+            );
+        } else {
+            $contact->restaurant->user->notify(
                 new RestaurantContactReplyNotification($contact, $reply)
             );
         }
