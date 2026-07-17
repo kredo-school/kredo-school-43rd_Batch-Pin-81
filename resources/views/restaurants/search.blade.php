@@ -16,34 +16,15 @@
         <p class="text-secondary">{{ $restaurants->total() }} restaurants found.</p>
     </div>
 
-    <!-- 検索結果一覧 -->
-    <div class="row">
+    <!-- 検索結果一覧（共通カード部品を使用） -->
+    <div class="row g-4">
         @forelse($restaurants as $restaurant)
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-                    <!-- 店舗画像（ダミー画像） -->
-                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-shop fs-1"></i>
-                    </div>
-                    
-                    <div class="card-body d-flex flex-column">
-                        <span class="badge bg-light text-navy border mb-2 align-self-start">
-                            {{ $restaurant->prefecture }} {{ $restaurant->city }}
-                        </span>
-                        <h5 class="card-title fw-bold text-navy mb-2">
-                            {{ $restaurant->restaurant_name }}
-                        </h5>
-                        <p class="card-text text-secondary small flex-grow-1">
-                            {{ Str::limit($restaurant->description, 80, '...') }}
-                        </p>
-                        
-                        @if(Route::has('restaurants.show'))
-                            <a href="{{ route('restaurants.show', $restaurant->id) }}" class="btn btn-navy w-100 mt-3 fw-bold custom-search-btn py-2" style="border-radius: 8px;">
-                                View Details
-                            </a>
-                        @endif
-                    </div>
-                </div>
+            {{-- index.blade.php と全く同じように、カードを丸ごとクリック可能にし、共通部品を読み込みます --}}
+            <div class="col-12 col-md-6 col-lg-4" style="cursor: pointer;"
+                onclick="window.location.href='/restaurant/{{ $restaurant->id }}'">
+
+                @include('customers.restaurants.partials.card', ['restaurant' => $restaurant])
+
             </div>
         @empty
             <!-- 結果がゼロだった場合 -->

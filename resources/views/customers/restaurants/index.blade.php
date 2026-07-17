@@ -63,11 +63,11 @@
                 </button>
             </div>
 
-            {{-- Restaurants cards -- Edited By Kana --}}
+            {{-- Restaurants cards -- Edited By Kana ⚠️--}}
             <div class="row g-4">
                 @foreach ($restaurants as $restaurant)
                     <div class="col-12 col-md-6 col-lg-4" style="cursor: pointer;"
-                        onclick="window.location.href='{{ route('restaurant.show', $restaurant->id) }}'">
+                        onclick="window.location.href='/restaurant/{{ $restaurant->id }}'">
 
                         @include ('customers.restaurants.partials.card', ['restaurant' => $restaurant])
 
