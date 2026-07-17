@@ -38,7 +38,7 @@ class NewReviewNotification extends Notification implements ShouldQueue
 
             'rating' => $this->post->rating,
 
-            'url' => route('restaurant.posts.show', $this->post),
+            'url' => route('restaurant.reviews.index', $this->post),
 
             'button_text' => 'View Review',
         ];

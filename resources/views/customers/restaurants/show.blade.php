@@ -72,6 +72,26 @@
                             $hasHalfStar = ($averageRating - $filledStars) >= 0.5;
                         @endphp
                         <div class="d-flex align-items-center gap-3 ms-auto flex-wrap justify-content-end">
+                            {{-- Mobile --}}
+                            <div class="d-inline-flex d-md-none align-items-center gap-2">
+                                <div class="d-inline-flex align-items-center gap-1 text-navy rounded-pill px-2 py-1"
+                                    aria-label="{{ number_format($averageRating, 1) }} out of 5 stars from {{ $restaurant->posts_count ?? 0 }} reviews">
+                                    <i class="fa-solid fa-star text-warning"></i>
+                                    <span class="fw-semibold">{{ number_format($averageRating, 1) }}</span>
+                                    <span class="text-muted small">({{ $restaurant->posts_count ?? 0 }})</span>
+                                </div>
+
+                                @auth
+                                    <button type="button" class="favorite-btn mb-0 d-inline-flex d-md-none"
+                                        data-favorite-url="{{ route('favorites.store', $restaurant->id) }}"
+                                        data-unfavorite-url="{{ route('favorites.destroy', $restaurant->id) }}"
+                                        data-favorited="{{ $restaurant->is_favorited ? '1' : '0' }}"
+                                        aria-label="{{ $restaurant->is_favorited ? 'Remove from favorites' : 'Add to favorites' }}">
+                                        <i class="fa-{{ $restaurant->is_favorited ? 'solid' : 'regular' }} fa-heart {{ $restaurant->is_favorited ? 'text-warning' : 'text-dark' }}"></i>
+                                    </button>
+                                @endauth
+                            </div>
+
                             {{-- Desktop --}}
                             <div class="star-rating d-none d-md-flex align-items-center" id="restaurantReviewsShortcut"
                                 role="button" tabindex="0" aria-label="Open reviews tab">
@@ -86,7 +106,7 @@
                                 <span class="small text-secondary">({{ $restaurant->posts_count ?? 0 }})</span>
                             </div>
                             @auth
-                                <button type="button" class="favorite-btn mb-0"
+                                <button type="button" class="favorite-btn mb-0 d-none d-md-inline-flex"
                                     data-favorite-url="{{ route('favorites.store', $restaurant->id) }}"
                                     data-unfavorite-url="{{ route('favorites.destroy', $restaurant->id) }}"
                                     data-favorited="{{ $restaurant->is_favorited ? '1' : '0' }}"
@@ -101,17 +121,20 @@
                         {{ $restaurant->description }}
                     </p>
 
-                    {{-- Features --}}
-                    <div class="d-flex flex-wrap gap-1 ">
-                        @if ($restaurant->features && $restaurant->features->isNotEmpty())
-                            @foreach ($restaurant->features as $feature)
-                                <span class="badge rounded-pill fw-normal px-2 py-1 text-muted"
-                                    style="background-color: #e8ebf1; font-size: 10px;">
-                                    {{ $feature->feature_name }}
-                                </span>
-                            @endforeach
-                        @endif
-                    </div>
+                    @if ($restaurant->features && $restaurant->features->isNotEmpty())
+                        <div class="mt-3">
+                            <div class="feature-chip-scroll">
+                                <div class="feature-chip-rail">
+                                    @foreach ($restaurant->features as $feature)
+                                        <span class="badge feature-chip rounded-pill fw-normal px-2 py-1 text-muted"
+                                            style="background-color: #e8ebf1; font-size: 10px;">
+                                            {{ $feature->feature_name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- MAIN TRACK PILL TABS SYSTEM --}}
@@ -142,11 +165,7 @@
                     {{-- 1. OVERVIEW --}}
                     <div class="tab-pane fade show active" id="overview" role="tabpanel">
                         <div class="card bg-white border-0 shadow-sm rounded-4 p-4">
-                            <h4 class="fw-bold text-navy mb-3">About</h4>
-                            <p class="text-muted mb-4 lead fs-6">
-                                Experience the art of Edomae sushi at Sushi Masaru, where Chef Masaru combines decades of
-                                tradition with the freshest seasonal ingredients from Tsukiji Market.
-                            </p>
+
 
                             <div class="mt-4">
                                 <div class="row g-4">
@@ -303,8 +322,9 @@
                                             <div class="col-md-7 col-8">
                                                 <h5 class="fw-bold text-navy mb-1">{{ $menu->menu_name }}</h5>
                                                 <p class="text-muted mb-0 small">{{ $menu->description }}</p>
+                                                <span class="fw-bold text-navy fs-5 d-md-none d-block mt-2">¥{{ number_format($menu->price) }}</span>
                                             </div>
-                                            <div class="col-md-3 col-12 text-md-end">
+                                            <div class="col-md-3 col-12 text-md-end d-none d-md-block">
                                                 <span
                                                     class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
                                             </div>
@@ -339,8 +359,9 @@
                                             <div class="col-md-7 col-8">
                                                 <h5 class="fw-bold text-navy mb-1">{{ $menu->menu_name }}</h5>
                                                 <p class="text-muted mb-0 small">{{ $menu->description }}</p>
+                                                <span class="fw-bold text-navy fs-5 d-md-none d-block mt-2">¥{{ number_format($menu->price) }}</span>
                                             </div>
-                                            <div class="col-md-3 col-12 text-md-end">
+                                            <div class="col-md-3 col-12 text-md-end d-none d-md-block">
                                                 <span
                                                     class="fw-bold text-navy fs-5">¥{{ number_format($menu->price) }}</span>
                                             </div>
@@ -355,29 +376,30 @@
 
                     {{-- 3. PHOTOS --}}
                     <div class="tab-pane fade" id="photos" role="tabpanel">
-                        <div class="custom-tabs-container mb-4 d-inline-block">
-                            <ul class="nav nav-pills custom-track-pills text-center" id="photoSubTabs" role="tablist">
-                                <li class="nav-item">
+                        <div class="custom-tabs-container photo-tabs-container mb-4">
+                            <ul class="nav nav-pills custom-track-pills photo-sub-tabs text-center"
+                                id="photoSubTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link active px-3" data-bs-toggle="pill"
                                         data-bs-target="#photo-all" type="button" role="tab">All</button>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-food"
                                         type="button" role="tab">Food</button>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-drink"
                                         type="button" role="tab">Drink</button>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-interior"
                                         type="button" role="tab">Interior</button>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-exterior"
                                         type="button" role="tab">Exterior</button>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link px-3" data-bs-toggle="pill" data-bs-target="#photo-other"
                                         type="button" role="tab">Other</button>
                                 </li>
@@ -651,7 +673,9 @@
     /* Shrink image container height on mobile screens */
     @media (max-width: 768px) {
         .image-container {
-            height: 240px;
+            height: 235px !important;
+            min-height: 235px !important;
+            max-height: 235px !important;
         }
     }
 
@@ -778,6 +802,57 @@
         margin: 4px;
     }
 
+    @media (max-width: 768px) {
+        .favorite-btn {
+            padding: 0;
+        }
+
+        .favorite-btn i {
+            font-size: 1.45rem;
+            margin: 0;
+        }
+    }
+
+    .feature-chip-scroll {
+        width: 100%;
+    }
+
+    .feature-chip-rail {
+        display: inline-flex;
+        gap: 0.5rem;
+        min-width: 0;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .feature-chip {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        .feature-chip-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+            touch-action: pan-x;
+            overscroll-behavior-x: contain;
+        }
+
+        .feature-chip-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .feature-chip-rail {
+            display: inline-flex;
+            flex-wrap: nowrap;
+            min-width: max-content;
+            width: max-content;
+        }
+    }
+
     /* Continuous Container Rail Tab Settings */
     .custom-tabs-container {
         background-color: var(--pill-bg) !important;
@@ -821,6 +896,74 @@
 
     .d-inline-block .custom-track-pills .nav-item {
         flex: none !important;
+    }
+
+    .photo-tabs-container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    @media (min-width: 769px) {
+        .photo-tabs-container {
+            display: inline-block;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .photo-sub-tabs {
+            width: max-content !important;
+        }
+    }
+
+    .photo-sub-tabs {
+        flex-wrap: nowrap !important;
+        gap: 0.25rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .photo-sub-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .photo-sub-tabs .nav-item {
+        flex: 0 0 auto !important;
+    }
+
+    .photo-sub-tabs .nav-item:last-child {
+        padding-right: 0.25rem;
+    }
+
+    .photo-sub-tabs .nav-link {
+        white-space: nowrap;
+    }
+
+    .photo-sub-tabs .nav-link.active {
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        #restaurantTabs.custom-track-pills {
+            flex-wrap: wrap !important;
+            gap: 6px;
+        }
+
+        #restaurantTabs .nav-item {
+            flex: 1 1 calc(33.333% - 4px) !important;
+            min-width: 0;
+        }
+
+        #restaurantTabs .nav-item:first-child {
+            flex: 0 0 100% !important;
+        }
+
+        #restaurantTabs .nav-link {
+            width: 100%;
+            text-align: center;
+        }
     }
 
     /* Overview Icon color */
