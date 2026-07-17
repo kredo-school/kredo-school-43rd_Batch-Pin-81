@@ -293,6 +293,7 @@ Route::group(['prefix' => 'restaurant', 'as' => 'restaurant.', 'middleware' => [
 
   // Reviews
   Route::get('/reviews', [RestaurantController::class, 'reviews'])->name('reviews');
+  Route::post('/posts/{post}/report', [PostController::class, 'report'])->name('posts.report');
 
   // Profile
   Route::get('/profile', [RestaurantProfileController::class, 'edit'])->name('profile.edit');

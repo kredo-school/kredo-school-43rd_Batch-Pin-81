@@ -161,6 +161,7 @@
 
                         <button type="button"
                             class="btn-report d-flex align-items-center gap-1 {{ $review->is_reported ? 'reported' : '' }}"
+                            data-report-url="{{ route('restaurant.posts.report', $review->id) }}"
                             onclick="openReportModal(this, {{ $review->id }})"
                             {{ $review->is_reported ? 'disabled' : '' }}>
                             <i class="bi {{ $review->is_reported ? 'bi-flag-fill' : 'bi-flag' }}"></i>
@@ -405,12 +406,14 @@
     <script>
         let targetButton = null;
         let targetReviewId = null;
+        let targetReportUrl = null;
         let reportModalInstance = null;
 
         // 通報用カスタムモーダルを開く関数
         function openReportModal(button, reviewId) {
             targetButton = button;
             targetReviewId = reviewId;
+            targetReportUrl = button.getAttribute('data-report-url');
 
             // Bootstrapのモーダルを初期化して表示
             const modalEl = document.getElementById('reportConfirmModal');
@@ -430,7 +433,7 @@
             }
 
             // 2. バックエンドへ非同期リクエストを送信
-            fetch(`/customer/posts/${targetReviewId}/report`, {
+            fetch(targetReportUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -467,6 +470,7 @@
                     // 変数の初期化
                     targetButton = null;
                     targetReviewId = null;
+                    targetReportUrl = null;
                 });
         });
         document.addEventListener('DOMContentLoaded', function() {
