@@ -167,7 +167,7 @@ class ReservationAvailabilityService
 
             $normalized[$day] = [
                 'closed' => $closed || empty($shifts),
-                'shifts' => $closed ? [] : $shifts,
+                'shifts' => $shifts,
             ];
         }
 
@@ -177,9 +177,12 @@ class ReservationAvailabilityService
     /**
      * Restaurantプロフィール更新処理で使用。
      */
-    public function buildOperatingHoursFromRequest(array $hours): array
-    {
+    public function buildOperatingHoursFromRequest(
+        array $hours,
+        array $existingHours = []
+    ): array {
         $normalized = [];
+        $existing = $this->normalizeOperatingHours($existingHours);
 
         foreach (
             [
@@ -212,9 +215,13 @@ class ReservationAvailabilityService
                 }
             }
 
+            if ($closed && empty($shifts)) {
+                $shifts = $existing[$day]['shifts'] ?? [];
+            }
+
             $normalized[$day] = [
                 'closed' => $closed || empty($shifts),
-                'shifts' => $closed ? [] : $shifts,
+                'shifts' => $shifts,
             ];
         }
 

@@ -277,12 +277,20 @@
                     @php
                         $dayData = $restaurant->operating_hours[$day] ?? ($restaurant->hours[$day] ?? []);
                         $dayLower = strtolower($day);
-                        $isClosed = isset($dayData['closed']) && $dayData['closed'] == '1';
+                        $isClosed = filter_var(
+                            $dayData['closed'] ?? false,
+                            FILTER_VALIDATE_BOOLEAN
+                        );
 
                         $shifts = [];
-                        foreach ($dayData as $key => $val) {
-                            if (is_numeric($key)) {
-                                $shifts[$key] = $val;
+
+                        if (isset($dayData['shifts']) && is_array($dayData['shifts'])) {
+                            $shifts = $dayData['shifts'];
+                        } else {
+                            foreach ($dayData as $key => $val) {
+                                if (is_numeric($key) && is_array($val)) {
+                                    $shifts[$key] = $val;
+                                }
                             }
                         }
 
@@ -558,7 +566,6 @@
 
                     timeContainer.querySelectorAll('input[type="time"]').forEach(input => {
                         input.disabled = isChecked;
-                        if (isChecked) input.value = '';
                     });
 
                     if (addBtn) addBtn.disabled = isChecked;
