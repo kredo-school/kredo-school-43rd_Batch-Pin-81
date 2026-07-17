@@ -70,6 +70,11 @@ class ChangedReservationNotification extends Notification
         ];
     }
 
+    public function toArray(object $notifiable): array
+    {
+        return $this->toDatabase($notifiable);
+    }
+
     /**
      * Mail notification.
      */

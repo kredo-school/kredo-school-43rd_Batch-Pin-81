@@ -14,6 +14,10 @@
                 @forelse($notifications as $notification)
                     @php
                         $type = $notification->data['type'] ?? '';
+                        $type = match ($type) {
+                            'reservation_updated', 'reservation_change' => 'changed_reservation',
+                            default => $type,
+                        };
                         $isUnread = is_null($notification->read_at);
                         $notificationUrl = $notification->data['url'] ?? '#';
                         $readRoute = route('restaurant.notifications.read', $notification);
