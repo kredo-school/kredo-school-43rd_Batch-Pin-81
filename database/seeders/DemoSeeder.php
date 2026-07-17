@@ -27,7 +27,7 @@ class DemoSeeder extends Seeder
         $this->seedMenusAndPhotos();
         $this->seedReviewsAndSocialData();
         $this->seedContacts();
-        $this->seedNotifications();
+        // $this->seedNotifications();
     }
 
     private function seedDemoImages(): void

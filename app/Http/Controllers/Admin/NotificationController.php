@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\Post;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,13 @@ class NotificationController extends Controller
                     ->find($notification->data['contact_id'] ?? null);
 
                 $notification->contact = $contact;
+            }
+
+            if ($notificationType === 'review_report') {
+                $post = Post::with(['user', 'restaurant'])
+                    ->find($notification->data['post_id'] ?? null);
+
+                $notification->post = $post;
             }
 
             return $notification;

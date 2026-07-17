@@ -53,18 +53,40 @@
             border-color: #0a2540 !important;
         }
 
-        .table th {
-            font-size: 13px;
-            color: #6b7280;
-            padding: 1rem 1.5rem;
+        .table th{
+            font-size:13px;
+            color:#6b7280;
+            padding:1rem 1.5rem;
         }
 
         .table td {
             padding: 1rem 1.5rem;
         }
 
+        .sticky-th {
+            position: sticky !important;
+            top: 0 !important;
+            background-color: #f8f9fa !important;
+            z-index: 10;
+            border-bottom: 2px solid #dee2e6 !important;
+        }
+
         .table-responsive {
-            overflow: visible;
+            max-height: calc(100vh - 260px);
+            overflow: auto;
+        }
+
+        /* .table thead th {
+            position: sticky;
+            top: 0;
+            background-color: 
+            z-index: 2;
+        } */
+
+        .restaurant-table-scroll {
+            max-height: 730px;
+            overflow-y: auto !important;
+            position: relative;
         }
 
         .search-shell {
@@ -236,18 +258,18 @@
 
     <div class="card border-0 shadow-sm rounded-4">
 
-        <div class="table-responsive">
+        <div class="table-responsive restaurant-table-scroll">
 
-            <table class="table align-middle mb-0">
+            <table class="table align-middle mb-0" style="border-collapse: separate; border-spacing: 0;">
 
-                <thead>
+                <thead class="bg-light">
                     <tr>
-                        <th>RESTAURANT</th>
-                        <th>OWNER</th>
-                        <th>LOCATION</th>
-                        <th>CATEGORY</th>
-                        <th>STATUS</th>
-                        <th></th>
+                        <th class="sticky-th">RESTAURANT</th>
+                        <th class="sticky-th">OWNER</th>
+                        <th class="sticky-th">LOCATION</th>
+                        <th class="sticky-th">CATEGORY</th>
+                        <th class="sticky-th">STATUS</th>
+                        <th class="sticky-th"></th>
                     </tr>
                 </thead>
 

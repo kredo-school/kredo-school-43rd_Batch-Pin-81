@@ -175,6 +175,58 @@
 
 
         {{-- =========================
+            Review Report Notification
+        ========================== --}}
+        @case('review_report')
+
+            <button
+                type="button"
+                class="notification-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}"
+                data-bs-toggle="modal"
+                data-bs-target="#reviewReportNotificationModal-{{ $notification->id }}"
+                data-notification-id="{{ $notification->id }}"
+                data-mark-read-url="{{ route('admin.notifications.read', $notification->id) }}"
+                data-notification-read="{{ $notification->read_at ? 'true' : 'false' }}">
+
+                <div class="notification-content px-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-1">
+                            {{ $notification->data['title'] }}
+                        </h5>
+
+                        <span class="status-badge status-rejected ms-auto">
+                            Reported Review
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <p class="mb-2 text-muted">
+                            {{ $notification->data['reported_by'] }} reported a review for
+                            {{ $notification->data['restaurant_name'] ?? 'an unknown restaurant' }}.
+                        </p>
+
+                        <small class="text-muted">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </button>
+
+            @include('admin.modals.review_report_notification_details', [
+                'notification' => $notification
+            ])
+
+        @break
+
+
+        {{-- =========================
             Reservation Notification
             (Future)
         ========================== --}}

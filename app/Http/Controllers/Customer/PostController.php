@@ -12,7 +12,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewReviewNotification;
+use App\Notifications\ReviewReportedNotification;
 
 class PostController extends Controller
 {
@@ -236,8 +238,21 @@ class PostController extends Controller
     public function report(Post $post)
     {
         try {
+            if ($post->is_reported) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'This review has already been reported.'
+                ]);
+            }
+
+            $admins = User::where('role_id', User::ROLE_ADMIN)->get();
+
             $post->is_reported = true;
             $post->save();
+
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new ReviewReportedNotification($post));
+            }
 
             return response()->json([
                 'success' => true,
