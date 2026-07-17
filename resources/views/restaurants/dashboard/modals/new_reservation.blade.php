@@ -9,9 +9,7 @@
         : '--:--';
     $immediateGuests = $immediateReservation->num_of_people ?? '-';
     $immediateTable = $immediateReservation->table->table_name ?? '-';
-    $immediateCode = $immediateReservation
-        ? 'RM' . str_pad($immediateReservation->id, 3, '0', STR_PAD_LEFT)
-        : '';
+    $immediateCode = $immediateReservation ? 'RM' . str_pad($immediateReservation->id, 3, '0', STR_PAD_LEFT) : '';
 @endphp
 
 <style>
@@ -99,7 +97,8 @@
 </style>
 
 @if ($immediateReservation)
-    <div class="modal fade" id="newReservationModal" tabindex="-1" aria-labelledby="newReservationModalLabel" aria-hidden="true">
+    <div class="modal fade" id="newReservationModal" tabindex="-1" aria-labelledby="newReservationModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
             <div class="modal-content new-res-content shadow-lg">
                 <div class="modal-header new-res-header d-flex justify-content-between align-items-start">
@@ -108,11 +107,13 @@
                             style="color: #0A2540; font-family: 'Poppins', sans-serif;">
                             New Reservation!
                         </h4>
-                        <p class="text-secondary small fw-medium mb-0" id="newReservationModalSub" style="font-size: 14px;">
+                        <p class="text-secondary small fw-medium mb-0" id="newReservationModalSub"
+                            style="font-size: 14px;">
                             Customer booking waiting for your approval
                         </p>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: 14px;"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="font-size: 14px;"></button>
                 </div>
 
                 <div id="newResMainView" class="modal-body new-res-body mt-3">
@@ -166,13 +167,15 @@
                             <button type="submit" class="btn btn-new-res-accept w-100">Accept</button>
                         </form>
 
-                        <button type="button" class="btn btn-new-res-decline flex-grow-1" onclick="showNewResDeclineConfirm()">
+                        <button type="button" class="btn btn-new-res-decline flex-grow-1"
+                            onclick="showNewResDeclineConfirm()">
                             Decline
                         </button>
                     </div>
 
                     <div id="newResConfirmActions" class="d-flex w-100 gap-2 d-none">
-                        <button type="button" class="btn btn-new-res-back fw-bold py-2 px-4" onclick="hideNewResDeclineConfirm()">
+                        <button type="button" class="btn btn-new-res-back fw-bold py-2 px-4"
+                            onclick="hideNewResDeclineConfirm()">
                             Back
                         </button>
 
@@ -215,9 +218,18 @@
             const modalElement = document.getElementById('newReservationModal');
             if (!modalElement) return;
 
+            const reservationId = @json($immediateReservation->id);
+            const storageKey = `pin81:new-reservation-shown:${reservationId}`;
+
             modalElement.addEventListener('hidden.bs.modal', function() {
                 hideNewResDeclineConfirm();
             });
+
+            if (sessionStorage.getItem(storageKey)) {
+                return;
+            }
+
+            sessionStorage.setItem(storageKey, '1');
 
             const modal = new bootstrap.Modal(modalElement);
             modal.show();

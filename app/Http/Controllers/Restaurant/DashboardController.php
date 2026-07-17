@@ -78,14 +78,28 @@ class DashboardController extends Controller
             ->orderBy('reservation_time')
             ->get();
 
-        $immediateReservation = null;
+        $now = now();
+        $oneHourLater = $now->copy()->addHour();
 
         $immediateReservation = Reservation::where('restaurant_id', $restaurant->id)
             ->where('status', 'pending')
             ->where('booking_source', 'online')
+            ->whereBetween('reservation_date', [
+                $now->toDateString(),
+                $oneHourLater->toDateString(),
+            ])
             ->with(['user', 'table'])
             ->latest('created_at')
-            ->first();
+            ->get()
+            ->first(function (Reservation $reservation) use ($now, $oneHourLater) {
+                $reservationDateTime = Carbon::parse(
+                    Carbon::parse($reservation->reservation_date)->format('Y-m-d')
+                        . ' '
+                        . Carbon::parse($reservation->reservation_time)->format('H:i:s')
+                );
+
+                return $reservationDateTime->betweenIncluded($now, $oneHourLater);
+            });
 
         return view('restaurants.dashboard.index', [
             'restaurant' => $restaurant,

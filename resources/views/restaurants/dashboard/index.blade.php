@@ -179,7 +179,6 @@
             background-color: #FCE7F3 !important;
             color: #0A2540 !important;
         }
-        }
 
         .disabled-table {
             opacity: 0.45;
@@ -198,6 +197,10 @@
             background-color: #fff;
         }
 
+        body {
+            background-color: #f8f9fa !important;
+        }
+
         @media (max-width: 767.98px) {
             ::-webkit-scrollbar {
                 display: none;
@@ -205,8 +208,7 @@
         }
     </style>
 
-    <div class="d-flex flex-column"
-        style="min-height: calc(100vh - 70px); background-color: transparent; margin-top: -100px;">
+    <div class="d-flex flex-column" style="min-height: calc(100vh - 70px); margin-top: -100px; background-color: #f8f9fa;">
         <div class="d-flex flex-column d-md-none px-4 bg-white" style="padding-top: 95px; box-sizing: border-box;">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2 class="h4 mb-0 fw-bold text-navy">Table Schedule</h2>

@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use App\Models\Category;
 use App\Models\Feature;
+use App\Services\ReservationAvailabilityService;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
+    public function __construct(
+        private readonly ReservationAvailabilityService $availability
+    ) {}
+
     /**
      * プロフィール編集画面の表示
      */
@@ -74,7 +79,11 @@ class ProfileController extends Controller
         $restaurant->twitter         = $request->twitter;
         $restaurant->stay_duration   = $request->stay_duration;
         $restaurant->capacity        = $request->capacity;
-        $restaurant->operating_hours = $request->input('hours', []);
+        $restaurant->operating_hours = $this->availability
+            ->buildOperatingHoursFromRequest(
+                $request->input('hours', []),
+                $restaurant->operating_hours ?? []
+            );
         $restaurant->postal_code = $request->postal_code;
         $restaurant->prefecture = $request->prefecture;
         $restaurant->city = $request->city;
