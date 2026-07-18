@@ -19,7 +19,18 @@
                 'Ramen' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400',
                 'Yakitori' => 'https://x.gd/OdlVj',
                 'Kaiseki' => 'https://x.gd/EXsEH',
-                'Izakaya' => 'https://x.gd/ePNZx',
+                'Japanese BBQ' => 'https://x.gd/OdlVj',
+                'Cafe' => 'https://x.gd/ePNZx',
+                'Vegetarian Friendly' => 'https://x.gd/EXsEH',
+                'Tempura' => 'https://x.gd/ePNZx',
+                'Udon' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400',
+                'Vegan' => 'https://x.gd/EXsEH',
+                'Izakaya' => 'https://x.gd/OdlVj',
+                'Curry' => 'https://x.gd/EXsEH',
+                'Italian' => 'https://x.gd/ePNZx',
+                'Thai' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400',
+                'French' => 'https://x.gd/ePNZx',
+                'Bakery' => 'https://x.gd/EXsEH',
             ];
             $defaultCatImage = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400';
         @endphp
