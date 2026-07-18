@@ -254,7 +254,7 @@
 
                             <span>
                                 <i class="fa-solid fa-tag me-2"></i>
-                                Categories & Features
+                                Categories & Features & Areas
                             </span>
                         </a>
 
