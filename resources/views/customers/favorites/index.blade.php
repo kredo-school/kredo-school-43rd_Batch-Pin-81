@@ -96,7 +96,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#unfavoriteModal-{{ $restaurant->id }}"
                             aria-label="Remove {{ $restaurantName }} from favorites">
-                            <i class="fa-solid fa-heart text-warning"></i>
+                            <i class="fa-solid fa-heart text-danger"></i>
                         </button>
                     </div>
 

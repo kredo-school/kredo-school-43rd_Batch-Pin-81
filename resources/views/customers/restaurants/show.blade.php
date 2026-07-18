@@ -117,7 +117,7 @@
                                     data-unfavorite-url="{{ route('favorites.destroy', $restaurant->id) }}"
                                     data-favorited="{{ $restaurant->is_favorited ? '1' : '0' }}"
                                     aria-label="{{ $restaurant->is_favorited ? 'Remove from favorites' : 'Add to favorites' }}">
-                                    <i class="fa-{{ $restaurant->is_favorited ? 'solid' : 'regular' }} fa-heart {{ $restaurant->is_favorited ? 'text-warning' : 'text-dark' }}"></i>
+                                    <i class="fa-{{ $restaurant->is_favorited ? 'solid' : 'regular' }} fa-heart {{ $restaurant->is_favorited ? 'text-danger' : 'text-dark' }}"></i>
                                 </button>
                             @endauth
                         </div>
