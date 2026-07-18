@@ -47,6 +47,7 @@ class NewRestaurantApplication extends Notification
     {
         return [
             'type' => 'restaurant',
+            'title' => 'New Restaurant application',
             'restaurant_id' => $this->restaurant->id,
             'restaurant_name' => $this->restaurant->restaurant_name,
             'restaurant_status' => $this->restaurant->status,

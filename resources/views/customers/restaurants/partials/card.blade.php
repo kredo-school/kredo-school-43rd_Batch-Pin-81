@@ -1,6 +1,5 @@
 <div class="card restaurant-card border-0 shadow-sm h-100 rounded-4 overflow-hidden position-relative"
     style="background: #fff; font-family: inter;">
-    <a href="/restaurant/{{ $restaurant->id }}" class="stretched-link"></a>
     <form action="{{ route('favorites.store', $restaurant->id) }}" method="POST" class="favorite-form position-absolute top-0 end-0 m-2">
         @csrf
         <button
@@ -78,89 +77,89 @@
                 </a>
 
                 <div class="pt-0">
-        @php
-            $availableTimes = $restaurant->available_times ?? [];
+                    @php
+                        $availableTimes = $restaurant->available_times ?? [];
 
-            if (empty($availableTimes)) {
-                $now = \Carbon\Carbon::now();
-                $endTime = $now->copy()->addHour();
+                        if (empty($availableTimes)) {
+                            $now = \Carbon\Carbon::now();
+                            $endTime = $now->copy()->addHour();
 
-                $minutes = ceil($now->minute / 15) * 15;
-                $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
+                            $minutes = ceil($now->minute / 15) * 15;
+                            $slot = $now->copy()->minute(0)->second(0)->addMinutes($minutes);
 
-                $availableTimes = [];
+                            $availableTimes = [];
 
-                while ($slot <= $endTime) {
-                    $availableTimes[] = $slot->format('H:i');
-                    $slot->addMinutes(15);
-                }
-            }
-        @endphp
+                            while ($slot <= $endTime) {
+                                $availableTimes[] = $slot->format('H:i');
+                                $slot->addMinutes(15);
+                            }
+                        }
+                    @endphp
 
-        <p class="mb-1 avalable-time">
-            <i class="fa-regular fa-clock time-icon"></i>
-            Available Now
-        </p>
+                    <p class="mb-1 avalable-time">
+                        <i class="fa-regular fa-clock time-icon"></i>
+                        Available Now
+                    </p>
 
-        <div class="d-md-none">
-            <div class="time-slider">
-                @foreach ($availableTimes as $time)
-                    @auth
-                        <a href="{{ route('booking.create', [
-                            'restaurant' => $restaurant->id,
-                            'time' => $time
-                        ]) }}" class="time-btn">
-                            {{ $time }}
-                        </a>
-                    @endauth
+                    <div class="d-md-none">
+                        <div class="time-slider">
+                            @foreach ($availableTimes as $time)
+                                @auth
+                                    <a href="{{ route('booking.create', [
+                                        'restaurant' => $restaurant->id,
+                                        'time' => $time
+                                    ]) }}" class="time-btn">
+                                        {{ $time }}
+                                    </a>
+                                @endauth
 
-                    @guest
-                        <button type="button" class="time-btn" data-time="{{ $time }}"
-                            data-bs-toggle="modal" data-bs-target="#bookingOptionsModal">
-                            {{ $time }}
-                        </button>
-                    @endguest
-                @endforeach
-            </div>
-        </div>
-
-        <div class="d-none d-md-block">
-            @auth
-                @foreach ($availableTimes as $time)
-                    <a href="{{ route('booking.create', [
-                        'restaurant' => $restaurant->id,
-                        'time' => $time,
-                    ]) }}" class="time-btn" data-time="{{ $time }}"
-                        data-restaurant-id="{{ $restaurant->id }}">
-                        {{ $time }}
-                    </a>
-                @endforeach
-            @endauth
-
-            @guest
-                @foreach ($availableTimes as $time)
-                    <button type="button" class="time-btn" data-restaurant-id="{{ $restaurant->id }}"
-                        data-bs-toggle="modal" data-bs-target="#bookingOptionsModal" data-time="{{ $time }}">
-                        {{ $time }}
-                    </button>
-                @endforeach
-            @endguest
-        </div>
-
-        @if ($restaurant->features && $restaurant->features->isNotEmpty())
-            <div class="mt-2">
-                <div class="feature-chip-scroll">
-                    <div class="feature-chip-rail">
-                        @foreach ($restaurant->features as $feature)
-                            <span class="badge feature-chip rounded-pill fw-normal px-2 py-1 text-muted"
-                                style="background-color: #e8ebf1; font-size: 10px;">
-                                {{ $feature->feature_name }}
-                            </span>
-                        @endforeach
+                                @guest
+                                    <button type="button" class="time-btn" data-time="{{ $time }}"
+                                        data-bs-toggle="modal" data-bs-target="#bookingOptionsModal">
+                                        {{ $time }}
+                                    </button>
+                                @endguest
+                            @endforeach
+                        </div>
                     </div>
-                </div>
-            </div>
-        @endif
+
+                    <div class="d-none d-md-block">
+                        @auth
+                            @foreach ($availableTimes as $time)
+                                <a href="{{ route('booking.create', [
+                                    'restaurant' => $restaurant->id,
+                                    'time' => $time,
+                                ]) }}" class="time-btn" data-time="{{ $time }}"
+                                    data-restaurant-id="{{ $restaurant->id }}">
+                                    {{ $time }}
+                                </a>
+                            @endforeach
+                        @endauth
+
+                        @guest
+                            @foreach ($availableTimes as $time)
+                                <button type="button" class="time-btn" data-restaurant-id="{{ $restaurant->id }}"
+                                    data-bs-toggle="modal" data-bs-target="#bookingOptionsModal" data-time="{{ $time }}">
+                                    {{ $time }}
+                                </button>
+                            @endforeach
+                        @endguest
+                    </div>
+
+                    @if ($restaurant->features && $restaurant->features->isNotEmpty())
+                        <div class="mt-2">
+                            <div class="feature-chip-scroll">
+                                 <div class="feature-chip-rail">
+                                    @foreach ($restaurant->features as $feature)
+                                        <span class="badge feature-chip rounded-pill fw-normal px-2 py-1 text-muted"
+                                            style="background-color: #e8ebf1; font-size: 10px;">
+                                            {{ $feature->feature_name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -179,6 +178,45 @@
             modal.dataset.time = this.dataset.time;
         });
     });
+
+    if (window.matchMedia('(min-width: 768px)').matches) {
+        document.querySelectorAll('.feature-chip-scroll').forEach(scrollContainer => {
+            let isDragging = false;
+            let startX = 0;
+            let startScrollLeft = 0;
+
+            scrollContainer.addEventListener('pointerdown', event => {
+                if (event.pointerType !== 'mouse') {
+                    return;
+                }
+
+                isDragging = true;
+                startX = event.clientX;
+                startScrollLeft = scrollContainer.scrollLeft;
+                scrollContainer.classList.add('is-dragging');
+                scrollContainer.setPointerCapture(event.pointerId);
+            });
+
+            scrollContainer.addEventListener('pointermove', event => {
+                if (!isDragging) {
+                    return;
+                }
+
+                const deltaX = event.clientX - startX;
+                scrollContainer.scrollLeft = startScrollLeft - deltaX;
+                event.preventDefault();
+            });
+
+            const stopDragging = () => {
+                isDragging = false;
+                scrollContainer.classList.remove('is-dragging');
+            };
+
+            scrollContainer.addEventListener('pointerup', stopDragging);
+            scrollContainer.addEventListener('pointercancel', stopDragging);
+            scrollContainer.addEventListener('pointerleave', stopDragging);
+        });
+    }
 </script>
 
 <style>
@@ -297,6 +335,17 @@
         padding-bottom: 2px;
         touch-action: pan-x;
         overscroll-behavior-x: contain;
+    }
+
+    @media (min-width: 768px) {
+        .feature-chip-scroll {
+            cursor: grab;
+            user-select: none;
+        }
+
+        .feature-chip-scroll.is-dragging {
+            cursor: grabbing;
+        }
     }
 
     .feature-chip-scroll::-webkit-scrollbar {
