@@ -21,6 +21,9 @@
                 'Shinjuku' => 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=500',
                 'Roppongi' => 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=500',
                 'Asakusa' => 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500',
+                'Setagaya' => 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500',
+                'Fukuoka' => 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=500',
+                'Okinawa' => 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500',
             ];
         @endphp
 
